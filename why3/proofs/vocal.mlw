@@ -1,0 +1,85 @@
+
+module Order
+
+  use int.Int
+  use mach.int.Int63
+
+   predicate is_pre_order (cmp: 'a -> 'a -> int63) =
+    (forall x. cmp x x = 0) /\
+    (forall x y. cmp x y <= 0 <-> cmp y x >= 0) /\
+    (forall x y z.
+       (cmp x y <= 0 -> cmp y z <= 0 -> cmp x z <= 0) /\
+       (cmp x y <= 0 -> cmp y z <  0 -> cmp x z <  0) /\
+       (cmp x y <  0 -> cmp y z <= 0 -> cmp x z <  0) /\
+       (cmp x y <  0 -> cmp y z <  0 -> cmp x z <  0))
+
+end
+
+module Comparable
+
+  use int.Int
+  use Order
+  use mach.int.Int63
+
+  type t
+
+  val function compare t t : int63
+
+  axiom is_pre_order: is_pre_order compare
+
+  predicate le (x y: t) = compare x y <= 0
+
+end
+
+module ArrayPermut
+
+  use export mach.array.Array63Permut
+
+end
+
+theory Seq
+
+  use export seq.Seq
+  use export seq.OfList
+  use export seq.FoldLeft
+  use export seq.FoldRight
+
+end
+
+theory Set
+
+  use export set.Fset
+  use export set.FsetSum
+
+end
+
+theory Map
+
+  use export map.Map
+
+end
+
+module List
+
+  use export list.List
+  use export list.Length
+  use export list.Mem
+
+end
+
+module Peano
+  use export mach.peano.Peano
+end
+
+module Bag
+  use export bag.Bag
+end
+
+(*
+module Mts
+  use export Mts.Sig
+end *)
+
+module Graph
+  use export Graph_coercion.Path
+end

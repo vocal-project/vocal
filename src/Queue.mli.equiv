@@ -1,0 +1,8 @@
+let push x q = add x q
+
+let pop q = take q
+
+let top q =
+  peek q
+
+

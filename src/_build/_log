@@ -1,0 +1,264 @@
+### Starting build.
+# Target: PPriorityQueueBraun.mli.depends, tags: { warn(A-4), debug, extension:mli, file:PPriorityQueueBraun.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules PPriorityQueueBraun.mli > PPriorityQueueBraun.mli.depends
+# Target: ComparableType.mli.depends, tags: { warn(A-4), debug, extension:mli, file:ComparableType.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules ComparableType.mli > ComparableType.mli.depends
+# Target: PPriorityQueueSig.mli.depends, tags: { warn(A-4), debug, extension:mli, file:PPriorityQueueSig.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules PPriorityQueueSig.mli > PPriorityQueueSig.mli.depends
+# Target: ComparableType.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:ComparableType.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o ComparableType.cmi ComparableType.mli
+# Target: PPriorityQueueSig.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:PPriorityQueueSig.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o PPriorityQueueSig.cmi PPriorityQueueSig.mli
+# Target: PPriorityQueueBraun.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:PPriorityQueueBraun.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o PPriorityQueueBraun.cmi PPriorityQueueBraun.mli
+# Target: PPriorityQueueBraun.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:PPriorityQueueBraun.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules PPriorityQueueBraun.ml > PPriorityQueueBraun.ml.depends
+# Target: PPriorityQueueExtended.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:PPriorityQueueExtended.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules PPriorityQueueExtended.ml > PPriorityQueueExtended.ml.depends
+# Target: PPriorityQueueExtended.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:PPriorityQueueExtended.cmo, file:PPriorityQueueExtended.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o PPriorityQueueExtended.cmo PPriorityQueueExtended.ml
+# Target: PriorityQueueExtended.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:PriorityQueueExtended.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules PriorityQueueExtended.ml > PriorityQueueExtended.ml.depends
+# Target: PriorityQueueVectorHeap.mli.depends, tags: { warn(A-4), debug, extension:mli, file:PriorityQueueVectorHeap.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules PriorityQueueVectorHeap.mli > PriorityQueueVectorHeap.mli.depends
+# Target: PriorityQueueSig.mli.depends, tags: { warn(A-4), debug, extension:mli, file:PriorityQueueSig.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules PriorityQueueSig.mli > PriorityQueueSig.mli.depends
+# Target: PriorityQueueSig.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:PriorityQueueSig.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o PriorityQueueSig.cmi PriorityQueueSig.mli
+# Target: PriorityQueueVectorHeap.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:PriorityQueueVectorHeap.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o PriorityQueueVectorHeap.cmi PriorityQueueVectorHeap.mli
+# Target: PriorityQueueVectorHeap.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:PriorityQueueVectorHeap.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules PriorityQueueVectorHeap.ml > PriorityQueueVectorHeap.ml.depends
+# Target: PriorityQueueExtended.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:PriorityQueueExtended.cmo, file:PriorityQueueExtended.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o PriorityQueueExtended.cmo PriorityQueueExtended.ml
+# Target: Vector.mli.depends, tags: { warn(A-4), debug, extension:mli, file:Vector.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules Vector.mli > Vector.mli.depends
+# Target: Vector.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:Vector.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o Vector.cmi Vector.mli
+# Target: PriorityQueueVector.mli.depends, tags: { warn(A-4), debug, extension:mli, file:PriorityQueueVector.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules PriorityQueueVector.mli > PriorityQueueVector.mli.depends
+# Target: PriorityQueueVector.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:PriorityQueueVector.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o PriorityQueueVector.cmi PriorityQueueVector.mli
+# Target: PriorityQueueVector.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:PriorityQueueVector.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules PriorityQueueVector.ml > PriorityQueueVector.ml.depends
+# Target: StackExtended.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:StackExtended.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules StackExtended.ml > StackExtended.ml.depends
+# Target: StackList.mli.depends, tags: { warn(A-4), debug, extension:mli, file:StackList.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules StackList.mli > StackList.mli.depends
+# Target: SequenceSig.mli.depends, tags: { warn(A-4), debug, extension:mli, file:SequenceSig.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules SequenceSig.mli > SequenceSig.mli.depends
+# Target: StackSig.mli.depends, tags: { warn(A-4), debug, extension:mli, file:StackSig.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules StackSig.mli > StackSig.mli.depends
+# Target: SequenceSig.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:SequenceSig.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o SequenceSig.cmi SequenceSig.mli
+# Target: StackSig.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:StackSig.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o StackSig.cmi StackSig.mli
+# Target: StackList.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:StackList.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o StackList.cmi StackList.mli
+# Target: StackList.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:StackList.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules StackList.ml > StackList.ml.depends
+# Target: StackExtended.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:StackExtended.cmo, file:StackExtended.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o StackExtended.cmo StackExtended.ml
+# Target: StackVector.mli.depends, tags: { warn(A-4), debug, extension:mli, file:StackVector.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules StackVector.mli > StackVector.mli.depends
+# Target: StackVector.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:StackVector.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o StackVector.cmi StackVector.mli
+# Target: StackVector.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:StackVector.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules StackVector.ml > StackVector.ml.depends
+# Target: Vector.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:Vector.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules Vector.ml > Vector.ml.depends
+# Target: RadixSort.mli.depends, tags: { warn(A-4), debug, extension:mli, file:RadixSort.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules RadixSort.mli > RadixSort.mli.depends
+# Target: RadixSort.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:RadixSort.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o RadixSort.cmi RadixSort.mli
+# Target: RadixSort.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:RadixSort.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules RadixSort.ml > RadixSort.ml.depends
+# Target: PairingHeap.mli.depends, tags: { warn(A-4), debug, extension:mli, file:PairingHeap.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules PairingHeap.mli > PairingHeap.mli.depends
+# Target: PairingHeap.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:PairingHeap.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o PairingHeap.cmi PairingHeap.mli
+# Target: PairingHeap.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:PairingHeap.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules PairingHeap.ml > PairingHeap.ml.depends
+# Target: ZipperList.mli.depends, tags: { warn(A-4), debug, extension:mli, file:ZipperList.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules ZipperList.mli > ZipperList.mli.depends
+# Target: ZipperList.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:ZipperList.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o ZipperList.cmi ZipperList.mli
+# Target: ZipperList.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:ZipperList.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules ZipperList.ml > ZipperList.ml.depends
+# Target: Arrays.mli.depends, tags: { warn(A-4), debug, extension:mli, file:Arrays.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules Arrays.mli > Arrays.mli.depends
+# Target: Arrays.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:Arrays.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o Arrays.cmi Arrays.mli
+# Target: Arrays.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:Arrays.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules Arrays.ml > Arrays.ml.depends
+# Target: mach__array__Array63Swap.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:mach__array__Array63Swap.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules mach__array__Array63Swap.ml > mach__array__Array63Swap.ml.depends
+# Target: mach__array__Array63Swap.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:mach__array__Array63Swap.cmo, file:mach__array__Array63Swap.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o mach__array__Array63Swap.cmo mach__array__Array63Swap.ml
+# Target: UnionFind.mli.depends, tags: { warn(A-4), debug, extension:mli, file:UnionFind.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules UnionFind.mli > UnionFind.mli.depends
+# Target: UnionFind.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:UnionFind.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o UnionFind.cmi UnionFind.mli
+# Target: UnionFind.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:UnionFind.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules UnionFind.ml > UnionFind.ml.depends
+# Target: Listmap.mli.depends, tags: { warn(A-4), debug, extension:mli, file:Listmap.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules Listmap.mli > Listmap.mli.depends
+# Target: Listmap.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:Listmap.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o Listmap.cmi Listmap.mli
+# Target: Listmap.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:Listmap.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules Listmap.ml > Listmap.ml.depends
+# Target: SinglyLL.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:SinglyLL.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules SinglyLL.ml > SinglyLL.ml.depends
+# Target: Queue.mli.depends, tags: { warn(A-4), debug, extension:mli, file:Queue.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules Queue.mli > Queue.mli.depends
+# Target: Queue.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:Queue.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o Queue.cmi Queue.mli
+# Target: Queue.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:Queue.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules Queue.ml > Queue.ml.depends
+# Target: SinglyLL.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:SinglyLL.cmo, file:SinglyLL.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o SinglyLL.cmo SinglyLL.ml
++ /home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o SinglyLL.cmo SinglyLL.ml
+File "SinglyLL.ml", line 5, characters 9-20:
+Warning 9: the following labels are not bound in this record pattern:
+next
+Either bind these labels explicitly or add '; _' to the pattern.
+File "SinglyLL.ml", line 13, characters 9-17:
+Warning 9: the following labels are not bound in this record pattern:
+content
+Either bind these labels explicitly or add '; _' to the pattern.
+# Target: AbstractIntMapExtracted.mli.depends, tags: { warn(A-4), debug, extension:mli, file:AbstractIntMapExtracted.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules AbstractIntMapExtracted.mli > AbstractIntMapExtracted.mli.depends
+# Target: OCamlCoq.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:OCamlCoq.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules OCamlCoq.ml > OCamlCoq.ml.depends
+# Target: OCamlCoq.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:OCamlCoq.cmo, file:OCamlCoq.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o OCamlCoq.cmo OCamlCoq.ml
+# Target: AbstractIntMapExtracted.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:AbstractIntMapExtracted.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o AbstractIntMapExtracted.cmi AbstractIntMapExtracted.mli
+# Target: AbstractIntMapExtracted.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:AbstractIntMapExtracted.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules AbstractIntMapExtracted.ml > AbstractIntMapExtracted.ml.depends
+# Target: AbstractIntMap.mli.depends, tags: { warn(A-4), debug, extension:mli, file:AbstractIntMap.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules AbstractIntMap.mli > AbstractIntMap.mli.depends
+# Target: AbstractIntMap.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:AbstractIntMap.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o AbstractIntMap.cmi AbstractIntMap.mli
+# Target: AbstractIntMap.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:AbstractIntMap.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules AbstractIntMap.ml > AbstractIntMap.ml.depends
+# Target: HashSet.mli.depends, tags: { warn(A-4), debug, extension:mli, file:HashSet.mli, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules HashSet.mli > HashSet.mli.depends
+# Target: HashSet.cmi, tags: { warn(A-4), byte, compile, debug, extension:mli, file:HashSet.mli, interf, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -o HashSet.cmi HashSet.mli
+# Target: HashSet.ml.depends, tags: { for-pack(Vocal), warn(A-4), debug, extension:ml, file:HashSet.ml, ocaml, ocamldep, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamldep.opt -modules HashSet.ml > HashSet.ml.depends
+# Target: PPriorityQueueBraun.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:PPriorityQueueBraun.cmo, file:PPriorityQueueBraun.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o PPriorityQueueBraun.cmo PPriorityQueueBraun.ml
+# Target: PriorityQueueVectorHeap.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:PriorityQueueVectorHeap.cmo, file:PriorityQueueVectorHeap.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o PriorityQueueVectorHeap.cmo PriorityQueueVectorHeap.ml
+# Target: PriorityQueueVector.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:PriorityQueueVector.cmo, file:PriorityQueueVector.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o PriorityQueueVector.cmo PriorityQueueVector.ml
+# Target: StackList.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:StackList.cmo, file:StackList.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o StackList.cmo StackList.ml
+# Target: StackVector.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:StackVector.cmo, file:StackVector.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o StackVector.cmo StackVector.ml
+# Target: Vector.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:Vector.cmo, file:Vector.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o Vector.cmo Vector.ml
+# Target: RadixSort.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:RadixSort.cmo, file:RadixSort.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o RadixSort.cmo RadixSort.ml
+# Target: PairingHeap.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:PairingHeap.cmo, file:PairingHeap.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o PairingHeap.cmo PairingHeap.ml
+# Target: ZipperList.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:ZipperList.cmo, file:ZipperList.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o ZipperList.cmo ZipperList.ml
+# Target: Arrays.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:Arrays.cmo, file:Arrays.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o Arrays.cmo Arrays.ml
+# Target: UnionFind.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:UnionFind.cmo, file:UnionFind.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o UnionFind.cmo UnionFind.ml
+# Target: Listmap.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:Listmap.cmo, file:Listmap.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o Listmap.cmo Listmap.ml
+# Target: Queue.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:Queue.cmo, file:Queue.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o Queue.cmo Queue.ml
+# Target: AbstractIntMapExtracted.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:AbstractIntMapExtracted.cmo, file:AbstractIntMapExtracted.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o AbstractIntMapExtracted.cmo AbstractIntMapExtracted.ml
+# Target: AbstractIntMap.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:AbstractIntMap.cmo, file:AbstractIntMap.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o AbstractIntMap.cmo AbstractIntMap.ml
+# Target: HashSet.cmo, tags: { for-pack(Vocal), warn(A-4), byte, compile, debug, extension:cmo, extension:ml, file:HashSet.cmo, file:HashSet.ml, implem, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o HashSet.cmo HashSet.ml
++ /home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o Queue.cmo Queue.ml
+File "Queue.ml", line 7, characters 12-14:
+Warning 27: unused variable us.
++ /home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o PairingHeap.cmo PairingHeap.ml
+File "PairingHeap.ml", line 50, characters 9-10:
+Warning 27: unused variable x.
++ /home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o ZipperList.cmo ZipperList.ml
+File "ZipperList.ml", line 59, characters 4-5:
+Warning 27: unused variable x.
++ /home/mario/.opam/4.06.1/bin/ocamlc.opt -c -g -safe-string -w A-4 -for-pack Vocal -o UnionFind.cmo UnionFind.ml
+File "UnionFind.ml", line 40, characters 32-34:
+Warning 27: unused variable vy.
+# Target: vocal.cma, tags: { warn(A-4), byte, debug, extension:cma, file:vocal.cma, library, link, ocaml, quiet, safe_string, traverse }
+/home/mario/.opam/4.06.1/bin/ocamlc.opt -a PPriorityQueueExtended.cmo PPriorityQueueBraun.cmo PriorityQueueExtended.cmo Vector.cmo PriorityQueueVectorHeap.cmo PriorityQueueVector.cmo StackExtended.cmo StackList.cmo StackVector.cmo RadixSort.cmo PairingHeap.cmo ZipperList.cmo Arrays.cmo UnionFind.cmo Listmap.cmo SinglyLL.cmo Queue.cmo AbstractIntMapExtracted.cmo AbstractIntMap.cmo HashSet.cmo -o vocal.cma
+# Target: PPriorityQueueExtended.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:PPriorityQueueExtended.cmx, file:PPriorityQueueExtended.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o PPriorityQueueExtended.cmx PPriorityQueueExtended.ml
+# Target: PriorityQueueExtended.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:PriorityQueueExtended.cmx, file:PriorityQueueExtended.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o PriorityQueueExtended.cmx PriorityQueueExtended.ml
+# Target: Vector.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:Vector.cmx, file:Vector.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o Vector.cmx Vector.ml
+# Target: StackExtended.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:StackExtended.cmx, file:StackExtended.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o StackExtended.cmx StackExtended.ml
+# Target: mach__array__Array63Swap.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:mach__array__Array63Swap.cmx, file:mach__array__Array63Swap.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o mach__array__Array63Swap.cmx mach__array__Array63Swap.ml
+# Target: SinglyLL.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:SinglyLL.cmx, file:SinglyLL.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o SinglyLL.cmx SinglyLL.ml
++ ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o SinglyLL.cmx SinglyLL.ml
+File "SinglyLL.ml", line 5, characters 9-20:
+Warning 9: the following labels are not bound in this record pattern:
+next
+Either bind these labels explicitly or add '; _' to the pattern.
+File "SinglyLL.ml", line 13, characters 9-17:
+Warning 9: the following labels are not bound in this record pattern:
+content
+Either bind these labels explicitly or add '; _' to the pattern.
+# Target: OCamlCoq.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:OCamlCoq.cmx, file:OCamlCoq.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o OCamlCoq.cmx OCamlCoq.ml
+# Target: AbstractIntMapExtracted.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:AbstractIntMapExtracted.cmx, file:AbstractIntMapExtracted.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o AbstractIntMapExtracted.cmx AbstractIntMapExtracted.ml
+# Target: PPriorityQueueBraun.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:PPriorityQueueBraun.cmx, file:PPriorityQueueBraun.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o PPriorityQueueBraun.cmx PPriorityQueueBraun.ml
+# Target: PriorityQueueVectorHeap.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:PriorityQueueVectorHeap.cmx, file:PriorityQueueVectorHeap.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o PriorityQueueVectorHeap.cmx PriorityQueueVectorHeap.ml
+# Target: PriorityQueueVector.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:PriorityQueueVector.cmx, file:PriorityQueueVector.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o PriorityQueueVector.cmx PriorityQueueVector.ml
+# Target: StackList.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:StackList.cmx, file:StackList.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o StackList.cmx StackList.ml
+# Target: StackVector.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:StackVector.cmx, file:StackVector.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o StackVector.cmx StackVector.ml
+# Target: RadixSort.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:RadixSort.cmx, file:RadixSort.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o RadixSort.cmx RadixSort.ml
+# Target: PairingHeap.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:PairingHeap.cmx, file:PairingHeap.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o PairingHeap.cmx PairingHeap.ml
+# Target: ZipperList.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:ZipperList.cmx, file:ZipperList.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o ZipperList.cmx ZipperList.ml
+# Target: Arrays.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:Arrays.cmx, file:Arrays.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o Arrays.cmx Arrays.ml
+# Target: UnionFind.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:UnionFind.cmx, file:UnionFind.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o UnionFind.cmx UnionFind.ml
+# Target: Listmap.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:Listmap.cmx, file:Listmap.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o Listmap.cmx Listmap.ml
+# Target: Queue.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:Queue.cmx, file:Queue.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o Queue.cmx Queue.ml
+# Target: AbstractIntMap.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:AbstractIntMap.cmx, file:AbstractIntMap.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o AbstractIntMap.cmx AbstractIntMap.ml
+# Target: HashSet.cmx, tags: { for-pack(Vocal), warn(A-4), compile, debug, extension:cmx, extension:ml, file:HashSet.cmx, file:HashSet.ml, implem, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o HashSet.cmx HashSet.ml
++ ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o PairingHeap.cmx PairingHeap.ml
+File "PairingHeap.ml", line 50, characters 9-10:
+Warning 27: unused variable x.
++ ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o Queue.cmx Queue.ml
+File "Queue.ml", line 7, characters 12-14:
+Warning 27: unused variable us.
++ ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o ZipperList.cmx ZipperList.ml
+File "ZipperList.ml", line 59, characters 4-5:
+Warning 27: unused variable x.
++ ocamlopt  -c -g -safe-string -w A-4 -for-pack Vocal -o UnionFind.cmx UnionFind.ml
+File "UnionFind.ml", line 40, characters 32-34:
+Warning 27: unused variable vy.
+# Target: vocal.cmxa, tags: { warn(A-4), debug, extension:cmxa, file:vocal.cmxa, library, link, native, ocaml, quiet, safe_string, traverse }
+ocamlopt  -a PPriorityQueueExtended.cmx PPriorityQueueBraun.cmx PriorityQueueExtended.cmx Vector.cmx PriorityQueueVectorHeap.cmx PriorityQueueVector.cmx StackExtended.cmx StackList.cmx StackVector.cmx RadixSort.cmx PairingHeap.cmx ZipperList.cmx Arrays.cmx UnionFind.cmx Listmap.cmx SinglyLL.cmx Queue.cmx AbstractIntMapExtracted.cmx AbstractIntMap.cmx HashSet.cmx -o vocal.cmxa
+# Compilation successful.

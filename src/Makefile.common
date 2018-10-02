@@ -1,0 +1,12 @@
+# We wish to support OCaml 4.02 as well as OCaml 4.03 with and without
+# flambda. We activate flambda if it appears to be available.
+FLAMBDA := -O3
+FLAMBDA :=
+  $(shell if ocamlopt $(FLAMBDA) 2>/dev/null ; \
+          then echo $(FLAMBDA) ; fi)
+
+# All other OCaml-specific flags should be specified in the file _tags.
+OCAMLBUILD_FLAGS := \
+  -classic-display \
+  -j 0 \
+  -ocamlopt "ocamlopt $(FLAMBDA)" \

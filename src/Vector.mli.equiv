@@ -1,0 +1,6 @@
+let iteri f a = for i = 0 to length a - 1 do f i (get a i) done
+
+let iter f a =
+  for i = 0 to length a - 1 do f (get a i) done
+
+

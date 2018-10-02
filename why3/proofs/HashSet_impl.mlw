@@ -1,0 +1,68 @@
+module Impl
+
+  use import set.Fset as S
+  use list.List
+  use option.Option
+  use ocaml.Pervasives
+  use mach.int.Int63
+  use import HashtblOCaml.Sig as H
+
+  type t 'a = {
+                  tbl : H.t 'a ();
+    ghost mutable dom : set 'a;
+  } invariant { forall x. mem x dom -> tbl.data x = Cons () Nil }
+    invariant { forall x. not (mem x dom) -> tbl.data x = Nil }
+    invariant { dom == tbl.dom }
+    by { tbl = H.create None (any int63); dom = empty }
+
+  let create (random [@ocaml:optional]: option bool) (n: int63) : t 'a
+    ensures { result.dom = empty }
+  = { tbl = H.create random n; dom = empty }
+
+  let add (s: t 'a) (k: 'a) : ()
+    ensures { s.dom = add k (old (s.dom)) }
+  = H.replace s.tbl k ();
+    s.dom <- S.add k s.dom
+
+  let mem (s: t 'a) (k: 'a) : bool
+    ensures { result <-> mem k s.dom }
+  = H.mem s.tbl k
+
+  let remove (s: t 'a) (k: 'a) : unit
+    ensures { s.dom = remove k (old s.dom) }
+  = H.remove s.tbl k;
+    s.dom <- S.remove k s.dom
+
+  use set.FsetSum
+
+  let rec lemma sum_cardinal (s: set 'a)
+    variant { cardinal s }
+    ensures { sum s (fun _ -> 1) = cardinal s }
+  = if not (empty == s) then let x = choose s in sum_cardinal (Set.remove x s)
+
+  let length (s: t 'a) : int63
+    ensures { result = cardinal s.dom }
+  = H.length s.tbl
+
+end
+
+module Correct
+
+  use set.Fset
+  use Impl
+
+  lemma union_singleton_add: forall s: set 'a, x: 'a.
+    union s (singleton x) == add x s
+
+  clone HashSet.Sig with
+    type t,
+    val create, val add, val mem, val remove
+
+end
+
+
+(*
+ * Local Variables:
+ * compile-command: "why3 ide HashSet_impl.mlw -L . -L ~/vocal/src"
+ * End:
+ *)

@@ -1,0 +1,22 @@
+# Pack all modules (whose list is specified in the file vocal.mlpack) as a
+# single module named Vocal.
+<*.ml>: for-pack(Vocal)
+
+# (Almost) all warnings enabled and fatal.
+not <IntervalMap.*>: warn(A-4)
+
+# Build and link with -g.
+true: debug
+
+# Use the modern string API.
+true: safe_string
+
+# In a module where all array accesses are unconditionally safe (i.e., proved
+# safe without depending on a precondition which an unverified client could
+# violate), array bounds checks can be turned off, for greater performance.
+# This is dangerous, because for the moment, we do not have a formal notion of
+# unconditional safety.
+<HashTable.*>: unsafe
+
+# In OCaml code extracted from Coq, certain warnings must be turned off.
+<IntervalMap.*>: warn(A-4-20-39)

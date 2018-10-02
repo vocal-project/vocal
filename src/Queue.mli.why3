@@ -1,0 +1,3 @@
+(*@ use mach.onetime.OneTime *)
+
+val length: 'a t -> OneTime.t

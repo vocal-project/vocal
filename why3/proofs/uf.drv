@@ -1,0 +1,15 @@
+
+(* custom driver for UnionFind_impl, to map the custom memory model
+   to OCaml references. *)
+
+module UnionFind_impl.Mem
+
+  syntax type loc_ref  "%1 ref"
+  (* syntax function Link "Link %1" *)
+  (* syntax function Root "Root (%1, %2)" *)
+  syntax val (==)      "%1 == %2"
+  syntax val alloc_ref "ref %1"
+  syntax val get_ref   "!%1"
+  syntax val set_ref   "%1 := %2"
+
+end

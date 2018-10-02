@@ -1,0 +1,12 @@
+module HashtblOCaml.Sig
+
+  syntax type t      "(%1, %2) Hashtbl.t"
+  syntax val create  "Hashtbl.create ?random:%1 %2"
+  syntax val add     "Hashtbl.add %1 %2 %3"
+  syntax val replace "Hashtbl.replace %1 %2 %3"
+  syntax val mem     "Hashtbl.mem %1 %2"
+  syntax val remove  "Hashtbl.remove %1 %2"
+  syntax val find    "Hashtbl.find %1 %2"
+  syntax val length  "Hashtbl.length %1"
+
+end

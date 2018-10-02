@@ -1,0 +1,122 @@
+(** Not proved yet (but similar to graph in the standard library)
+    Used for Coercion.mli  **)
+
+module Path
+
+  use option.Option
+  use list.List
+  use list.Length
+  use list.Nth
+  use ref.Ref
+  use list.HdTl
+
+  use list.Append
+
+  type graph 'a 'b = 'a -> 'a -> option 'b
+
+  predicate is_empty (g : graph 'a 'b) =
+    forall x y. g x y = None
+    
+  function addition (g : graph 'a 'b) (x y : 'a) (e : 'b) : graph 'a 'b =
+    let f u v =
+      if u = x && v = y then Some e
+      else g u v
+    in f
+
+  predicate add (g1 g2 : graph 'a 'b) (x y : 'a) =
+    exists e. g2 = addition g1 x y e
+
+  (*predicate add (g1 g2 : graph 'a 'b) (x y : 'a) =
+      forall u v. u <> x -> g2 u v =  g1 u v /\
+      forall u v. v <> y -> g2 u v = g1 u v /\
+      exists e. g2 x y = Some e *)
+
+  lemma add_unique:
+    forall g g1 g2: graph 'a 'b. forall x y.
+    add g g1 x y -> add g g2 x y -> g1 x y = g2 x y -> forall u v. g1 u v = g2 u v
+
+  (*lemma add_eq:
+    forall g1 g2 : graph 'a 'b, x y : 'a. add g1 g2 x y <-> exists e. forall u v. g2 x y = (addition g1 x y e) u v*)
+
+  predicate edge (g : graph 'a 'b) (x y : 'a) =
+    match g x y with
+      | None -> false
+      | Some _ -> true
+    end
+
+  inductive path (graph 'a 'b) 'a (list 'a) 'a =
+  | Path_empty:
+     forall g : graph 'a 'b, x: 'a. path g x Nil x
+  | Path_cons:
+      forall g : graph 'a 'b, x y z: 'a, l: list 'a.
+      edge g x y -> path g y l z -> path g x (Cons x l) z
+  (** `path v0 [v0; v1; ...; vn-1] vn`
+     means a path from `v0` to `vn` composed of `n` edges `(vi,vi+1)`. *)
+
+
+  lemma path_right_extension:
+    forall g : graph 'a 'b, x y z: 'a, l: list 'a.
+    path g x l y -> edge g y z -> path g x (l ++ Cons y Nil) z
+
+  lemma path_right_inversion:
+    forall g : graph 'a 'b, x z: 'a, l: list 'a. path g x l z ->
+       (x = z /\ l = Nil)
+    \/ (exists y: 'a, l': list 'a.
+        path g x l' y /\ edge g y z /\ l = l' ++ Cons y Nil)
+
+  lemma path_trans:
+    forall g : graph 'a 'b, x y z: 'a, l1 l2: list 'a.
+    path g x l1 y -> path g y l2 z -> path g x (l1 ++ l2) z
+
+  lemma empty_path:
+    forall g : graph 'a 'b, x y: 'a. path g x Nil y -> x = y
+
+  lemma path_decomposition:
+    forall g : graph 'a 'b, x y z: 'a, l1 l2: list 'a.
+    path g x (l1 ++ Cons y l2) z -> path g x l1 y /\ path g y (Cons y l2) z
+
+  predicate cycle (g : graph 'a 'b) =
+    exists x y. (edge g x y /\ exists l. path g y l x)
+
+ let lemma new_cycle (g1 g2 : graph 'a 'b) (u v : 'a) (x y : 'a) (l : list 'a) =
+      requires { u <> v }
+      requires { x <> y }
+      requires { not cycle g1 }
+      requires { add g1 g2 x y }
+      requires { edge g2 u v }
+      requires { path g2 v l u }
+      requires { u <> x \/ v <> y }
+      ensures { exists l1 l2. l = l1 ++ (Cons x Nil) ++ l2 /\ path g2 v l1 x /\ path g2 y l2 u }
+      ensures { edge g1 u v } 
+      exception Found in
+      let summit = ref v in
+      let l2 = ref l in
+      let l1 = ref Nil in
+      try
+      while !l2 <> Nil do
+        variant { length !l2 }
+        invariant { path g1 v !l1 !summit }
+        invariant { path g2 v !l1 !summit }
+        invariant { path g2 !summit !l2 u }
+        invariant { l = !l1 ++ !l2 }
+        l2 := match tl !l2 with
+          | None -> absurd
+          | Some l' -> l'
+        end;
+        let next = match !l2 with
+          | Nil -> u
+          | Cons w _ -> w
+        end in
+        assert { edge g2 !summit next };
+        l1 := !l1 ++ (Cons !summit Nil);
+        if !summit = x && next = y then (raise Found);
+        assert { edge g1 !summit next };
+        summit := next
+        done;
+        assert { path g1 v !l1 u };
+        absurd
+        with Found -> ()
+          end
+
+end
+
