@@ -1,0 +1,61 @@
+# Text editing.
+*~
+
+# OCaml.
+_build
+*.cm*
+*.o
+*.native
+*.byte
+
+# CFML.
+settings.sh
+*.d
+*.cmj
+*_ml.v
+_output
+proofs/_cf
+
+# Coq (using TLC's Makefile.coq).
+*.v.d
+*.vio
+*.vo
+*.vq
+_CoqProject
+*.glob
+*.coq-native
+.coqide
+.nia.cache
+.lia.cache
+
+# Why3
+*.bak
+*.mli.equiv
+
+# TeX.
+main.pdf
+talk.pdf
+*.aux
+*.aux.bak
+*.bbl
+*.blg
+*.log
+*.out
+*.nav
+*.snm
+*.toc
+*.vrb
+
+# WhizzyTeX.
+._whizzy*
+_whizzy*
+*.raux
+*.wdvi
+*.dvi
+*.waux
+*.fmt
+
+# latexmk
+*.fdb_latexmk
+*.fls
+.load.el
