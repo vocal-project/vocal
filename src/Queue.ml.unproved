@@ -1,3 +1,0 @@
-
-let iter f q =
-  SinglyLL.iter f q.first

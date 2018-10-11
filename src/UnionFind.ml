@@ -37,7 +37,7 @@ let link (x: ('a content) ref) (y: ('a content) ref) : unit =
   else
   begin
     begin match (!x, !y) with
-    | (Root (rx, vx), Root (ry, vy)) ->
+    | (Root (rx, vx), Root (ry, _)) ->
       if rx < ry then begin x := (Link y) end
       else
       begin
@@ -52,6 +52,4 @@ let union_aux (x: ('a content) ref) (y: ('a content) ref) : unit =
 
 let union (x: ('a content) ref) (y: ('a content) ref) : unit =
   ignore (union_aux x y)
-
-
 

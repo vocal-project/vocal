@@ -9,89 +9,89 @@ struct
   let create (_: unit) : t =
     Vector.create ?capacity:(Some 0) ~dummy:X.dummy
   
-  let is_empty (h: t) : bool = Vector.is_empty h
+  let is_empty (h: t) : bool = Vector.is_empty (h)
   
-  let size (h: t) : int = Vector.length h
+  let size (h: t) : int = Vector.length (h)
   
   exception Empty
   
   let find_min_exn (h: t) : X.t =
     begin
-      if Vector.is_empty h then begin raise Empty end;
-      Vector.get h 0
+      if Vector.is_empty (h) then begin raise Empty end;
+      Vector.get (h) 0
     end
   
   let find_min (h: t) : X.t option =
-    if Vector.is_empty h then begin None end
+    if Vector.is_empty (h) then begin None end
     else
     begin
-      Some (Vector.get h 0) end
+      Some (Vector.get (h) 0) end
   
   let rec move_down (a: X.t Vector.t) (i: int) (x: X.t) : unit =
-    let n = Vector.length a in
+    let n = Vector.length (a) in
     let q = if n = 1 then begin (-1) end else begin (n - 2) / 2 end in
     if i <= q then begin
       let j = let j1 = (2 * i) + 1 in
         if
-          ((j1 + 1) < n) && ((X.compare (Vector.get a (j1 + 1))
-                                (Vector.get a j1)) < 0) then begin
+          ((j1 + 1) < n) && ((X.compare ((Vector.get (a) (j1 + 1)))
+                                (Vector.get (a) j1)) < 0) then begin
           j1 + 1 end
         else
         begin
           j1 end in
-      if (X.compare (Vector.get a j) x) < 0 then begin
+      if (X.compare ((Vector.get (a) j)) x) < 0 then begin
         begin
-          let o = Vector.get a j in Vector.set a i o;
-          move_down a j x
+          let o = Vector.get (a) j in Vector.set (a) i o;
+          move_down (a) j x
         end end
       else
       begin
-        Vector.set a i x end end
+        Vector.set (a) i x end end
     else
     begin
-      Vector.set a i x end
+      Vector.set (a) i x end
   
   let extract_min_exn (h: t) : X.t =
-    begin try let x = Vector.pop h in
-      let n = Vector.length h in
+    begin try let x = Vector.pop (h) in
+      let n = Vector.length (h) in
       if not (n = 0) then begin
-        let min = Vector.get h 0 in begin move_down h 0 x; min end end
+        let min = Vector.get (h) 0 in begin move_down (h) 0 x; min end end
       else
       begin
         x end with
     | Vector.Empty -> raise Empty
     end
   
-  let delete_min_exn (h: t) : unit = ignore (extract_min_exn h)
+  let delete_min_exn (h: t) : unit = ignore (extract_min_exn (h))
   
   let rec move_up (a: X.t Vector.t) (i: int) (x: X.t) : unit =
-    if i = 0 then begin Vector.set a i x end
+    if i = 0 then begin Vector.set (a) i x end
     else
     begin
       let j = (i - 1) / 2 in
-      let y = Vector.get a j in
-      if (X.compare y x) > 0 then begin
-        begin Vector.set a i y; move_up a j x end end
+      let y = Vector.get (a) j in
+      if (X.compare (y) x) > 0 then begin
+        begin Vector.set (a) i y; move_up (a) j x end end
       else
       begin
-        Vector.set a i x end end
+        Vector.set (a) i x end end
   
   let insert (x: X.t) (h: t) : unit =
     begin
-      if (size h) = Sys.max_array_length
+      if (size (h)) = Sys.max_array_length
       then begin
         raise (Invalid_argument "") end;
-      let n = Vector.length h in
-      if n = 0 then begin Vector.push h x end
+      let n = Vector.length (h) in
+      if n = 0 then begin Vector.push (h) x end
       else
       begin
         let j = (n - 1) / 2 in
-        let y = Vector.get h j in
-        if (X.compare y x) > 0 then begin
-          begin Vector.push h y; move_up h j x end end
+        let y = Vector.get (h) j in
+        if (X.compare (y) x) > 0 then begin
+          begin Vector.push (h) y; move_up (h) j x end end
         else
         begin
-          Vector.push h x end end
+          Vector.push (h) x end end
     end
 end
 

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="5">
+<prover id="1" name="Alt-Ergo" version="2.2.0" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="2" name="CVC4" version="1.5" timelimit="1" steplimit="0" memlimit="1000"/>
+<file name="../UnionFind_impl.mlw" proved="true">
+<theory name="Mem" proved="true">
+ <goal name="VC mem_ref" expl="VC for mem_ref" proved="true">
+ <proof prover="2"><result status="valid" time="0.01"/></proof>
+ </goal>
+</theory>
+<theory name="Impl" proved="true">
+ <goal name="VC uf" expl="VC for uf" proved="true">
+ <proof prover="2"><result status="valid" time="0.19"/></proof>
+ </goal>
+ <goal name="VC make" expl="VC for make" proved="true">
+ <proof prover="1"><result status="valid" time="0.78" steps="2061"/></proof>
+ </goal>
+ <goal name="VC find" expl="VC for find" proved="true">
+ <proof prover="1"><result status="valid" time="4.01" steps="5687"/></proof>
+ </goal>
+ <goal name="VC eq" expl="VC for eq" proved="true">
+ <proof prover="1"><result status="valid" time="0.04" steps="149"/></proof>
+ </goal>
+ <goal name="VC get" expl="VC for get" proved="true">
+ <proof prover="1"><result status="valid" time="0.07" steps="254"/></proof>
+ </goal>
+ <goal name="VC set" expl="VC for set" proved="true">
+ <proof prover="1"><result status="valid" time="2.62" steps="3358"/></proof>
+ </goal>
+ <goal name="VC link" expl="VC for link" proved="true">
+ <transf name="split_vc" proved="true" >
+  <goal name="VC link.0" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.02" steps="26"/></proof>
+  </goal>
+  <goal name="VC link.1" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.08" steps="33"/></proof>
+  </goal>
+  <goal name="VC link.2" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.02" steps="31"/></proof>
+  </goal>
+  <goal name="VC link.3" expl="precondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.01" steps="28"/></proof>
+  </goal>
+  <goal name="VC link.4" expl="precondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.02" steps="30"/></proof>
+  </goal>
+  <goal name="VC link.5" expl="precondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.02" steps="34"/></proof>
+  </goal>
+  <goal name="VC link.6" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.08" steps="241"/></proof>
+  </goal>
+  <goal name="VC link.7" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.04" steps="186"/></proof>
+  </goal>
+  <goal name="VC link.8" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.04" steps="192"/></proof>
+  </goal>
+  <goal name="VC link.9" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.43" steps="886"/></proof>
+  </goal>
+  <goal name="VC link.10" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.52" steps="1421"/></proof>
+  </goal>
+  <goal name="VC link.11" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.20" steps="658"/></proof>
+  </goal>
+  <goal name="VC link.12" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.05" steps="36"/></proof>
+  </goal>
+  <goal name="VC link.13" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.09" steps="331"/></proof>
+  </goal>
+  <goal name="VC link.14" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.58" steps="1109"/></proof>
+  </goal>
+  <goal name="VC link.15" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.02" steps="42"/></proof>
+  </goal>
+  <goal name="VC link.16" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.05" steps="225"/></proof>
+  </goal>
+  <goal name="VC link.17" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.07" steps="229"/></proof>
+  </goal>
+  <goal name="VC link.18" expl="precondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.03" steps="34"/></proof>
+  </goal>
+  <goal name="VC link.19" expl="precondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.03" steps="40"/></proof>
+  </goal>
+  <goal name="VC link.20" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.08" steps="270"/></proof>
+  </goal>
+  <goal name="VC link.21" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.04" steps="207"/></proof>
+  </goal>
+  <goal name="VC link.22" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.04" steps="213"/></proof>
+  </goal>
+  <goal name="VC link.23" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.81" steps="1582"/></proof>
+  </goal>
+  <goal name="VC link.24" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.58" steps="1749"/></proof>
+  </goal>
+  <goal name="VC link.25" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.34" steps="1036"/></proof>
+  </goal>
+  <goal name="VC link.26" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.03" steps="42"/></proof>
+  </goal>
+  <goal name="VC link.27" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.09" steps="359"/></proof>
+  </goal>
+  <goal name="VC link.28" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="1.59" steps="2607"/></proof>
+  </goal>
+  <goal name="VC link.29" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.01" steps="48"/></proof>
+  </goal>
+  <goal name="VC link.30" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.01" steps="243"/></proof>
+  </goal>
+  <goal name="VC link.31" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.07" steps="247"/></proof>
+  </goal>
+  <goal name="VC link.32" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.11" steps="242"/></proof>
+  </goal>
+  <goal name="VC link.33" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.06" steps="188"/></proof>
+  </goal>
+  <goal name="VC link.34" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.06" steps="194"/></proof>
+  </goal>
+  <goal name="VC link.35" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.30" steps="998"/></proof>
+  </goal>
+  <goal name="VC link.36" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.38" steps="1178"/></proof>
+  </goal>
+  <goal name="VC link.37" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.13" steps="521"/></proof>
+  </goal>
+  <goal name="VC link.38" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.05" steps="38"/></proof>
+  </goal>
+  <goal name="VC link.39" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.08" steps="333"/></proof>
+  </goal>
+  <goal name="VC link.40" expl="type invariant" proved="true">
+  <proof prover="1"><result status="valid" time="0.46" steps="1111"/></proof>
+  </goal>
+  <goal name="VC link.41" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.02" steps="44"/></proof>
+  </goal>
+  <goal name="VC link.42" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.05" steps="227"/></proof>
+  </goal>
+  <goal name="VC link.43" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.04" steps="231"/></proof>
+  </goal>
+  <goal name="VC link.44" expl="unreachable point" proved="true">
+  <proof prover="1"><result status="valid" time="0.03" steps="156"/></proof>
+  </goal>
+  <goal name="VC link.45" expl="unreachable point" proved="true">
+  <proof prover="1"><result status="valid" time="0.03" steps="147"/></proof>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="VC union_aux" expl="VC for union_aux" proved="true">
+ <proof prover="2"><result status="valid" time="0.10"/></proof>
+ </goal>
+ <goal name="VC union" expl="VC for union" proved="true">
+ <proof prover="1" timelimit="1"><result status="valid" time="0.25" steps="1125"/></proof>
+ </goal>
+</theory>
+<theory name="Correct" proved="true">
+ <goal name="union_singleton_add" proved="true">
+ <proof prover="2"><result status="valid" time="0.06"/></proof>
+ </goal>
+ <goal name="Sig.VC uf" expl="VC for uf" proved="true">
+ <proof prover="2"><result status="valid" time="0.06"/></proof>
+ </goal>
+ <goal name="Sig.VC make" expl="VC for make" proved="true">
+ <proof prover="2"><result status="valid" time="0.10"/></proof>
+ </goal>
+ <goal name="Sig.VC find" expl="VC for find" proved="true">
+ <proof prover="2"><result status="valid" time="0.08"/></proof>
+ </goal>
+ <goal name="Sig.VC eq" expl="VC for eq" proved="true">
+ <proof prover="2"><result status="valid" time="0.05"/></proof>
+ </goal>
+ <goal name="Sig.VC get" expl="VC for get" proved="true">
+ <proof prover="2"><result status="valid" time="0.05"/></proof>
+ </goal>
+ <goal name="Sig.VC set" expl="VC for set" proved="true">
+ <proof prover="2"><result status="valid" time="0.07"/></proof>
+ </goal>
+ <goal name="Sig.VC union" expl="VC for union" proved="true">
+ <proof prover="1"><result status="valid" time="0.48" steps="3192"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>

@@ -1,0 +1,293 @@
+
+(* Union-Find
+
+   Before reading this file, have a look at the API and specification
+   in file ../../src/UnionFind.mli
+
+   This file contains a proof of a union-find implementation based on the
+   following data structure:
+
+     type 'a content = Link of 'a elem | Root of int * 'a
+     and  'a elem    = 'a content ref
+
+   That is, every element is either a root, containing a rank of type int
+   and a value of type 'a (a single value for the whole class), or a link
+   to another element.
+
+   authors: Martin Clochard (Univ Paris Sud)
+            Jean-Christophe Filliâtre (CNRS)
+	    Mário Pereira (Univ Paris Sud)
+	    Simão Melo de Sousa (Univ Beira Interior)
+*)
+
+(* Custom memory model.
+
+   An OCaml type such as
+
+     type 'a content = Link of 'a content ref | Root of int * 'a
+
+   cannot be defined in Why3 (it is a recursive, mutable type, and therefore
+   would contain regions at arbitrary depths).
+
+   Therefore, we build a custom memory model for this type in the module
+   below. Its types and operations are later mapped to the OCaml type above,
+   using a custom driver (see file uf.drv).
+*)
+module Mem
+
+  use int.Int
+  use map.Map
+  use ref.Ref
+  use map.Const
+  use option.Option
+  use mach.peano.Peano
+  use set.Fset
+
+  type rank = Peano.t
+
+  type address = private {}
+  type loc_ref 'a = { raw: address }
+
+  val (==) (x y: loc_ref 'a) : bool
+    ensures { result <-> x=y }
+
+  type mem_ref [@ocaml:remove] 'a = private {
+    ghost mutable refs : loc_ref 'a -> option 'a;
+    ghost mutable dom  : set (loc_ref 'a);
+  } invariant { forall r. refs r =  None <-> not (mem r dom) }
+    invariant { forall r. refs r <> None <->      mem r dom }
+    by { refs = (fun _ -> None); dom = empty }
+
+  val ghost constant empty_memory : mem_ref 'a
+    ensures { forall r. not (mem r result.dom) }
+
+  val alloc_ref (ghost memory: mem_ref 'a) (v: 'a) : loc_ref 'a
+    writes  { memory }
+    ensures { not (mem result (old memory).dom) } (* no previous value here *)
+    ensures { memory.refs = Map.set (old memory.refs) result (Some v) }
+
+  val get_ref (ghost memory: mem_ref 'a) (l: loc_ref 'a) : 'a
+    requires { mem l memory.dom }
+    ensures  { Some result = memory.refs[l] }
+
+  val set_ref (ghost memory: mem_ref 'a) (l: loc_ref 'a) (c: 'a) : unit
+    requires { mem l memory.dom }
+    writes   { memory }
+    ensures  { memory.refs = (old memory.refs)[l <- Some c] }
+
+end
+
+(* Implementation.
+
+   The tricky part in verifying union-find is the termination of find.
+   For that purpose, we maintain a ``distance'' associated to any element
+   (in field dst; see below). Distances stricly increase when we follow link
+   pointers. We also maintain a maximal value for the distances (in field
+   maxd).
+
+   For example, if we have three consecutive link pointers, we could have
+   distances as follows
+
+     x(0) --> y(1) --> z(2) --> r(3)
+
+   Whenever we do path compression, we do not change distances. If for
+   instance we perform find(x) above, we then have all x, y, z now linked
+   to r. That's fine, as distances are still stricly increasing.
+
+   Whenever we perform a union, for instance linking the representative x
+   of one class to the representative y of another class, we change the
+   distance of y to 1+max(distance(x), distance(y)) and we increase maxd,
+   so as to maintain the invariant.
+
+   Now, we it comes to prove the termination of find(x), we simply use
+   maxd-distance(x) as a variant.
+*)
+module Impl
+
+  use int.Int
+  use int.MinMax
+  use import set.Fset as S
+  use map.Map
+  use ref.Ref
+  use map.Const
+  use option.Option
+  use mach.peano.Peano
+  use Mem
+
+  type content 'a =
+  | Link (elem 'a)
+  | Root rank 'a
+  with elem 'a = loc_ref (content 'a)
+
+  predicate allocated (memory: mem_ref (content 'a)) (x: elem 'a) =
+    mem x memory.dom
+
+  type uf [@ocaml:remove] 'a = {
+    ghost mutable dom : set (elem 'a);      (* which "pointers" are involved *)
+    ghost mutable rep : elem 'a -> elem 'a; (* representative element *)
+    ghost mutable img : elem 'a -> 'a;      (* representative element value *)
+    ghost mutable dst : elem 'a -> int;     (* distance *)
+    ghost mutable maxd: int;
+    ghost         memo: mem_ref (content 'a);
+  }
+  invariant { forall x. mem x dom -> img x = img (rep x) }
+  invariant { forall x. mem x dom -> rep (rep x) = rep x }
+  invariant { forall x. mem x dom -> mem (rep x) dom }
+  invariant { forall x. mem x dom <-> allocated memo x }
+  invariant { forall x. match memo.refs x with
+                | Some (Link y)   -> x <> y /\ allocated memo y /\
+                                     rep x = rep y
+                | Some (Root _ v) -> img x = v /\ rep x = x
+                | None -> true end }
+  invariant { forall x. match memo.refs x with
+                | Some (Link y)   -> dst x < dst y
+                | _ -> true end }
+  invariant { 0 <= maxd }
+  invariant { forall x. mem x dom -> 0 <= dst x <= maxd }
+  invariant { forall x. mem x dom -> match memo.refs (rep x) with
+                | Some (Root _ _) -> true
+                | _               -> false end }
+  by { memo = empty_memory;
+       dom  = S.empty;
+       rep  = (fun x -> x);
+       img  = (fun x -> any 'a);
+       dst  = (fun x -> 0);
+       maxd = 0;
+     }
+
+  let make (ghost uf: uf 'a) (v: 'a) : elem 'a
+    ensures { not (mem result (old (dom uf))) }
+    ensures { dom uf = add result (old (dom uf)) }
+    ensures { rep uf = (old (rep uf))[result <- result] }
+    ensures { img uf = (old (img uf))[result <- v] }
+  = let x = alloc_ref uf.memo (Root zero v) in
+    uf.dom <- S.add x uf.dom;
+    uf.rep <- uf.rep[x <- x];
+    uf.img <- uf.img[x <- v];
+    uf.dst <- uf.dst[x <- 0];
+    x
+
+  (* with path compression *)
+  let rec find (ghost uf: uf 'a) (x: elem 'a) : elem 'a
+    requires { mem x uf.dom }
+    writes   { uf.memo }
+    variant  { uf.maxd - uf.dst x }
+    ensures  { result = uf.rep x }
+    ensures  { uf.dst result >= uf.dst x }
+  = match get_ref uf.memo x with
+  | Root _ _ -> x
+  | Link y -> let rx = find uf y in
+              set_ref uf.memo x (Link rx);
+              rx end
+
+  let eq (ghost uf: uf 'a) (x: elem 'a) (y: elem 'a) : bool
+    requires { mem x uf.dom }
+    requires { mem y uf.dom }
+    ensures  { result <-> uf.rep x = uf.rep y }
+  = let a = find uf x in
+    let b = find uf y in
+    a == b
+
+  let get (ghost uf: uf 'a) (x: elem 'a) : 'a
+    requires { mem x uf.dom }
+    ensures  { result = uf.img x }
+  = let xv = find uf x in
+    match get_ref uf.memo xv with
+    | Root _ v -> v
+    | Link  _ -> absurd end
+
+  predicate equiv (uf: uf 'a) (x y: elem 'a) =
+    uf.rep x = uf.rep y
+
+  let set (ghost uf: uf 'a) (x: elem 'a) (v: 'a) : unit
+    requires { mem x uf.dom }
+    ensures  { forall y. uf.img y = if equiv uf y x then v else old (uf.img y) }
+  = let rx = find uf x in
+    match get_ref uf.memo rx with
+    | Root r _ ->
+      set_ref uf.memo rx (Root r v);
+      uf.img <- pure {fun y -> if uf.rep y = uf.rep x then v else uf.img y};
+      ()
+    | Link _   -> absurd end
+
+  let link (ghost uf: uf 'a)  (x y: elem 'a) : ghost elem 'a
+    requires { mem x uf.dom }
+    requires { x = uf.rep x }
+    requires { mem y uf.dom }
+    requires { y = uf.rep y }
+    ensures  { (result = old (rep uf x)) || (result = old (rep uf y)) }
+    ensures  { forall z. mem z uf.dom ->
+           rep uf z = if old (equiv uf z x || equiv uf z y) then result
+                      else old (rep uf z) }
+    ensures  { forall z. mem z uf.dom ->
+           img uf z = if old (equiv uf z x || equiv uf z y) then img uf result
+                      else old (img uf z) }
+  = if x == y then x else
+      match get_ref uf.memo x, get_ref uf.memo y with
+      | Root rx vx, Root ry (ghost vy) ->
+        if Peano.lt rx ry then begin
+          set_ref uf.memo x (Link y);
+          uf.rep, uf.img, uf.maxd, uf.dst <-
+            pure { fun z -> if uf.rep z = uf.rep x then y  else uf.rep z },
+            pure { fun z -> if uf.rep z = uf.rep x then vy else uf.img z },
+            uf.maxd + 1,
+            uf.dst[y <- 1 + MinMax.max (uf.dst x) (uf.dst y) ];
+          y
+        end else begin
+          set_ref uf.memo y (Link x);
+          uf.rep, uf.img, uf.maxd, uf.dst <-
+            pure { fun z -> if uf.rep z = uf.rep y then x  else uf.rep z },
+            pure { fun z -> if uf.rep z = uf.rep y then vx else uf.img z },
+            uf.maxd + 1,
+            uf.dst[x <- 1 + MinMax.max (uf.dst x) (uf.dst y)];
+          if Peano.eq rx ry then set_ref uf.memo x (Root (Peano.succ rx) vx);
+          x
+        end
+      | _, _ ->
+        absurd
+      end
+
+  let union_aux (ghost uf: uf 'a) (x y: elem 'a) : ghost elem 'a
+    requires { mem x uf.dom }
+    requires { mem y uf.dom }
+    ensures  { result = old (rep uf x) || result = old (rep uf y) }
+    ensures  { forall z. mem z uf.dom ->
+           rep uf z = if old (equiv uf z x || equiv uf z y) then result
+                      else old (rep uf z) }
+    ensures  { forall z. mem z uf.dom ->
+           img uf z = if old (equiv uf z x || equiv uf z y) then img uf result
+                      else old (img uf z) }
+  = let a = find uf x in
+    let b = find uf y in
+    link uf a b
+
+  let union (ghost uf: uf 'a) (x y: elem 'a) : unit
+    requires { mem x uf.dom }
+    requires { mem y uf.dom }
+    ensures  { exists r. (r = old (rep uf x) || r = old (rep uf y)) &&
+           forall z. mem z uf.dom ->
+             rep uf z = (if old (equiv uf z x || equiv uf z y) then r
+                        else old (rep uf z)) &&
+             img uf z = if old (equiv uf z x || equiv uf z y) then img uf r
+                        else old (img uf z) }
+  = let _ = union_aux uf x y in ()
+
+end
+
+(* Proof of refinement.
+
+   The implementation above (Impl) refines the interface contained in
+   file ../../src/UnionFind.mli (and loaded below as UnionFind.Sig)
+*)
+module Correct
+
+  use set.Fset, Mem, Impl
+
+  lemma union_singleton_add: forall s: set 'a, x: 'a.
+    union s (singleton x) == add x s
+
+  clone UnionFind.Sig with
+    type elem, type uf,
+    val  make, val  find, val eq, val get, val set, val union
+
+end
