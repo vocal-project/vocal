@@ -58,7 +58,7 @@ module Mem
     invariant { forall r. refs r <> None <->      mem r dom }
     by { refs = (fun _ -> None); dom = empty }
 
-  val ghost constant empty_memory : mem_ref 'a
+  val ghost empty_memory () : mem_ref 'a
     ensures { forall r. not (mem r result.dom) }
 
   val alloc_ref (ghost memory: mem_ref 'a) (v: 'a) : loc_ref 'a
@@ -147,7 +147,7 @@ module Impl
   invariant { forall x. mem x dom -> match memo.refs (rep x) with
                 | Some (Root _ _) -> true
                 | _               -> false end }
-  by { memo = empty_memory;
+  by { memo = empty_memory ();
        dom  = S.empty;
        rep  = (fun x -> x);
        img  = (fun x -> any 'a);

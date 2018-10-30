@@ -2,9 +2,7 @@
 
 SRC=../../src/
 
-WHY3=Vector UnionFind PriorityQueueVector
-
-WHY3=Vector UnionFind PriorityQueueVector
+WHY3=Vector UnionFind PriorityQueueVector Arrays
 
 WHY3ML=$(addsuffix .ml, $(WHY3))
 WHY3IMPL=$(addsuffix _impl, $(WHY3))
@@ -13,7 +11,7 @@ WHY3IMPLMLW=$(addsuffix .mlw, $(WHY3IMPL))
 WHY3GEN=$(addprefix $(SRC), $(WHY3ML))
 
 all: $(WHY3GEN)
-	make -C $(SRC)
+	make -C ../..
 
 %.ide:
 	why3 ide -L . -L $(SRC) $*.mlw

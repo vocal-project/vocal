@@ -1,11 +1,24 @@
 module Impl
 
-  use import mach.array.Array63 as A, int.MinMax as MinMax
-  use int.Int, int.ComputerDivision
-  use mach.int.MinMax63, mach.int.Int63, mach.int.Refint63, ref.Ref
-  use import list.List, list.Length as L, list.Nth, list.Append, option.Option
+  use import mach.array.Array63 as A
+  use int.Int
+  use int.ComputerDivision
+  use int.MinMax as MinMax
+  use seq.Seq
+  use seq.FoldLeft
+  use seq.FoldRight
+  use mach.int.MinMax63
+  use mach.int.Int63
+  use mach.int.Refint63
+
+  use list.List
+  use import list.Length as L
+  use list.Nth
+  use list.Append
+  use option.Option
   use import map.Map as M
-  use seq.Seq, seq.FoldLeft, seq.FoldRight
+  use ref.Ref
+  use seq.Seq
 
   use ocaml.Sys
   use ocaml.Pervasives
@@ -87,7 +100,7 @@ module Impl
   = let n_old = A.length a.data in
     if n <= a.size then
       (* shrink *)
-      if n < n_old / (of_int 4) then begin (* reallocate into a smaller array *)
+      if n < n_old / 4 then begin (* reallocate into a smaller array *)
         a.data <- A.sub a.data zero n;
         a.view <- a.view[.. to_int n] end
       else begin
@@ -96,12 +109,12 @@ module Impl
     else begin
       (* grow *)
       if n > n_old then begin (* reallocate into a larger array *)
-        let n_div2 = n / of_int 2 in
+        let n_div2 = n / 2 in
         let n' =
           if n_div2 >= n_old then
-            if max_array_length / of_int 2 >= n_div2 then n
+            if max_array_length / 2 >= n_div2 then n
             else max_array_length
-          else if max_array_length / of_int 2 >= n_old then (of_int 2) * n_old
+          else if max_array_length / 2 >= n_old then 2 * n_old
           else max_array_length in
         let a' = A.make n' a.dummy in
         A.blit a.data zero a' zero a.size;
@@ -374,7 +387,11 @@ end
 
 module Correct
 
-  use int.Int, seq.Seq, seq.OfList, list.Nth, option.Option
+  use int.Int
+  use seq.Seq
+  use seq.OfList
+  use list.Nth
+  use option.Option
 
   use Impl
 

@@ -42,8 +42,9 @@ module Impl
       (0 < 2*i + 1 < length a.view -> le a.view[i] a.view[2*i + 1]) /\
       (0 < 2*i + 2 < length a.view -> le a.view[i] a.view[2*i + 2])
 
-    val ghost constant empty_bag : bag elt
-      ensures { card result = card (empty_bag: bag elt) }
+    (* éventuellement ici un lemma disant
+       heap_order a ->
+       forall i. 0 < i < length a.view -> le a.view[div (i-1) 2] a.view[i] *)
 
     type t = {
                       a : V.t elt;
