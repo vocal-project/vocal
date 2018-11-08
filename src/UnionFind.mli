@@ -25,9 +25,10 @@ val make : 'a -> 'a elem
       (* requires $ O(1) *)
       modifies uf
       ensures  not (mem e (old (dom uf)))
-      ensures  dom uf = old (dom uf) `union` {e}
+      ensures  dom uf = old (dom uf) `union` {:e:}
       ensures  rep uf = (old (rep uf))[e <- e]
       ensures  img uf = (old (img uf))[e <- v]
+
 *)
 
 (** note: in functions find, eq, and get,

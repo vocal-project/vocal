@@ -1,0 +1,255 @@
+module ZipperClient
+
+  clone import ZipperList.Sig as Z (* functor arg *)
+
+  use int.Int
+  use list.List
+  use list.Length
+  use import seq.Seq as S
+  use seq.OfList
+
+  let list_length (l: list 'a) : int
+    ensures { result = length l }
+  = let rec aux (z: t 'a) : int
+      requires { S.(==) z.seq l }
+      variant  { S.length z.seq - z.idx }
+      ensures  { result = S.length z.seq - z.idx }
+    = if Z.is_focused z then 1 + aux (Z.move_right z) else 0
+    in aux (Z.make l)
+
+end
+
+module ZipperType
+
+  use import seq.Seq as S
+  use list.List
+  use list.RevAppend
+  use list.Reverse
+  use seq.OfList
+  use int.Int
+  use mach.peano.Peano
+
+  type t 'a = {
+    ghost seq: seq 'a;
+    ghost idx: int;
+         left: list 'a;
+        right: list 'a;
+          len: Peano.t;
+  } invariant { rev_append left right == seq }
+    invariant { idx = length left }
+    invariant { len.Peano.v = S.length seq }
+    by { seq = empty; idx = 0; left = Nil; right = Nil; len = Peano.zero; }
+
+  let lemma zipper_left (z: t 'a)
+    ensures { z.seq[.. z.idx] == reverse z.left }
+  = assert { z.seq = reverse z.left ++ z.right }
+
+  let lemma zipper_right (z: t 'a)
+    ensures { z.seq[z.idx ..] == z.right }
+  = of_list_app (reverse z.left) z.right
+
+  lemma of_list_cons: forall ll: list 'a, x: 'a.
+    let l = Cons x ll in let s = of_list l in
+    ll == s[1 ..]
+
+end
+
+module Impl
+
+  use list.List
+  use list.Length
+  use list.Reverse
+  use list.RevAppend
+  use import list.Append as L
+  use import seq.Seq as S
+  use list.Length
+  use seq.OfList
+  use int.Int
+
+  use mach.peano.Peano
+
+  type t 'a = {
+    ghost seq: seq 'a;
+    ghost idx: int;
+         left: list 'a;
+        right: list 'a;
+          len: Peano.t;
+  } invariant { rev_append left right == seq }
+    invariant { idx = length left }
+    invariant { len.Peano.v = S.length seq }
+    by { seq = empty; idx = 0; left = Nil; right = Nil; len = Peano.zero; }
+
+  let lemma zipper_left (z: t 'a)
+    ensures { z.seq[.. z.idx] == reverse z.left }
+  = assert { z.seq = reverse z.left ++ z.right }
+
+  let lemma zipper_right (z: t 'a)
+    ensures { z.seq[z.idx ..] == z.right }
+  = of_list_app (reverse z.left) z.right
+
+  lemma of_list_cons: forall ll: list 'a, x: 'a.
+    let l = Cons x ll in let s = of_list l in
+    ll == s[1 ..]
+
+  let empty () : t 'a
+    ensures { result.seq == empty }
+    ensures { result.idx = 0 } (* could be deduced from invariant *)
+  = { seq = empty; idx = 0; left = Nil; right = Nil; len = Peano.zero }
+
+  let is_empty (z: t 'a) : bool
+    returns { r -> r <-> z.seq = empty }
+  = match z.left, z.right with
+    | Nil, Nil -> true
+    | _        -> false
+    end
+
+  let to_list (z: t 'a) : list 'a
+    returns { r -> z.seq = r }
+  = rev_append z.left z.right
+
+  let rec peano_length (l: list 'a) : Peano.t
+    ensures { result.Peano.v = length l }
+    variant { l }
+  = match l with
+    | Nil      -> Peano.zero
+    | Cons _ s -> Peano.succ (peano_length s) end
+
+  let make (l: list 'a) : t 'a
+    returns { r -> r.seq = l }
+    returns { r -> r.idx = 0 }
+  = { seq = of_list l; idx = 0; left = Nil; right = l; len = peano_length l }
+
+  let length (z: t 'a) : Peano.t
+    (* ensures { result = S.length z.seq } *)
+    ensures { result.Peano.v = length z.left + length z.right }
+  = z.len
+
+  let move_right (z: t 'a) : t 'a
+    requires { z.idx < S.length z.seq }
+    returns  { r -> r.seq == z.seq }
+    returns  { r -> r.idx = z.idx + 1 }
+  = match z.right with
+    | Nil      -> absurd
+    | Cons x r -> { z with
+        left = Cons x z.left; right = r; idx = z.idx + 1;
+      }
+    end
+
+  let insert_right (x: 'a) (z: t 'a) : t 'a
+    ensures { result.seq == z.seq[.. z.idx] ++ cons x z.seq[z.idx ..] }
+    ensures { result.idx = z.idx }
+  = { z with
+        right = Cons x z.right;
+        seq = z.seq[.. z.idx] ++ cons x z.seq[z.idx ..];
+        len = Peano.succ z.len; }
+
+  let remove_right (z: t 'a) : t 'a
+    requires { z.idx < S.length z.seq }
+    ensures  { result.seq == z.seq[.. z.idx] ++ z.seq[z.idx + 1 ..] }
+    ensures  { result.idx = z.idx }
+  = match z.right with
+    | Nil      -> absurd
+    | Cons _ r ->
+      assert { match z.right with
+        | Nil -> false
+        | Cons _ r -> r == z.seq[z.idx + 1 ..]
+        end };
+      { z with
+          right = r; seq = z.seq[.. z.idx] ++ z.seq[z.idx + 1 ..];
+          len = Peano.pred z.len; }
+    end
+
+  let move_all_right (z: t 'a) : t 'a
+    ensures { result.seq == z.seq }
+    ensures { result.idx = S.length z.seq }
+  = let l = rev_append z.right z.left in
+    { left = l; right = Nil; len = z.len;
+      seq = of_list (reverse l); idx = L.length l; }
+
+  let move_left (z: t 'a) : t 'a
+    requires { 0 < z.idx }
+    returns  { r -> r.seq == z.seq }
+    returns  { r -> r.idx = z.idx - 1 }
+  = match z.left with
+    | Nil      -> absurd
+    | Cons x l -> { z with right = Cons x z.right; left = l; idx = z.idx - 1 }
+    end
+
+  let insert_left (x: 'a) (z: t 'a) : t 'a
+    ensures { result.seq == snoc z.seq[.. z.idx] x ++ z.seq[z.idx ..] }
+    ensures { result.idx = z.idx + 1 }
+  = of_list_snoc z.left x; (* lemma instantiation *)
+    { z with
+        left = Cons x z.left;
+        seq = snoc z.seq[.. z.idx] x ++ z.seq[z.idx ..];
+        idx = z.idx + 1;
+        len = Peano.succ z.len;
+    }
+
+  let remove_left (z: t 'a) : t 'a
+    requires { 0 < z.idx }
+    ensures  { result.seq == z.seq[.. z.idx-1] ++ z.seq[z.idx ..] }
+    ensures  { result.idx = z.idx - 1 }
+  = match z.left with
+    | Nil -> absurd
+    | Cons (ghost x) r ->
+      of_list_snoc (reverse r) x; (* lemma instantiation *)
+      assert { reverse r == z.seq [.. z.idx - 1] };
+      { z with
+          left = r; seq = z.seq[.. z.idx-1] ++ z.seq[z.idx ..];
+          len = Peano.pred z.len; idx = z.idx - 1 }
+    end
+
+  let move_all_left (z: t 'a) : t 'a
+    ensures { result.seq == z.seq }
+    ensures { result.idx = 0 }
+  = let l = rev_append z.left z.right in
+    make l
+
+  let is_focused (z: t 'a): bool
+    returns { r -> r <-> z.idx < S.length z.seq }
+  = match z.right with Nil -> false | Cons _ _ -> true end
+
+  use option.Option
+
+  let focused (z: t 'a) : option 'a
+    ensures { match result with
+              | None   -> z.idx = S.length z.seq
+              | Some x -> z.idx < S.length z.seq /\ x = z.seq[z.idx] end }
+  = match z.right with
+    | Nil -> None
+    | Cons x _ ->
+      zipper_right z; (* lemma instantiation *)
+      Some x
+    end
+
+end
+
+module ZipperCorrect
+  use ZipperType
+  use Impl
+
+  clone ZipperList.Sig with
+    type t = t,
+    val is_empty = is_empty,
+    val empty = empty,
+    val move_left = move_left,
+    val move_right = move_right,
+    val length = length,
+    val is_focused = is_focused,
+    val focused = focused,
+    val make = make,
+    val to_list = to_list,
+    val remove_right = remove_right,
+    val remove_left = remove_left,
+    val insert_right = insert_right,
+    val insert_left = insert_left,
+    val move_all_left = move_all_left,
+    val move_all_right = move_all_right
+end
+
+(*
+ * Local Variables:
+ * compile-command: "make ZipperList_impl.ide"
+ * End:
+ *)

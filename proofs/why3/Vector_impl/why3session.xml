@@ -12,7 +12,7 @@
  <proof prover="0" timelimit="5"><result status="valid" time="0.01" steps="73"/></proof>
  </goal>
  <goal name="VC create" expl="VC for create" proved="true">
- <proof prover="0" timelimit="5"><result status="valid" time="0.14" steps="392"/></proof>
+ <proof prover="0" timelimit="5"><result status="valid" time="0.03" steps="392"/></proof>
  </goal>
  <goal name="VC make" expl="VC for make" proved="true">
  <proof prover="0" timelimit="5"><result status="valid" time="0.03" steps="397"/></proof>
@@ -30,7 +30,7 @@
  <proof prover="3"><result status="valid" time="0.38"/></proof>
  </goal>
  <goal name="VC unsafe_resize" expl="VC for unsafe_resize" proved="true">
- <proof prover="3"><result status="valid" time="0.76"/></proof>
+ <proof prover="3"><result status="valid" time="0.83"/></proof>
  </goal>
  <goal name="VC resize" expl="VC for resize" proved="true">
  <proof prover="3"><result status="valid" time="0.02"/></proof>
@@ -51,10 +51,10 @@
  <proof prover="3"><result status="valid" time="0.14"/></proof>
  </goal>
  <goal name="VC append" expl="VC for append" proved="true">
- <proof prover="1"><result status="valid" time="0.15"/></proof>
+ <proof prover="1"><result status="valid" time="0.18"/></proof>
  </goal>
  <goal name="VC merge_right" expl="VC for merge_right" proved="true">
- <proof prover="1"><result status="valid" time="0.12"/></proof>
+ <proof prover="1"><result status="valid" time="0.20"/></proof>
  </goal>
  <goal name="VC copy" expl="VC for copy" proved="true">
  <proof prover="0"><result status="valid" time="0.08" steps="255"/></proof>
@@ -63,16 +63,16 @@
  <proof prover="3"><result status="valid" time="0.38"/></proof>
  </goal>
  <goal name="VC pop" expl="VC for pop" proved="true">
- <proof prover="1"><result status="valid" time="0.17"/></proof>
+ <proof prover="1"><result status="valid" time="0.14"/></proof>
  </goal>
  <goal name="VC pop_opt" expl="VC for pop_opt" proved="true">
- <proof prover="1"><result status="valid" time="0.16"/></proof>
+ <proof prover="1"><result status="valid" time="0.17"/></proof>
  </goal>
  <goal name="VC top" expl="VC for top" proved="true">
  <proof prover="0"><result status="valid" time="0.03" steps="86"/></proof>
  </goal>
  <goal name="VC top_opt" expl="VC for top_opt" proved="true">
- <proof prover="0"><result status="valid" time="0.16" steps="800"/></proof>
+ <proof prover="0"><result status="valid" time="0.18" steps="800"/></proof>
  </goal>
  <goal name="VC fold_left" expl="VC for fold_left" proved="true">
  <transf name="split_all_full" proved="true" >
@@ -86,7 +86,7 @@
   <proof prover="3"><result status="valid" time="0.04"/></proof>
   </goal>
   <goal name="VC fold_left.3" expl="loop invariant preservation" proved="true">
-  <proof prover="2"><result status="valid" time="3.27"/></proof>
+  <proof prover="2"><result status="valid" time="4.16"/></proof>
   <transf name="introduce_premises" proved="true" >
    <goal name="VC fold_left.3.0" expl="loop invariant preservation" proved="true">
    <proof prover="2"><result status="valid" time="3.98"/></proof>
@@ -113,7 +113,7 @@
   <proof prover="3"><result status="valid" time="0.04"/></proof>
   </goal>
   <goal name="VC fold_right.3" expl="loop invariant preservation" proved="true">
-  <proof prover="2"><result status="valid" time="6.29"/></proof>
+  <proof prover="2"><result status="valid" time="6.88"/></proof>
   </goal>
   <goal name="VC fold_right.4" expl="postcondition" proved="true">
   <proof prover="3"><result status="valid" time="0.04"/></proof>
@@ -124,10 +124,10 @@
  </transf>
  </goal>
  <goal name="VC map" expl="VC for map" proved="true">
- <proof prover="3"><result status="valid" time="0.80"/></proof>
+ <proof prover="3"><result status="valid" time="0.86"/></proof>
  </goal>
  <goal name="VC mapi" expl="VC for mapi" proved="true">
- <proof prover="3"><result status="valid" time="0.64"/></proof>
+ <proof prover="3"><result status="valid" time="0.86"/></proof>
  </goal>
 </theory>
 <theory name="Correct" proved="true">
@@ -162,7 +162,7 @@
  <proof prover="3"><result status="valid" time="0.05"/></proof>
  </goal>
  <goal name="Sig.VC set" expl="VC for set" proved="true">
- <proof prover="0"><result status="valid" time="0.14" steps="270"/></proof>
+ <proof prover="0"><result status="valid" time="0.15" steps="270"/></proof>
  </goal>
  <goal name="Sig.VC sub" expl="VC for sub" proved="true">
  <proof prover="0"><result status="valid" time="0.03" steps="149"/></proof>
@@ -171,13 +171,29 @@
  <proof prover="0"><result status="valid" time="0.04" steps="192"/></proof>
  </goal>
  <goal name="Sig.VC blit" expl="VC for blit" proved="true">
- <proof prover="0"><result status="valid" time="0.22" steps="408"/></proof>
+ <proof prover="0"><result status="valid" time="0.18" steps="408"/></proof>
  </goal>
  <goal name="Sig.VC append" expl="VC for append" proved="true">
- <proof prover="0"><result status="valid" time="0.97" steps="1363"/></proof>
+ <proof prover="0"><result status="valid" time="0.80" steps="1363"/></proof>
  </goal>
  <goal name="Sig.VC merge_right" expl="VC for merge_right" proved="true">
- <proof prover="0"><result status="valid" time="1.00" steps="1751"/></proof>
+ <transf name="split_vc" proved="true" >
+  <goal name="VC merge_right.0" expl="precondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.08"/></proof>
+  </goal>
+  <goal name="VC merge_right.1" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.12"/></proof>
+  </goal>
+  <goal name="VC merge_right.2" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.13"/></proof>
+  </goal>
+  <goal name="VC merge_right.3" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.13"/></proof>
+  </goal>
+  <goal name="VC merge_right.4" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="152"/></proof>
+  </goal>
+ </transf>
  </goal>
  <goal name="Sig.VC map" expl="VC for map" proved="true">
  <proof prover="3"><result status="valid" time="0.03"/></proof>
@@ -201,7 +217,7 @@
  <proof prover="0"><result status="valid" time="0.02" steps="194"/></proof>
  </goal>
  <goal name="Sig.VC pop_opt" expl="VC for pop_opt" proved="true">
- <proof prover="0"><result status="valid" time="0.81" steps="1327"/></proof>
+ <proof prover="0"><result status="valid" time="0.86" steps="1327"/></proof>
  </goal>
  <goal name="Sig.VC top" expl="VC for top" proved="true">
  <proof prover="3"><result status="valid" time="0.02"/></proof>

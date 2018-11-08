@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="5">
+<prover id="1" name="Alt-Ergo" version="2.2.0" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="4" name="Z3" version="4.5.0" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="5" name="CVC4" version="1.5" timelimit="1" steplimit="0" memlimit="1000"/>
+<file name="../Arrays_impl.mlw" proved="true">
+<theory name="Impl" proved="true">
+ <goal name="VC binary_search" expl="VC for binary_search" proved="true">
+ <proof prover="4"><result status="valid" time="0.11"/></proof>
+ </goal>
+ <goal name="VC binary_search_left" expl="VC for binary_search_left" proved="true">
+ <proof prover="4"><result status="valid" time="0.10"/></proof>
+ </goal>
+ <goal name="VC unsafe_binary_search_right" expl="VC for unsafe_binary_search_right" proved="true">
+ <proof prover="4"><result status="valid" time="0.11"/></proof>
+ </goal>
+ <goal name="VC binary_search_right" expl="VC for binary_search_right" proved="true">
+ <proof prover="1"><result status="valid" time="0.12" steps="412"/></proof>
+ <proof prover="5"><result status="valid" time="0.06"/></proof>
+ </goal>
+ <goal name="VC permut_rot" expl="VC for permut_rot" proved="true">
+ <transf name="split_vc" proved="true" >
+  <goal name="VC permut_rot.0" expl="loop invariant init" proved="true">
+  <proof prover="5"><result status="valid" time="0.11"/></proof>
+  </goal>
+  <goal name="VC permut_rot.1" expl="loop invariant preservation" proved="true">
+  <transf name="split_all_full" proved="true" >
+   <goal name="VC permut_rot.1.0" expl="loop invariant preservation" proved="true">
+   <proof prover="5"><result status="valid" time="1.38"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="VC permut_rot.2" expl="postcondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.14"/></proof>
+  </goal>
+  <goal name="VC permut_rot.3" expl="postcondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.06"/></proof>
+  </goal>
+  <goal name="VC permut_rot.4" expl="postcondition" proved="true">
+  <proof prover="1" timelimit="1"><result status="valid" time="0.13" steps="399"/></proof>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="VC binary_sort" expl="VC for binary_sort" proved="true">
+ <transf name="split_all_full" proved="true" >
+  <goal name="VC binary_sort.0" expl="integer overflow" proved="true">
+  <proof prover="5"><result status="valid" time="0.12"/></proof>
+  </goal>
+  <goal name="VC binary_sort.1" expl="integer overflow" proved="true">
+  <proof prover="5"><result status="valid" time="0.12"/></proof>
+  </goal>
+  <goal name="VC binary_sort.2" expl="integer overflow" proved="true">
+  <proof prover="5"><result status="valid" time="0.13"/></proof>
+  </goal>
+  <goal name="VC binary_sort.3" expl="loop invariant init" proved="true">
+  <proof prover="5"><result status="valid" time="0.18"/></proof>
+  </goal>
+  <goal name="VC binary_sort.4" expl="loop invariant init" proved="true">
+  <proof prover="5"><result status="valid" time="0.20"/></proof>
+  </goal>
+  <goal name="VC binary_sort.5" expl="index in array bounds" proved="true">
+  <proof prover="5"><result status="valid" time="0.14"/></proof>
+  </goal>
+  <goal name="VC binary_sort.6" expl="precondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.09"/></proof>
+  </goal>
+  <goal name="VC binary_sort.7" expl="precondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.14"/></proof>
+  </goal>
+  <goal name="VC binary_sort.8" expl="precondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.22"/></proof>
+  </goal>
+  <goal name="VC binary_sort.9" expl="integer overflow" proved="true">
+  <proof prover="5"><result status="valid" time="0.19"/></proof>
+  </goal>
+  <goal name="VC binary_sort.10" expl="integer overflow" proved="true">
+  <proof prover="5"><result status="valid" time="0.18"/></proof>
+  </goal>
+  <goal name="VC binary_sort.11" expl="precondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.15"/></proof>
+  </goal>
+  <goal name="VC binary_sort.12" expl="precondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.16"/></proof>
+  </goal>
+  <goal name="VC binary_sort.13" expl="index in array bounds" proved="true">
+  <proof prover="5"><result status="valid" time="0.16"/></proof>
+  </goal>
+  <goal name="VC binary_sort.14" expl="precondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.18"/></proof>
+  </goal>
+  <goal name="VC binary_sort.15" expl="precondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.22"/></proof>
+  </goal>
+  <goal name="VC binary_sort.16" expl="precondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.24"/></proof>
+  </goal>
+  <goal name="VC binary_sort.17" expl="precondition" proved="true">
+  <transf name="introduce_premises" proved="true" >
+   <goal name="VC binary_sort.17.0" expl="precondition" proved="true">
+   <transf name="assert" proved="true" arg1="((elts a1)[i + 1] = (elts a2)[i])">
+    <goal name="VC binary_sort.17.0.0" expl="asserted formula" proved="true">
+    <proof prover="1" timelimit="1"><result status="valid" time="0.02" steps="56"/></proof>
+    </goal>
+    <goal name="VC binary_sort.17.0.1" expl="precondition" proved="true">
+    <proof prover="5"><result status="valid" time="0.23"/></proof>
+    </goal>
+   </transf>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="VC binary_sort.18" expl="precondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.23"/></proof>
+  </goal>
+  <goal name="VC binary_sort.19" expl="loop invariant preservation" proved="true">
+  <proof prover="5" timelimit="10" memlimit="4000"><result status="valid" time="5.96"/></proof>
+  </goal>
+  <goal name="VC binary_sort.20" expl="loop invariant preservation" proved="true">
+  <proof prover="5" timelimit="10" memlimit="4000"><result status="valid" time="4.74"/></proof>
+  </goal>
+  <goal name="VC binary_sort.21" expl="postcondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.17"/></proof>
+  </goal>
+  <goal name="VC binary_sort.22" expl="postcondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.09"/></proof>
+  </goal>
+  <goal name="VC binary_sort.23" expl="out of loop bounds" proved="true">
+  <proof prover="5"><result status="valid" time="0.13"/></proof>
+  </goal>
+  <goal name="VC binary_sort.24" expl="postcondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.15"/></proof>
+  </goal>
+  <goal name="VC binary_sort.25" expl="postcondition" proved="true">
+  <proof prover="5"><result status="valid" time="0.16"/></proof>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="VC knuth_shuffle" expl="VC for knuth_shuffle" proved="true">
+ <proof prover="5"><result status="valid" time="0.79"/></proof>
+ </goal>
+</theory>
+<theory name="Correct" proved="true">
+ <goal name="Sig.VC binary_search" expl="VC for binary_search" proved="true">
+ <proof prover="1"><result status="valid" time="0.03" steps="24"/></proof>
+ <proof prover="5"><result status="valid" time="0.18"/></proof>
+ </goal>
+ <goal name="Sig.VC binary_search_left" expl="VC for binary_search_left" proved="true">
+ <proof prover="1"><result status="valid" time="0.16" steps="470"/></proof>
+ <proof prover="5"><result status="valid" time="0.11"/></proof>
+ </goal>
+ <goal name="Sig.VC unsafe_binary_search_right" expl="VC for unsafe_binary_search_right" proved="true">
+ <proof prover="1"><result status="valid" time="0.13" steps="476"/></proof>
+ <proof prover="5"><result status="valid" time="0.10"/></proof>
+ </goal>
+ <goal name="Sig.VC binary_search_right" expl="VC for binary_search_right" proved="true">
+ <proof prover="1"><result status="valid" time="0.04" steps="164"/></proof>
+ <proof prover="5"><result status="valid" time="0.16"/></proof>
+ </goal>
+ <goal name="Sig.VC binary_sort" expl="VC for binary_sort" proved="true">
+ <proof prover="1"><result status="valid" time="0.03" steps="14"/></proof>
+ <proof prover="5"><result status="valid" time="0.08"/></proof>
+ </goal>
+ <goal name="Sig.VC knuth_shuffle" expl="VC for knuth_shuffle" proved="true">
+ <proof prover="1"><result status="valid" time="0.01" steps="6"/></proof>
+ <proof prover="5"><result status="valid" time="0.03"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>

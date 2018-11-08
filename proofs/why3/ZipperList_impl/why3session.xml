@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="5">
+<prover id="3" name="Alt-Ergo" version="2.2.0" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="4" name="CVC4" version="1.5" timelimit="1" steplimit="0" memlimit="1000"/>
+<file name="../ZipperList_impl.mlw" proved="true">
+<theory name="ZipperClient" proved="true">
+ <goal name="VC list_length" expl="VC for list_length" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="134"/></proof>
+ </goal>
+</theory>
+<theory name="ZipperType" proved="true">
+ <goal name="VC t" expl="VC for t" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="40"/></proof>
+ </goal>
+ <goal name="VC zipper_left" expl="VC for zipper_left" proved="true">
+ <proof prover="3"><result status="valid" time="0.08" steps="383"/></proof>
+ </goal>
+ <goal name="VC zipper_right" expl="VC for zipper_right" proved="true">
+ <proof prover="3"><result status="valid" time="0.07" steps="313"/></proof>
+ </goal>
+ <goal name="of_list_cons" proved="true">
+ <proof prover="3"><result status="valid" time="0.02" steps="123"/></proof>
+ </goal>
+</theory>
+<theory name="Impl" proved="true">
+ <goal name="VC t" expl="VC for t" proved="true">
+ <proof prover="3"><result status="valid" time="0.02" steps="34"/></proof>
+ </goal>
+ <goal name="VC zipper_left" expl="VC for zipper_left" proved="true">
+ <proof prover="3"><result status="valid" time="0.08" steps="346"/></proof>
+ </goal>
+ <goal name="VC zipper_right" expl="VC for zipper_right" proved="true">
+ <proof prover="3"><result status="valid" time="0.09" steps="280"/></proof>
+ </goal>
+ <goal name="of_list_cons" proved="true">
+ <proof prover="3"><result status="valid" time="0.04" steps="119"/></proof>
+ </goal>
+ <goal name="VC empty" expl="VC for empty" proved="true">
+ <proof prover="3"><result status="valid" time="0.00" steps="84"/></proof>
+ </goal>
+ <goal name="VC is_empty" expl="VC for is_empty" proved="true">
+ <proof prover="3"><result status="valid" time="0.05" steps="231"/></proof>
+ </goal>
+ <goal name="VC to_list" expl="VC for to_list" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="22"/></proof>
+ </goal>
+ <goal name="VC peano_length" expl="VC for peano_length" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="58"/></proof>
+ </goal>
+ <goal name="VC make" expl="VC for make" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="65"/></proof>
+ </goal>
+ <goal name="VC length" expl="VC for length" proved="true">
+ <proof prover="3"><result status="valid" time="0.02" steps="20"/></proof>
+ </goal>
+ <goal name="VC move_right" expl="VC for move_right" proved="true">
+ <proof prover="3"><result status="valid" time="0.04" steps="101"/></proof>
+ </goal>
+ <goal name="VC insert_right" expl="VC for insert_right" proved="true">
+ <proof prover="4"><result status="valid" time="0.24"/></proof>
+ </goal>
+ <goal name="VC remove_right" expl="VC for remove_right" proved="true">
+ <transf name="split_all_full" proved="true" >
+  <goal name="VC remove_right.0" expl="unreachable point" proved="true">
+  <proof prover="4"><result status="valid" time="0.14"/></proof>
+  </goal>
+  <goal name="VC remove_right.1" expl="assertion" proved="true">
+  <transf name="split_all_full" proved="true" >
+   <goal name="VC remove_right.1.0" expl="VC for remove_right" proved="true">
+   <proof prover="4"><result status="valid" time="0.06"/></proof>
+   </goal>
+   <goal name="VC remove_right.1.1" expl="VC for remove_right" proved="true">
+   <proof prover="4"><result status="valid" time="0.60"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="VC remove_right.2" expl="precondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.19"/></proof>
+  </goal>
+  <goal name="VC remove_right.3" expl="precondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.19"/></proof>
+  </goal>
+  <goal name="VC remove_right.4" expl="precondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.21"/></proof>
+  </goal>
+  <goal name="VC remove_right.5" expl="precondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.13"/></proof>
+  </goal>
+  <goal name="VC remove_right.6" expl="precondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.22"/></proof>
+  </goal>
+  <goal name="VC remove_right.7" expl="postcondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.11"/></proof>
+  </goal>
+  <goal name="VC remove_right.8" expl="postcondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.07"/></proof>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="VC move_all_right" expl="VC for move_all_right" proved="true">
+ <proof prover="3"><result status="valid" time="0.13" steps="211"/></proof>
+ </goal>
+ <goal name="VC move_left" expl="VC for move_left" proved="true">
+ <proof prover="3"><result status="valid" time="0.03" steps="102"/></proof>
+ </goal>
+ <goal name="VC insert_left" expl="VC for insert_left" proved="true">
+ <proof prover="4"><result status="valid" time="0.29"/></proof>
+ </goal>
+ <goal name="VC remove_left" expl="VC for remove_left" proved="true">
+ <transf name="split_all_full" proved="true" >
+  <goal name="VC remove_left.0" expl="unreachable point" proved="true">
+  <proof prover="4"><result status="valid" time="0.06"/></proof>
+  </goal>
+  <goal name="VC remove_left.1" expl="assertion" proved="true">
+  <proof prover="3" timelimit="1"><result status="valid" time="0.25" steps="885"/></proof>
+  </goal>
+  <goal name="VC remove_left.2" expl="precondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.65"/></proof>
+  </goal>
+  <goal name="VC remove_left.3" expl="precondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.56"/></proof>
+  </goal>
+  <goal name="VC remove_left.4" expl="precondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.13"/></proof>
+  </goal>
+  <goal name="VC remove_left.5" expl="precondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.16"/></proof>
+  </goal>
+  <goal name="VC remove_left.6" expl="precondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.20"/></proof>
+  </goal>
+  <goal name="VC remove_left.7" expl="postcondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.14"/></proof>
+  </goal>
+  <goal name="VC remove_left.8" expl="postcondition" proved="true">
+  <proof prover="4"><result status="valid" time="0.04"/></proof>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="VC move_all_left" expl="VC for move_all_left" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ </goal>
+ <goal name="VC is_focused" expl="VC for is_focused" proved="true">
+ <proof prover="3"><result status="valid" time="0.03" steps="71"/></proof>
+ </goal>
+ <goal name="VC focused" expl="VC for focused" proved="true">
+ <proof prover="3"><result status="valid" time="0.07" steps="497"/></proof>
+ </goal>
+</theory>
+<theory name="ZipperCorrect" proved="true">
+ <goal name="Sig.VC t" expl="VC for t" proved="true">
+ <proof prover="3"><result status="valid" time="0.04" steps="76"/></proof>
+ </goal>
+ <goal name="Sig.VC empty" expl="VC for empty" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ </goal>
+ <goal name="Sig.VC is_empty" expl="VC for is_empty" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="50"/></proof>
+ </goal>
+ <goal name="Sig.VC length" expl="VC for length" proved="true">
+ <proof prover="3"><result status="valid" time="0.02" steps="46"/></proof>
+ </goal>
+ <goal name="Sig.VC to_list" expl="VC for to_list" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="42"/></proof>
+ </goal>
+ <goal name="Sig.VC make" expl="VC for make" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="44"/></proof>
+ </goal>
+ <goal name="Sig.VC move_left" expl="VC for move_left" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ </goal>
+ <goal name="Sig.VC insert_left" expl="VC for insert_left" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ </goal>
+ <goal name="Sig.VC remove_left" expl="VC for remove_left" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ </goal>
+ <goal name="Sig.VC move_all_left" expl="VC for move_all_left" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ </goal>
+ <goal name="Sig.VC move_right" expl="VC for move_right" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ </goal>
+ <goal name="Sig.VC insert_right" expl="VC for insert_right" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ </goal>
+ <goal name="Sig.VC remove_right" expl="VC for remove_right" proved="true">
+ <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ </goal>
+ <goal name="Sig.VC move_all_right" expl="VC for move_all_right" proved="true">
+ <proof prover="3"><result status="valid" time="0.00" steps="10"/></proof>
+ </goal>
+ <goal name="Sig.VC is_focused" expl="VC for is_focused" proved="true">
+ <proof prover="3"><result status="valid" time="0.00" steps="10"/></proof>
+ </goal>
+ <goal name="Sig.VC focused" expl="VC for focused" proved="true">
+ <proof prover="3"><result status="valid" time="0.02" steps="86"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>

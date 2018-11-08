@@ -59,3 +59,6 @@ _whizzy*
 *.fdb_latexmk
 *.fls
 .load.el
+
+#dune
+vocal.install

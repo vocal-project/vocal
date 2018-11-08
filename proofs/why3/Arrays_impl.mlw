@@ -1,0 +1,157 @@
+
+module Impl
+
+  use int.Int
+  use mach.int.Refint63
+  use mach.int.Int63
+  use seq.Seq
+  use seq.Occ
+  use mach.array.Array63
+  use ocaml.Pervasives
+  use vocal.Order
+
+  let rec binary_search (cmp: 'a -> 'a -> int63)
+                        (a: array 'a) (fromi toi: int63) (v: 'a) : int63
+    requires { is_pre_order cmp }
+    requires { 0 <= fromi <= toi <= length a }
+    requires { forall i j. fromi <= i <= j < toi -> cmp a[i] a[j] <= 0 }
+    ensures  { fromi <= result < toi /\ cmp a[result] v = 0 }
+    raises   { Not_found -> forall i. fromi <= i < toi -> cmp a[i] v <> 0 }
+    variant  { toi - fromi }
+  =
+    if fromi >= toi then
+      raise Not_found
+    else begin
+      let mid = fromi + (toi - fromi) / 2 in
+      assert { fromi <= mid < toi };
+      let c = cmp a[mid] v in
+      if      c < zero then binary_search cmp a (mid + one) toi v
+      else if c > zero then binary_search cmp a fromi       mid v
+      else mid
+   end
+
+  let rec binary_search_left (cmp: 'a -> 'a -> int63)
+                             (a: array 'a) (fromi toi: int63) (v: 'a) : int63
+    requires { is_pre_order cmp }
+    requires { 0 <= fromi <= toi <= length a }
+    requires { forall i j. fromi <= i <= j < toi -> cmp a[i] a[j] <= 0 }
+    ensures  { fromi <= result <= toi }
+    ensures  { forall i. fromi  <= i < result -> cmp a[i] v <  0 }
+    ensures  { forall i. result <= i < toi    -> cmp a[i] v >=  0 }
+    variant  { toi - fromi }
+  =
+    if fromi >= toi then
+      toi
+    else begin
+      let mid = fromi + (toi - fromi) / 2 in
+      assert { fromi <= mid < toi };
+      let c = cmp a[mid] v in
+      if   c < zero then binary_search_left cmp a (mid + one) toi v
+                    else binary_search_left cmp a fromi       mid v
+   end
+
+  let rec unsafe_binary_search_right (cmp: 'a -> 'a -> int63)
+                              (a: array 'a) (fromi toi: int63) (v: 'a) : int63
+    requires { is_pre_order cmp }
+    requires { 0 <= fromi <= toi <= length a }
+    requires { forall i j. fromi <= i <= j < toi -> cmp a[i] a[j] <= 0 }
+    ensures  { fromi <= result <= toi }
+    ensures  { forall i. fromi  <= i < result -> cmp a[i] v <= 0 }
+    ensures  { forall i. result <= i < toi    -> cmp a[i] v >  0 }
+    variant  { toi - fromi }
+  =
+    if fromi >= toi then
+      toi
+    else begin
+      let mid = fromi + (toi - fromi) / 2 in
+      assert { fromi <= mid < toi };
+      let c = cmp a[mid] v in
+      if   c <= zero then unsafe_binary_search_right cmp a (mid + one) toi v
+                     else unsafe_binary_search_right cmp a fromi       mid v
+   end
+
+  let binary_search_right (cmp: 'a -> 'a -> int63)
+                          (a: array 'a) (fromi toi: int63) (v: 'a) : int63
+    requires { is_pre_order cmp }
+    raises   { Invalid_argument -> not (0 <= fromi <= toi <= length a) }
+    requires { forall i j. fromi <= i <= j < toi -> cmp a[i] a[j] <= 0 }
+    ensures  { fromi <= result <= toi }
+    ensures  { forall i. fromi  <= i < result -> cmp a[i] v <= 0 }
+    ensures  { forall i. result <= i < toi    -> cmp a[i] v >  0 }
+  =
+    if not (zero <= fromi <= toi <= length a) then raise Invalid_argument;
+    unsafe_binary_search_right cmp a fromi toi v
+
+  use mach.array.Array63Permut
+
+  (* a right rotation of a[mid..k] is a permutation *)
+  let lemma permut_rot (a1 a2: array 'a) (mid k: int) : unit
+    requires { 0 <= mid <= k < length a1 = length a2 }
+    requires { forall i. 0   <= i < mid       -> a2[i]   = a1[i] }
+    requires {                                   a2[mid] = a1[k] }
+    requires { forall i. mid <= i < k         -> a2[i+1] = a1[i] }
+    requires { forall i. k   <  i < length a1 -> a2[i]   = a1[i] }
+    ensures  { permut_sub a1 a2 mid (k + 1) }
+  = let m1 = a1.elts in
+    let m2 = a2.elts in
+    let lemma occ (x: 'a) =
+      ensures  { occ x m1 mid (k+1) = occ x m2 mid (k+1) }
+      for i = mid to k - 1 do
+        invariant { occ x m1 mid i = occ x m2 (mid+1) (i+1) }
+        ()
+      done in
+    ()
+
+  let binary_sort (cmp: 'a -> 'a -> int63) (a: array 'a) (fromi toi: int63)
+    requires { is_pre_order cmp }
+    requires { 0 <= fromi <= toi <= length a }
+    ensures  { forall i j. fromi <= i <= j < toi -> cmp a[i] a[j] <= 0 }
+    ensures  { permut_sub (old a) a fromi toi }
+  = if fromi < toi - 1 then
+    for k = fromi + 1 to toi - 1 do
+      invariant { forall i j. fromi <= i <= j < k -> cmp a[i] a[j] <= 0 }
+      invariant { permut_sub (old a) a fromi toi }
+      let v = a[k] in
+      let mid = unsafe_binary_search_right cmp a fromi k v in
+      label L in
+      Array63.self_blit a mid (mid + one) (k - mid);
+      a[mid] <- v;
+      permut_rot (pure { a at L }) {a} (to_int mid) (to_int k)
+    done
+
+  use mach.int.Random63
+  use mach.array.Array63Swap
+
+  let knuth_shuffle (a: array 'a) : unit
+    writes  { a, Random63.s }
+    ensures { permut_all (old a) a }
+  = let i = ref zero in
+    while !i < length a do
+      invariant { 0 <= !i <= length a }
+      variant   { length a - !i }
+      invariant { permut_all (old a) a }
+      let j = random_int63 (!i + one) in
+      swap a !i j;
+      incr i
+    done
+
+end
+
+module Correct
+
+  use Impl
+  clone Arrays.Sig with
+    val binary_search              = binary_search,
+    val binary_search_left         = binary_search_left,
+    val binary_search_right        = binary_search_right,
+    val unsafe_binary_search_right = unsafe_binary_search_right,
+    val binary_sort                = binary_sort,
+    val knuth_shuffle              = knuth_shuffle
+
+end
+
+(*
+Local Variables:
+compile-command: "make Arrays_impl.ide"
+End:
+*)
