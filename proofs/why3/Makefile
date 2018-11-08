@@ -2,7 +2,7 @@
 
 SRC=../../src/
 
-WHY3=Vector UnionFind PriorityQueueVector Arrays ZipperList
+WHY3=Vector UnionFind PriorityQueueVector Arrays ZipperList PairingHeap
 
 WHY3ML=$(addsuffix .ml, $(WHY3))
 WHY3IMPL=$(addsuffix _impl, $(WHY3))
