@@ -23,4 +23,7 @@
 (*@ function cons: 'a -> 'a list -> 'a list *)
 (*@ axiom cons_def: forall x: 'a, l: list 'a. cons x l == Seq.cons x l *)
 
-(* rev, init?, append, 
+(*@ function cons (x: 'a) (l: 'a list) : 'a list =
+      Seq.cons x l *)
+
+(* rev, init?, append, *)

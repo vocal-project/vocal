@@ -13,6 +13,20 @@
 
 (* FIXME create? *)
 
+(* @ val create : int -> (int -> 'a) -> 'a seq *)
+
+(*@ function create : integer -> (integer -> 'a) -> 'a seq *)
+(*@ axiom create_len : forall n, f. n >= 0 ->
+      length (create n f) = n *)
+(*@ axiom create_def : forall n, f. n >= 0 ->
+      forall i. 0 <= i < n -> (create n f)[i] = f i *)
+
+(* TODO : DO WE WANT SOMETHING LIKE THIS ? *)
+(* @ function create (n: integer) (f: int -> 'a) : 'a seq *)
+(* @   requires 0 <= n
+       ensures  length result = n
+       ensures  forall i. 0 <= i < n -> result[i] = f i *)
+
 (*@ function empty: 'a seq *)
 
 (*@ function ([<-]): 'a seq -> integer -> 'a -> 'a seq *)
@@ -29,8 +43,30 @@
 (*@ function (++): 'a seq -> 'a seq -> 'a seq *)
 (* + name append? *)
 
+(*@ predicate mem (s: 'a seq) (x: 'a) :=
+      exists i. 0 <= i < length s && s[i] = x *)
+
+(*@ predicate distinct (s: 'a seq) :=
+      forall i j. 0 <= i < length s -> 0 <= j < length s ->
+      i <> j -> s[i] <> s[j] *)
+
+(*@ function rev (s: 'a seq) : 'a seq =
+      create (length s) (fun i -> s[length s - 1 - i]) *)
+
+(*@ function map (f: 'a -> 'b) (s: seq 'a) : 'b seq =
+      create (length s) (fun i -> f s[i]) *)
+
+(*@ function fold_left (f: 'a -> 'b -> 'a) (acc: 'a) (s: seq 'b) : 'a =
+      if length s = 0 then acc
+      else fold_left f (f acc s[0]) s[1 ..] *)
+
+(*@ function fold_right (f: 'a -> 'b -> 'b) (s: 'a seq) (acc: 'b) : 'b =
+      if length s = 0 then acc
+      else f s[0] (fold_right f s[1 ..] acc) *)
+
+(*@ function hd (s: 'a seq) : 'a = s[0] *)
+(*@ function tl (s: 'a seq) : 'a seq = s[1 ..] *)
+
 (* hd, tl, rev, mem *)
 (* higher-order: map, fold, exists, forall, find, partition *)
 (* assoc, mem_assoc? split, combine? *)
-
-
