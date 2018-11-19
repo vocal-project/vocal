@@ -36,27 +36,27 @@
 
 (* FIXME singleton? *)
 
-(*@ function ([..]): 'a seq -> integer -> integer -> 'a seq *)
+(*@ function ([_.._]): 'a seq -> integer -> integer -> 'a seq *)
 (*@ function ([_..]): 'a seq -> integer -> 'a seq *)
 (*@ function ([.._]): 'a seq -> integer -> 'a seq *)
 
 (*@ function (++): 'a seq -> 'a seq -> 'a seq *)
 (* + name append? *)
 
-(*@ predicate mem (s: 'a seq) (x: 'a) :=
+(*@ predicate mem (s: 'a seq) (x: 'a) =
       exists i. 0 <= i < length s && s[i] = x *)
 
-(*@ predicate distinct (s: 'a seq) :=
+(*@ predicate distinct (s: 'a seq) =
       forall i j. 0 <= i < length s -> 0 <= j < length s ->
       i <> j -> s[i] <> s[j] *)
 
 (*@ function rev (s: 'a seq) : 'a seq =
       create (length s) (fun i -> s[length s - 1 - i]) *)
 
-(*@ function map (f: 'a -> 'b) (s: seq 'a) : 'b seq =
+(*@ function map (f: 'a -> 'b) (s: 'a seq) : 'b seq =
       create (length s) (fun i -> f s[i]) *)
 
-(*@ function fold_left (f: 'a -> 'b -> 'a) (acc: 'a) (s: seq 'b) : 'a =
+(*@ function fold_left (f: 'a -> 'b -> 'a) (acc: 'a) (s: 'b seq) : 'a =
       if length s = 0 then acc
       else fold_left f (f acc s[0]) s[1 ..] *)
 
