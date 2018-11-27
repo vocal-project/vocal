@@ -254,11 +254,6 @@ val iter : ('a -> unit) -> 'a t -> unit
    [f (get a 0); f (get a 1); ...; f (get a (length a - 1))]. *)
 (*@ iter f a
       equivalent "for i = 0 to length a - 1 do f (get a i) done" *)
-(*
-      equivalent {| for i = 0 to length a - 1 do f (get a i) done |}
-      equivalent ( for i = 0 to length a - 1 do f (get a i) done )
-      equivalent to begin for i = 0 to length a - 1 do f (get a i) done end
-*)
 
 val iteri : (int -> 'a -> unit) -> 'a t -> unit
 (** Same as {!Vector.iter}, but the
