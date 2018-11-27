@@ -38,4 +38,7 @@ dev-repo: "https://github.com/vocal-project/vocal"
 build: [
   [ "dune" "build" "-p" name ]
 ]
-depends: [ "dune" {build} ]
+depends: [
+  "dune" {build}
+  "seq"
+]
