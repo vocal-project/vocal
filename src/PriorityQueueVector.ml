@@ -1,3 +1,13 @@
+(**************************************************************************)
+(*                                                                        *)
+(*  VOCaL -- A Verified OCaml Library                                     *)
+(*                                                                        *)
+(*  Copyright (c) 2018 The VOCaL Project                                  *)
+(*                                                                        *)
+(*  This software is free software, distributed under the MIT license     *)
+(*  (as described in file LICENSE enclosed).                              *)
+(**************************************************************************)
+
 module Make(X: sig type t
   val dummy : t
   val compare : t -> t -> int end) =
