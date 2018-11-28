@@ -32,26 +32,23 @@ let init ~dummy:(dummy: 'a) (n: int) (f: (int) -> 'a) : 'a t =
   let a = make  n dummy in
   begin
     let o = n - 1 in
-    let o1 = 0 in for i = o1 to o do let o2 = a.data in o2.(i) <- (f i) done;
-    a
+    let o1 = 0 in for i = o1 to o do (a.data).(i) <- (f i) done; a
   end
 
 let length (a: 'a t) : int = a.size
 
 let get (a: 'a t) (i1: int) : 'a = (a.data).(i1)
 
-let set (a: 'a t) (n: int) (x: 'a) : unit = let o = a.data in o.(n) <- x
+let set (a: 'a t) (n: int) (x: 'a) : unit = (a.data).(n) <- x
 
 let unsafe_resize (a: 'a t) (n: int) : unit =
   let n_old = Array.length (a.data) in
   begin
     if n <= (a.size) then begin
-      if n < (n_old / 4) then begin
-        let o = Array.sub (a.data) 0 n in a.data <- o end
+      if n < (n_old / 4) then begin a.data <- Array.sub (a.data) 0 n end
       else
       begin
-        let o = a.dummy in
-        let o1 = (a.size) - n in let o2 = a.data in Array.fill o2 n o1 o end end
+        Array.fill (a.data) n ((a.size) - n) (a.dummy) end end
     else
     begin
       if n > n_old
@@ -90,10 +87,10 @@ let sub (a: 'a t) (ofs: int) (n: int) : 'a t =
   { dummy = (a.dummy); size = n; data = (Array.sub (a.data) ofs n) }
 
 let fill (a: 'a t) (ofs: int) (n: int) (x: 'a) : unit =
-  let o = a.data in Array.fill o ofs n x
+  Array.fill (a.data) ofs n x
 
 let blit (a1: 'a t) (ofs1: int) (a2: 'a t) (ofs2: int) (n: int) : unit =
-  let o = a2.data in Array.blit (a1.data) ofs1 o ofs2 n
+  Array.blit (a1.data) ofs1 (a2.data) ofs2 n
 
 let append (a1: 'a t) (a2: 'a t) : 'a t =
   let n1 = length a1 in
@@ -111,8 +108,7 @@ let copy (a1: 'a t) : 'a t =
   { dummy = (a1.dummy); size = (a1.size); data = (Array.copy (a1.data)) }
 
 let push (a: 'a t) (x: 'a) : unit =
-  let n = a.size in
-  begin unsafe_resize a (n + 1); let o = a.data in o.(n) <- x end
+  let n = a.size in begin unsafe_resize a (n + 1); (a.data).(n) <- x end
 
 exception Empty
 
@@ -140,8 +136,7 @@ let fold_left (a: 'a t) (f: 'b -> ('a -> 'b)) (acc: 'b) : 'b =
   let r = ref acc in
   begin
     let o = (length a) - 1 in
-    let o1 = 0 in
-    for i1 = o1 to o do let o2 = (f (!r)) (get a i1) in r := o2 done; !r
+    let o1 = 0 in for i1 = o1 to o do r := ((f (!r)) (get a i1)) done; !r
   end
 
 let fold_right (a: 'a t) (f: 'a -> ('b -> 'b)) (acc: 'b) : 'b =
@@ -149,8 +144,8 @@ let fold_right (a: 'a t) (f: 'a -> ('b -> 'b)) (acc: 'b) : 'b =
   let r = ref acc in
   begin
     let o = 0 in
-    let o1 = n - 1 in
-    for i2 = o1 downto o do let o2 = (f (get a i2)) (!r) in r := o2 done; !r
+    let o1 = n - 1 in for i2 = o1 downto o do r := ((f (get a i2)) (!r)) done;
+    !r
   end
 
 let map ~dummy:(dummy: 'b) (a: 'a t) (f: 'a -> 'b) : 'b t =
@@ -159,8 +154,7 @@ let map ~dummy:(dummy: 'b) (a: 'a t) (f: 'a -> 'b) : 'b t =
   begin
     let o = n - 1 in
     let o1 = 0 in
-    for i3 = o1 to o do
-      let x = get a i3 in let o2 = a_new.data in o2.(i3) <- (f x) done;
+    for i3 = o1 to o do let x = get a i3 in (a_new.data).(i3) <- (f x) done;
     a_new
   end
 
@@ -170,8 +164,8 @@ let mapi ~dummy:(dummy: 'b) (a: 'a t) (f: (int) -> ('a -> 'b)) : 'b t =
   begin
     let o = n - 1 in
     let o1 = 0 in
-    for i4 = o1 to o do
-      let x = get a i4 in let o2 = a_new.data in o2.(i4) <- ((f i4) x) done;
+    for i4 = o1 to o do let x = get a i4 in (a_new.data).(i4) <- ((f i4) x)
+      done;
     a_new
   end
 

@@ -50,10 +50,7 @@ struct
         begin
           j1 end in
       if (X.compare (Vector.get a j) x) < 0 then begin
-        begin
-          let o = Vector.get a j in Vector.set a i o;
-          move_down a j x
-        end end
+        begin Vector.set a i (Vector.get a j); move_down a j x end end
       else
       begin
         Vector.set a i x end end
