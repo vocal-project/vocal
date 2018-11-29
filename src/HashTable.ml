@@ -210,22 +210,22 @@ module Make (K : HashedType) = struct
   let iter f h =
     fold (fun k x () -> f k x) h ()
 
-  let rec cascade_aux data i b =
+  let rec to_seq_aux data i b =
     match b with
     | More (k, x, b) ->
-        Seq.Cons ((k, x), fun () -> cascade_aux data i b)
+        Seq.Cons ((k, x), fun () -> to_seq_aux data i b)
     | Void ->
         let i = i + 1 in
         if i < Array.length data then
-          cascade_aux data i data.(i)
+          to_seq_aux data i data.(i)
         else
           Seq.Nil
 
-  let cascade h =
+  let to_seq h =
     let data = h.data in
     let b = data.(0) in
     fun () ->
-      cascade_aux data 0 b
+      to_seq_aux data 0 b
 
   (* The following code is unverified. *)
 

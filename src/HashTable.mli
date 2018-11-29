@@ -116,6 +116,6 @@ module Make (K : HashedType) : sig
   (*@ b = mem h k
     ensures b <-> view h k <> [] *)
 
-  val cascade: 'a t -> (key * 'a) Seq.t
+  val to_seq: 'a t -> (key * 'a) Seq.t
 
 end
