@@ -2,7 +2,7 @@ opam-version: "2.0"
 name: "vocal"
 synopsis: "VOCaL -- The Verified OCaml Library"
 description: "VOCaL -- The Verified OCaml Library"
-version: "0.0.1"
+version: "0.1"
 maintainer: "Mário Pereira <mpereira@lri.fr>"
 authors: [
 "Arthur Charguéraud"
@@ -33,7 +33,7 @@ authors: [
 ]
 license: "MIT"
 homepage: "https://vocal.lri.fr/"
-dev-repo: "https://github.com/vocal-project/vocal"
+dev-repo: "git://github.com/vocal-project/vocal"
 bug-reports: "https://github.com/vocal-project/vocal/issues"
 doc: "https://github.com/vocal-project/vocal/blob/master/README.md"
 build: [
