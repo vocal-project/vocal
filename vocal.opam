@@ -18,6 +18,7 @@ authors: [
 "Mohamed Iguernelala"
 "Fabrice Le Fessant"
 "Xavier Leroy"
+"Cláudio Lourenço"
 "David Maison"
 "Simão Melo de Sousa"
 "Benjamin Monate"
@@ -30,11 +31,11 @@ authors: [
 "Jean-Louis Roch"
 "Léo Testard"
 ]
-#license: ""
+license: "MIT"
 homepage: "https://vocal.lri.fr/"
 dev-repo: "https://github.com/vocal-project/vocal"
-#bug-reports: ""
-#doc: ""
+bug-reports: "https://github.com/vocal-project/vocal/issues"
+doc: "https://github.com/vocal-project/vocal/blob/master/README.md"
 build: [
   [ "dune" "build" "-p" name ]
 ]
