@@ -1,3 +1,4 @@
 (library
  (name        vocal)
+ (libraries   seq)
  (public_name vocal))

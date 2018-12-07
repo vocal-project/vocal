@@ -11,7 +11,6 @@ authors: [
 "Pierre Corbineau"
 "Julien Cretin"
 "Pascal Cuoq"
-"Jacques-Pascal Deplaix"
 "Jean-Christophe Filliâtre"
 "Léon Gondelman"
 "Armaël Guéneau"
@@ -29,7 +28,7 @@ authors: [
 "François Pottier"
 "Michael Rainey"
 "Jean-Louis Roch"
-"Léo Testard"
+"Naomi Testard"
 ]
 license: "MIT"
 homepage: "https://vocal.lri.fr/"
@@ -41,5 +40,6 @@ build: [
 ]
 depends: [
   "dune" {build}
+  "ocaml" {>= "4.07"}
   "seq"
 ]
