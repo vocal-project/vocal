@@ -11,10 +11,6 @@
       length s1 = length s2 &&
       forall i. 0 <= i < length s1 -> s1[i] = s2[i] *)
 
-(* FIXME create? *)
-
-(* @ val create : int -> (int -> 'a) -> 'a seq *)
-
 (*@ function create : integer -> (integer -> 'a) -> 'a seq *)
 (*@ axiom create_len : forall n, f. n >= 0 ->
       length (create n f) = n *)
@@ -22,10 +18,10 @@
       forall i. 0 <= i < n -> (create n f)[i] = f i *)
 
 (* TODO : DO WE WANT SOMETHING LIKE THIS ? *)
-(* @ function create (n: integer) (f: int -> 'a) : 'a seq *)
-(* @   requires 0 <= n
-       ensures  length result = n
-       ensures  forall i. 0 <= i < n -> result[i] = f i *)
+(*@ function create (n: integer) (f: int -> 'a) : 'a seq *)
+(*@ requires 0 <= n
+    ensures  length result = n
+    ensures  forall i. 0 <= i < n -> result[i] = f i *)
 
 (*@ function empty: 'a seq *)
 
@@ -56,11 +52,11 @@
 (*@ function map (f: 'a -> 'b) (s: 'a seq) : 'b seq =
       create (length s) (fun i -> f s[i]) *)
 
-(*@ function fold_left (f: 'a -> 'b -> 'a) (acc: 'a) (s: 'b seq) : 'a =
+(*@ function rec fold_left (f: 'a -> 'b -> 'a) (acc: 'a) (s: 'b seq) : 'a =
       if length s = 0 then acc
       else fold_left f (f acc s[0]) s[1 ..] *)
 
-(*@ function fold_right (f: 'a -> 'b -> 'b) (s: 'a seq) (acc: 'b) : 'b =
+(*@ function rec fold_right (f: 'a -> 'b -> 'b) (s: 'a seq) (acc: 'b) : 'b =
       if length s = 0 then acc
       else f s[0] (fold_right f s[1 ..] acc) *)
 

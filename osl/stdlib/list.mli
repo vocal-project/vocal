@@ -2,7 +2,7 @@
 (*@ use Seq *)
 
 (*@ function seq_of_list: 'a list -> 'a seq *)
-(* @ coercion seq_of_list *)
+(*@ coercion *)
 
 (*@ function length (l: 'a list) : integer =
       Seq.length l *)
