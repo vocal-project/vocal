@@ -10,18 +10,18 @@
 
 module type HashedType = sig
   type t
-  (*@ predicate E (x: t) (y: t) *)
-  (*@ axiom Erefl : forall x: t. E x x *)
-  (*@ axiom Esym  : forall x y: t. E x y -> E y x *)
-  (*@ axiom Etrans: forall x y z: t. E x y -> E y z -> E x z *)
+  (*@ predicate equiv (x: t) (y: t) *)
+  (*@ axiom refl : forall x: t. equiv x x *)
+  (*@ axiom sym  : forall x y: t. equiv x y -> equiv y x *)
+  (*@ axiom trans: forall x y z: t. equiv x y -> equiv y z -> equiv x z *)
   val equal: t -> t -> bool
   (*@ b = equal x y
-      ensures b <-> E x y *)
-  (* function H (x: t) : integer *)
-  (* axiom compatibility: forall x y: t. E x y -> H x = H y *)
+      ensures b <-> equiv x y *)
+  (* function hash_f (x: t) : integer *)
+  (* axiom compatibility: forall x y: t. equiv x y -> hash_f x = hash_f y *)
   val hash: t -> int
   (*@ h = hash x
-      ensures h = H x *)
+      ensures h = hash_f x *)
 end
 
 module Make (K : HashedType) : sig
@@ -31,7 +31,7 @@ module Make (K : HashedType) : sig
   type 'a table
   (*@ ephemeral *)
   (*@ mutable model dom : key set *)
-  (*@ invariant irredundant: forall x y: key. mem x dom -> mem y dom -> K.E x y -> x = y *)
+  (*@ invariant forall x y: key. mem x dom -> mem y dom -> K.equiv x y -> x = y *)
   (*@ mutable model view: key -> 'a list *)
   (*@ invariant forall k: key. not (mem k dom) -> view k = [] *)
 
@@ -84,7 +84,7 @@ module Make (K : HashedType) : sig
   (*@ add h k v
     modifies h
     ensures  forall k': key.
-             view h k = if K.E k' k then v :: old (view h k')
+             view h k = if K.equiv k' k then v :: old (view h k')
                         else old (view h k') *)
 
   (*@ function tail (l: 'a list) : 'a list =
@@ -94,7 +94,7 @@ module Make (K : HashedType) : sig
   (*@ remove h k
     modifies h
     ensures  forall k': key.
-             view h k = if K.E k' k then tail (old (view h k'))
+             view h k = if K.equiv k' k then tail (old (view h k'))
                         else old (view h k') *)
 
   val find: 'a t -> key -> 'a option
@@ -109,7 +109,7 @@ module Make (K : HashedType) : sig
   (*@ replace h k v
     modifies h
     ensures  forall k': key.
-             view h k = if K.E k' k then v :: tail (old (view h k))
+             view h k = if K.equiv k' k then v :: tail (old (view h k))
                         else old (view h k') *)
 
   val mem: 'a t -> key -> bool
