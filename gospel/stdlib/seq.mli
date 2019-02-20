@@ -3,15 +3,15 @@
 
 (*@ type 'a seq *)
 
-(*@ function length: 'a seq -> integer *)
+(*@ function length (s: 'a seq): integer *)
 
-(*@ function ([]): 'a seq -> integer -> 'a *)
+(*@ function ([_]) (s: 'a seq) (i:integer): 'a *)
 
 (*@ predicate (==) (s1 s2: 'a seq) =
       length s1 = length s2 &&
       forall i. 0 <= i < length s1 -> s1[i] = s2[i] *)
 
-(*@ function create : integer -> (integer -> 'a) -> 'a seq *)
+(*@ function create (x: integer) (f: integer -> 'a): 'a seq *)
 (*@ axiom create_len : forall n, f. n >= 0 ->
       length (create n f) = n *)
 (*@ axiom create_def : forall n, f. n >= 0 ->
@@ -25,18 +25,18 @@
 
 (*@ function empty: 'a seq *)
 
-(*@ function ([<-]): 'a seq -> integer -> 'a -> 'a seq *)
+(*@ function ([<-]) (s: 'a seq) (i: integer) (x: 'a): 'a seq *)
 
-(*@ function cons: 'a -> 'a seq -> 'a seq *)
-(*@ function snoc: 'a seq -> 'a -> 'a seq *)
+(*@ function cons (x: 'a) (s: 'a seq): 'a seq *)
+(*@ function snoc (s: 'a seq) (x: 'a): 'a seq *)
 
 (* FIXME singleton? *)
 
-(*@ function ([_.._]): 'a seq -> integer -> integer -> 'a seq *)
-(*@ function ([_..]): 'a seq -> integer -> 'a seq *)
-(*@ function ([.._]): 'a seq -> integer -> 'a seq *)
+(*@ function ([_.._]) (s: 'a seq) (i1: integer) (i2: integer): 'a seq *)
+(*@ function ([_..]) (s: 'a seq) (i: integer): 'a seq *)
+(*@ function ([.._]) (s: 'a seq) (i: integer): 'a seq *)
 
-(*@ function (++): 'a seq -> 'a seq -> 'a seq *)
+(*@ function (++) (s1: 'a seq) (s2: 'a seq): 'a seq *)
 (* + name append? *)
 
 (*@ predicate mem (s: 'a seq) (x: 'a) =
