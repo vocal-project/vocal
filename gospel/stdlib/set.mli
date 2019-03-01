@@ -4,6 +4,7 @@
 
 type 'a set
 
+open math with implicit instances
 
 (*---------------------------------------------------------------------*)
 (** Constructors *)
@@ -20,14 +21,6 @@ function diff (s1 s2:'a set) : 'a set
 
 function card (x:'a) : int
 
-
-(*---------------------------------------------------------------------*)
-(** Notation *)
-
-Notation Infix "∩" := union.
-Notation Infix "∪" := inter.
-Notation Infix "∖" := diff.
-Notation Infix "⊂" := diff.
 
 
 (*---------------------------------------------------------------------*)
@@ -54,37 +47,37 @@ Section Facts.
 Implicit Quantifiers ('a : type) (s* : 'a set) (x* y* : 'a).
 
 fact mem_empty :
-  mem x empty = false
+  x ∈ ∅ = false
 
 fact mem_single :
-  mem x (single y) = (x = y)
+  x ∈ `{ y } = (x = y)
 
 fact mem_union :
-  mem x (union s1 s2) = (mem x s1 \/ mem x s2)
+  x ∈ (s1 ∪ s2) = (x ∈ s1 \/ x ∈ s2)
 
 fact mem_inter :
-  mem x (inter s1 s2) = (mem x s1 /\ mem x s2)
+  x ∈ (s1 ∩ s2) = (x ∈ s1 /\ x ∈ s2)
 
 fact mem_diff :
-  mem x (diff s1 s2) = (mem x s1 /\ ~ mem x s2)
+  x ∈ (s1 ∖ s2) = (x ∈ s1 /\ ~ x ∈ s2)
 
 fact incl_mem :
-  incl s1 s2 = (forall x, mem x s1 -> mem x s2)
+  (s1 ⊂ s2) = (forall x, x ∈ s1 -> x ∈ s2)
 
 fact disjoint_mem :
-  disjoint s1 s2 = (forall x, mem x s1 -> mem x s2 -> false)
+  disjoint s1 s2 = (forall x, x ∈ s1 -> x ∈ s2 -> false)
 
 fact eq_mem :
-  (s1 = s2) = (forall x, mem x s1 = mem x s2)
+  (s1 = s2) = (forall x, x ∈ s1 = x ∈ s2)
 
 fact foreach_mem :
-  foreach p s = (forall x, mem x s -> p x)
+  foreach p s = (forall x, x ∈ s -> p x)
 
 fact fold_empty :
-  fold f m empty = m.neutral
+  fold f m ∅ = m.neutral
 
 fact fold_single :
-  fold f m (single x) = f x
+  fold f m `{x} = f x
 
 fact fold_union :
   commutative_monoid m ->
@@ -93,16 +86,16 @@ fact fold_union :
   fold f m (union s1 s2) = m.op (fold f m s1) (fold f m s2)
 
 fact card_empty :
-  card empty = 0
+  card ∅ = 0
 
 fact card_single :
-  card (single x) = 1
+  card `{x} = 1
 
 fact card_union_disjoint :
   finite s1 ->
   finite s2 ->
   disjoint s1 s2 ->
-  card (union s1 s2) = card s1 + card s2
+  card (s1 ∪ s2) = card s1 + card s2
 
 (* Note: cardinal characterization is incomplete at the moment *)
 
@@ -111,28 +104,28 @@ fact card_union_disjoint :
 (** Additional derived facts ---- no need to include them in this file! *)
 
 fact eq_incl :
-  (s1 = s2) = (incl s1 s2 /\ incl s2 s1)
+  (s1 = s2) = (s1 ⊆ s2 /\ s2 ⊆ s1)
 
 fact card_inter_le_l :
   finite s1 ->
-  card (s1 \n s2) <= card s1
+  card (s1 ∩ s2) ≤ card s1
 
 fact card_inter_le_r :
   finite s2 ->
-  card (s1 \n s2) <= card s2
+  card (s1 ∩ s2) ≤ card s2
 
 fact foreach_empty :
-  foreach p empty = true
+  foreach p ∅ = true
 
 fact foreach_single :
-  foreach p (single x) = (p x)
+  foreach p `{x} = (p x)
 
 fact foreach_union :
   foreach p (union s1 s2) = (foreach p s1 /\ foreach p s2)
 
 fact foreach_incl :
   foreach p s2 ->
-  incl s1 s2 ->
+  s1 ⊆ s2 ->
   foreach p s1
 
 fact associative_inter :
@@ -142,10 +135,10 @@ fact commutative_inter :
   commutative inter
 
 fact absorb_inter :
-  absorb inter empty
+  absorb inter ∅
 
 fact commutative_monoid_union :
-  commutative_monoid (monoid_make union empty)
+  commutative_monoid (monoid_make union ∅)
 
 fact distrib_union_inter
   inter s1 (union s2 s3) = union (inter s1 s2) (inter s1 s3)
