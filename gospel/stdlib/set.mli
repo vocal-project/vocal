@@ -9,7 +9,7 @@ open math with implicit instances
 (*---------------------------------------------------------------------*)
 (** Constructors *)
 
-value empty : 'a list
+constant empty : 'a set
 
 function single (x:'a) : 'a set
 
@@ -26,6 +26,8 @@ function card (x:'a) : int
 (*---------------------------------------------------------------------*)
 (** Predicates *)
 
+(* Remove prop=bool *)
+
 predicate finite (s:'a set) : prop
 
 predicate mem (x:'a) (s:'a set) : prop
@@ -36,7 +38,7 @@ predicate disjoint (s1 s2:'a set) : prop
 
 predicate foreach (p:'a->prop) (s:'a set) : prop
 
-predicate fold (f:'a->'b) (m:'b monoid) (s:'a set) : prop
+predicate fold (f:'a->'b) (m:'b monoid) (s:'a set) : 'b
   (* alias map_reduce *)
 
 
@@ -44,7 +46,7 @@ predicate fold (f:'a->'b) (m:'b monoid) (s:'a set) : prop
 (** Characterization *)
 
 Section Facts.
-Implicit Quantifiers ('a : type) (s* : 'a set) (x* y* : 'a).
+Implicit Quantifiers ('a 'b: type) (s* : 'a set) (x* y* : 'a) (f*:'a->'b).
 
 fact mem_empty :
   x ∈ ∅ = false
@@ -53,25 +55,25 @@ fact mem_single :
   x ∈ `{ y } = (x = y)
 
 fact mem_union :
-  x ∈ (s1 ∪ s2) = (x ∈ s1 \/ x ∈ s2)
+  x ∈ (s1 ∪ s2) <-> (x ∈ s1 \/ x ∈ s2)
 
 fact mem_inter :
-  x ∈ (s1 ∩ s2) = (x ∈ s1 /\ x ∈ s2)
+  x ∈ (s1 ∩ s2) <-> (x ∈ s1 /\ x ∈ s2)
 
 fact mem_diff :
-  x ∈ (s1 ∖ s2) = (x ∈ s1 /\ ~ x ∈ s2)
+  x ∈ (s1 ∖ s2) <-> (x ∈ s1 /\ ~ x ∈ s2)
 
 fact incl_mem :
   (s1 ⊂ s2) = (forall x, x ∈ s1 -> x ∈ s2)
 
 fact disjoint_mem :
-  disjoint s1 s2 = (forall x, x ∈ s1 -> x ∈ s2 -> false)
+  disjoint s1 s2 <-> (forall x, x ∈ s1 -> x ∈ s2 -> false)
 
 fact eq_mem :
-  (s1 = s2) = (forall x, x ∈ s1 = x ∈ s2)
+  (s1 = s2) <-> (forall x, x ∈ s1 <-> x ∈ s2)
 
 fact foreach_mem :
-  foreach p s = (forall x, x ∈ s -> p x)
+  foreach p s <-> (forall x, x ∈ s -> p x)
 
 fact fold_empty :
   fold f m ∅ = m.neutral
