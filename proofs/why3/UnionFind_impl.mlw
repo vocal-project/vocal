@@ -53,7 +53,7 @@ module Mem
 
   type mem_ref [@ocaml:remove] 'a = private {
     ghost mutable refs : loc_ref 'a -> option 'a;
-    ghost mutable dom  : set (loc_ref 'a);
+    ghost mutable dom  : fset (loc_ref 'a);
   } invariant { forall r. refs r =  None <-> not (mem r dom) }
     invariant { forall r. refs r <> None <->      mem r dom }
     by { refs = (fun _ -> None); dom = empty }
@@ -123,7 +123,7 @@ module Impl
     mem x memory.dom
 
   type uf [@ocaml:remove] 'a = {
-    ghost mutable dom : set (elem 'a);      (* which "pointers" are involved *)
+    ghost mutable dom : fset (elem 'a);     (* which "pointers" are involved *)
     ghost mutable rep : elem 'a -> elem 'a; (* representative element *)
     ghost mutable img : elem 'a -> 'a;      (* representative element value *)
     ghost mutable dst : elem 'a -> int;     (* distance *)
@@ -283,7 +283,7 @@ module Correct
 
   use set.Fset, Mem, Impl
 
-  lemma union_singleton_add: forall s: set 'a, x: 'a.
+  lemma union_singleton_add: forall s: fset 'a, x: 'a.
     union s (singleton x) == add x s
 
   clone UnionFind.Sig with

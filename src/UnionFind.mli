@@ -15,7 +15,7 @@ type 'a elem
 
 (*@ type 'a uf *)
 (*@ ephemeral *)
-(*@ mutable model dom : 'a elem set *)
+(*@ mutable model dom : 'a elem fset *)
 (*@ mutable model rep : 'a elem -> 'a elem *)
 (*@ mutable model img : 'a elem -> 'a *)
 (*@ invariant forall x. mem x dom -> img x = img (rep x) *)
