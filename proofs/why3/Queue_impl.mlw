@@ -58,7 +58,7 @@ module Impl
     if q.last == null then begin
       q.first <- c;
       q.last  <- c;
-      q.length <- 0;
+      q.length <- 1;
       q.view <- cons x Seq.empty;
       q.list <- cons c Seq.empty
     end else begin
@@ -76,7 +76,7 @@ module Impl
     ensures  { q.view == (old q.view)[1 .. ] }
     ensures  { old q.view == cons result q.view }
   = let x = get_content q.used_mem q.first in
-    if q.first == null then begin
+    if get_next q.used_mem q.first == null then begin
       free q.used_mem q.first;
       q.first <- null;
       q.last <- null;
