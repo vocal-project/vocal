@@ -16,7 +16,7 @@ let push : type a. a -> (a t) ->  unit =
 
 let pop : type a. (a t) ->  a =
   fun q -> let x = SinglyLL.get_content (q.first) in
-           if (q.first) == SinglyLL.Nil
+           if (SinglyLL.get_next (q.first)) == SinglyLL.Nil
            then begin q.first <- SinglyLL.Nil; q.last <- SinglyLL.Nil end
            else q.first <- SinglyLL.get_next (q.first);
            x
