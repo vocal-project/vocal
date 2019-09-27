@@ -8,8 +8,10 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-(*@ use Order *)
-(*@ use Bag   *)
+(*@ open Gospelstdlib *)
+(*@ open Order *)
+(*@ open Bag   *)
+(*@ open Ocamlstdlib *)
 
 module Make (X: sig (* FIXME: use ComparableType.S instead *)
   type t
@@ -48,8 +50,8 @@ end) : sig
         ensures forall y. y <> x -> nb_occ y h'.bag = nb_occ y h.bag
         ensures card h'.bag = card h.bag + 1 *)
 
-  (*@ predicate mem        (x: elt) (h: heap) := nb_occ x h.bag > 0 *)
-  (*@ predicate is_minimum (x: elt) (h: heap) :=
+  (*@ predicate mem        (x: elt) (h: heap) = nb_occ x h.bag > 0 *)
+  (*@ predicate is_minimum (x: elt) (h: heap) =
         mem x h /\ forall e. mem e h -> X.cmp x e <= 0 *)
 
   (*@ function minimum: heap -> elt *)

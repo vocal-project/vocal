@@ -10,8 +10,9 @@
 
 (** Zippers for lists *)
 
-(*@ use List *)
-(*@ use Seq *)
+(*@ open Gospelstdlib *)
+(*@ open Ocamlstdlib *)
+(*@ open Seq *)
 
 type 'a t
 (*@ model seq: 'a seq *)
@@ -33,7 +34,7 @@ val length : 'a t -> int
 
 val to_list : 'a t -> 'a list
 (*@ l = to_list z
-    ensures z.seq == l *)
+    ensures z.seq == List.seq_of_list l *)
 
 val make : 'a list -> 'a t
 (*@ z = make l

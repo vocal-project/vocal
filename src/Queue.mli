@@ -1,5 +1,6 @@
+(*@ open Ocamlstdlib *)
 
-(*@ use Seq *)
+(*@ open Seq *)
 
 type 'a t
 (*@ mutable model view: 'a seq *)
@@ -16,9 +17,9 @@ val push : 'a -> 'a t -> unit
       ensures  q.view == snoc (old q.view) x *)
 
 val pop : 'a t -> 'a
-(** [take q] removes and returns the first element in queue [q],
+(** [pop q] removes and returns the first element in queue [q],
    or raises [Empty] if the queue is empty. *)
-(*@ r = take q
+(*@ r = pop q
       requires q.view <> empty
       modifies q
       ensures  old q.view == cons r q.view *)

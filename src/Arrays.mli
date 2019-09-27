@@ -10,8 +10,9 @@
 
 (** {2 Additional operations on arrays} *)
 
-(*@ use Order *)
-(*@ use ArrayPermut *)
+(*@ open Gospelstdlib *)
+(*@ open Order *)
+(*@ open Ocamlstdlib *)
 
 val binary_search: ('a -> 'a -> int) -> 'a array -> int -> int -> 'a -> int
 (** search for value [v] in array [a], between indices [fromi] inclusive
@@ -61,9 +62,9 @@ val binary_sort: ('a -> 'a -> int) -> 'a array -> int -> int -> unit
       requires 0 <= fromi <= toi <= Array.length a
       modifies a
       ensures  forall i j. fromi <= i <= j < toi -> cmp a.(i) a.(j) <= 0
-      ensures  ArrayPermut.permut_sub (old a) a fromi toi *)
+      ensures  Array.permut_sub (old a) a fromi toi *)
 
 val knuth_shuffle: 'a array -> unit
 (*@ knuth_shuffle a
       modifies a
-      ensures  ArrayPermut.permut_all (old a) a *)
+      ensures  Array.permut_all (old a) a *)

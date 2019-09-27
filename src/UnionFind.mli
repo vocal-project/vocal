@@ -8,21 +8,24 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-(*@ use Set *)
-(*@ use Map *)
+(*@ open Ocamlstdlib *)
+
+(*@ open Set *)
+
+(*@ open Map *)
 
 type 'a elem
 
 (*@ type 'a uf *)
 (*@ ephemeral *)
-(*@ mutable model dom : 'a elem fset *)
+(*@ mutable model dom : 'a elem set *)
 (*@ mutable model rep : 'a elem -> 'a elem *)
 (*@ mutable model img : 'a elem -> 'a *)
 (*@ invariant forall x. mem x dom -> img x = img (rep x) *)
 (*@ invariant forall x. mem x dom -> rep (rep x) = rep x *)
 (*@ invariant forall x. mem x dom -> mem (rep x) dom *)
 
-(*@ predicate equiv (uf: 'a uf) (x: 'a elem) (y: 'a elem) :=
+(*@ predicate equiv (uf: 'a uf) (x: 'a elem) (y: 'a elem) =
       rep uf x = rep uf y *)
 
 (*@ val create: unit -> 'a uf *)

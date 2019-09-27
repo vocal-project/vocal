@@ -8,8 +8,11 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-(*@ use Order *)
-(*@ use Bag *)
+(*@ open Gospelstdlib *)
+(*@ open Ocamlstdlib *)
+(*@ open Order *)
+(*@ open Bag *)
+(*@ open Sys *)
 
 (** This module implements a priority queue based on a minimal binary heap.
 The heap is modelized by a dynamic array, taken from the module Vector **)
@@ -35,7 +38,7 @@ end) : sig
   (*@ mutable model bag : X.t bag *)
   (*@ invariant card bag <= Sys.max_array_length *)
 
-  (*@ predicate mem (x: elt) (h: t) := nb_occ x h.bag > 0 *)
+  (*@ predicate mem (x: elt) (h: t) = nb_occ x h.bag > 0 *)
 
   val create : unit -> t
   (*@ h = create ()
@@ -51,7 +54,7 @@ end) : sig
 
   (*@ function minimum: t -> elt *)
 
-  (*@ predicate is_minimum (x: elt) (h: t) :=
+  (*@ predicate is_minimum (x: elt) (h: t) =
         mem x h && forall e. mem e h -> X.cmp x e <= 0 *)
 
   (*@ axiom min_def:

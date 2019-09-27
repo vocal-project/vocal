@@ -8,6 +8,9 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
+(*@ open Gospelstdlib *)
+(*@ open Ocamlstdlib *)
+
 module type HashedType = sig
   type t
   (*@ predicate equiv (x: t) (y: t) *)
@@ -17,14 +20,16 @@ module type HashedType = sig
   val equal: t -> t -> bool
   (*@ b = equal x y
       ensures b <-> equiv x y *)
-  (* function hash_f (x: t) : integer *)
-  (* axiom compatibility: forall x y: t. equiv x y -> hash_f x = hash_f y *)
+  (*@ function hash_f (x: t) : integer *)
+  (*@ axiom compatibility: forall x y: t. equiv x y -> hash_f x = hash_f y *)
   val hash: t -> int
   (*@ h = hash x
       ensures h = hash_f x *)
 end
 
 module Make (K : HashedType) : sig
+
+  (*@ open Set *)
 
   type key = K.t
 
@@ -53,18 +58,18 @@ module Make (K : HashedType) : sig
     ensures  forall k: key. view h k = [] *)
 
   val copy: 'a t -> 'a t
-  (*@ h2 = copy h1 h
+  (*@ h2 = copy h1
     ensures  forall k: key. view h2 k = view h1 k *)
 
   (*@ function pop (h: 'a t) : integer =
-    sum (fun k -> length (view h k)) (dom h) *)
+    sum (fun k -> List.length (view h k)) (dom h) *)
 
   val population: 'a t -> int
   (*@ n = population h
     ensures n = pop h *)
 
   val length: 'a t -> int
-  (*@ n = population h
+  (*@ n = length h
     ensures n = pop h *)
 
   val iter: (key -> 'a -> unit) -> 'a t -> unit
@@ -88,7 +93,7 @@ module Make (K : HashedType) : sig
                         else old (view h k') *)
 
   (*@ function tail (l: 'a list) : 'a list =
-        match l with [] -> [] | _ :: s -> s end *)
+        match l with [] -> [] | _ :: s -> s*)
 
   val remove: 'a t -> key -> unit
   (*@ remove h k
@@ -99,7 +104,7 @@ module Make (K : HashedType) : sig
 
   val find: 'a t -> key -> 'a option
   (*@ r = find h k
-    ensures r = match view h k with [] -> None | x :: _ -> Some x end *)
+    ensures r = match view h k with [] -> None | x :: _ -> Some x*)
 
   val find_all: 'a t -> key -> 'a list
   (*@ l = find_all h k

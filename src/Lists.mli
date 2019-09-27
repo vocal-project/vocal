@@ -8,6 +8,9 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
+(*@ open Gospelstdlib *)
+(*@ open Ocamlstdlib *)
+
 (** Stack-safe and fast implementation of [List.map]
 
     following antron's post
@@ -23,6 +26,5 @@ val map: ('a -> 'b) -> 'a list -> 'b list
 (*@ r = map f l
       ensures List.length r = List.length l
       ensures forall i. 0 <= i < List.length l ->
-              List.nth r i = f (List.nth l i) *)
-(*@ map f l
+              List.nth r i = f (List.nth l i)
       equivalent "List.rev (List.map f (List.rev l))" *)

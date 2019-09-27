@@ -30,7 +30,9 @@
     {!Vector.push} has overall complexity O(n) i.e. each insertion has
     amortized constant time complexity. *)
 
-(*@ use Seq  *)
+(*@ open Gospelstdlib *)
+(*@ open Seq  *)
+(*@ open Ocamlstdlib *)
 
 type 'a t
 (** The polymorphic type of vectors.
