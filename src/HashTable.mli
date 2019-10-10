@@ -8,9 +8,6 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-(*@ open Gospelstdlib *)
-(*@ open Ocamlstdlib *)
-
 module type HashedType = sig
   type t
   (*@ predicate equiv (x: t) (y: t) *)

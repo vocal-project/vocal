@@ -8,8 +8,6 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-(*@ open Gospelstdlib *)
-(*@ open Ocamlstdlib *)
 (*@ open Order *)
 (*@ open Bag *)
 (*@ open Sys *)

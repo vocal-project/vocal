@@ -8,10 +8,8 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-(*@ open Gospelstdlib *)
 (*@ open Order *)
 (*@ open Bag   *)
-(*@ open Ocamlstdlib *)
 
 module Make (X: sig (* FIXME: use ComparableType.S instead *)
   type t

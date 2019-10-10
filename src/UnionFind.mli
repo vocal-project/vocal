@@ -8,8 +8,6 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-(*@ open Ocamlstdlib *)
-
 (*@ open Set *)
 
 (*@ open Map *)

@@ -10,8 +10,6 @@
 
 (** Zippers for lists *)
 
-(*@ open Gospelstdlib *)
-(*@ open Ocamlstdlib *)
 (*@ open Seq *)
 
 type 'a t

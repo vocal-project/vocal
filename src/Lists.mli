@@ -8,9 +8,6 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-(*@ open Gospelstdlib *)
-(*@ open Ocamlstdlib *)
-
 (** Stack-safe and fast implementation of [List.map]
 
     following antron's post

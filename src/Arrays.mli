@@ -10,9 +10,7 @@
 
 (** {2 Additional operations on arrays} *)
 
-(*@ open Gospelstdlib *)
 (*@ open Order *)
-(*@ open Ocamlstdlib *)
 
 val binary_search: ('a -> 'a -> int) -> 'a array -> int -> int -> 'a -> int
 (** search for value [v] in array [a], between indices [fromi] inclusive
