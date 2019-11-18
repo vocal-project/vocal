@@ -33,8 +33,7 @@ _CoqProject
 *.mli.equiv
 
 # TeX.
-main.pdf
-talk.pdf
+*.pdf
 *.aux
 *.aux.bak
 *.bbl
@@ -45,6 +44,9 @@ talk.pdf
 *.snm
 *.toc
 *.vrb
+*.idx
+*.ilg
+*.ind
 
 # WhizzyTeX.
 ._whizzy*
@@ -62,3 +64,9 @@ _whizzy*
 
 #dune
 vocal.install
+
+# generated
+gospel/dependencies.dot
+gospel/doc-plain/bnf
+gospel/doc-plain/generated
+gospel/doc-plain/auto
