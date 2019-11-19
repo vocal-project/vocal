@@ -8,9 +8,7 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-(*@ open Order *)
 (*@ open Bag *)
-(*@ open Sys *)
 
 (** This module implements a priority queue based on a minimal binary heap.
 The heap is modelized by a dynamic array, taken from the module Vector **)

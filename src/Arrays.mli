@@ -10,8 +10,6 @@
 
 (** {2 Additional operations on arrays} *)
 
-(*@ open Order *)
-
 val binary_search: ('a -> 'a -> int) -> 'a array -> int -> int -> 'a -> int
 (** search for value [v] in array [a], between indices [fromi] inclusive
     and [toi] exclusive, using comparison function [cmp]. Returns an index

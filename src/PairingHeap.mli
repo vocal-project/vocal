@@ -8,7 +8,6 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-(*@ open Order *)
 (*@ open Bag   *)
 
 module Make (X: sig (* FIXME: use ComparableType.S instead *)
