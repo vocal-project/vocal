@@ -19,9 +19,10 @@
     rather to a combination of [List.rev] and [List.map] as stated below.
  *)
 
+(*@ open Seq *)
+
 val map: ('a -> 'b) -> 'a list -> 'b list
 (*@ r = map f l
-      ensures List.length r = List.length l
-      ensures forall i. 0 <= i < List.length l ->
-              List.nth r i = f (List.nth l i)
+      ensures length r = length l
+      ensures forall i. 0 <= i < length l -> r[i] = f l[i]
       equivalent "List.rev (List.map f (List.rev l))" *)

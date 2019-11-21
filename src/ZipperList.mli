@@ -32,7 +32,7 @@ val length : 'a t -> int
 
 val to_list : 'a t -> 'a list
 (*@ l = to_list z
-    ensures z.seq == List.seq_of_list l *)
+    ensures z.seq == l *)
 
 val make : 'a list -> 'a t
 (*@ z = make l
