@@ -63,7 +63,7 @@ _whizzy*
 .load.el
 
 #dune
-vocal.install
+*.install
 
 # generated
 gospel/dependencies.dot
