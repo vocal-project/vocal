@@ -1,6 +1,4 @@
 
-(*@ open Seq *)
-
 type 'a t
 (*@ mutable model view: 'a seq *)
 
@@ -13,7 +11,7 @@ val push : 'a -> 'a t -> unit
 (** [add x q] adds the element [x] at the end of the queue [q]. *)
 (*@ push x q
       modifies q
-      ensures  q.view == snoc (old q.view) x *)
+      ensures  q.view == Seq.snoc (old q.view) x *)
 
 val pop : 'a t -> 'a
 (** [pop q] removes and returns the first element in queue [q],
@@ -21,7 +19,7 @@ val pop : 'a t -> 'a
 (*@ r = pop q
       requires q.view <> empty
       modifies q
-      ensures  old q.view == cons r q.view *)
+      ensures  old q.view == Seq.cons r q.view *)
 
 val is_empty : 'a t -> bool
 (** Return [true] if the given queue is empty, [false] otherwise. *)

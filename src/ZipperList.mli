@@ -10,8 +10,6 @@
 
 (** Zippers for lists *)
 
-(*@ open Seq *)
-
 type 'a t
 (*@ model seq: 'a seq *)
 (*@ model idx: integer *)
@@ -47,7 +45,7 @@ val move_left : 'a t -> 'a t
 
 val insert_left : 'a -> 'a t -> 'a t
 (*@ r = insert_left x z
-    ensures  r.seq == snoc z.seq[.. z.idx] x ++ z.seq[z.idx ..]
+    ensures  r.seq == Seq.snoc z.seq[.. z.idx] x ++ z.seq[z.idx ..]
     ensures  r.idx = z.idx + 1 *)
 
 val remove_left : 'a t -> 'a t
@@ -69,7 +67,7 @@ val move_right : 'a t -> 'a t
 
 val insert_right : 'a -> 'a t -> 'a t
 (*@ r = insert_right x z
-    ensures  r.seq == z.seq[.. z.idx] ++ cons x z.seq[z.idx ..]
+    ensures  r.seq == z.seq[.. z.idx] ++ Seq.cons x z.seq[z.idx ..]
     ensures  r.idx = z.idx *)
 
 val remove_right : 'a t -> 'a t

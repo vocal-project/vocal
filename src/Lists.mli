@@ -19,8 +19,6 @@
     rather to a combination of [List.rev] and [List.map] as stated below.
  *)
 
-(*@ open Seq *)
-
 val map: ('a -> 'b) -> 'a list -> 'b list
 (*@ r = map f l
       ensures length r = length l

@@ -33,9 +33,9 @@ module Make (K : HashedType) : sig
   type 'a table
   (*@ ephemeral *)
   (*@ mutable model dom : key set *)
-  (*@ invariant forall x y: key. mem x dom -> mem y dom -> K.equiv x y -> x = y *)
+  (*@ invariant forall x y: key. Set.mem x dom -> Set.mem y dom -> K.equiv x y -> x = y *)
   (*@ mutable model view: key -> 'a list *)
-  (*@ invariant forall k: key. not (mem k dom) -> view k = [] *)
+  (*@ invariant forall k: key. not (Set.mem k dom) -> view k = [] *)
 
   type 'a t = 'a table
 
@@ -59,7 +59,7 @@ module Make (K : HashedType) : sig
     ensures  forall k: key. view h2 k = view h1 k *)
 
   (*@ function pop (h: 'a t) : integer =
-    sum (fun k -> List.length (view h k)) (dom h) *)
+    sum (fun k -> length (view h k)) (dom h) *)
 
   val population: 'a t -> int
   (*@ n = population h
