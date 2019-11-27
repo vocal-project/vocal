@@ -1,0 +1,13 @@
+
+(library
+  (public_name why3gospel)
+  (flags :standard -w -9-32-27)
+  (modules why3gospel)
+  (library_flags (-linkall))
+  (libraries compiler-libs why3 gospel))
+
+(install
+  (section lib_root)
+  (files
+   (why3gospel.cmxs as why3/plugins/why3gospel.cmxs))
+  (package why3gospel))
