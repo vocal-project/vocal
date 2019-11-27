@@ -3,11 +3,22 @@
   (public_name why3gospel)
   (flags :standard -w -9-32-27)
   (modules why3gospel)
-  (library_flags (-linkall))
   (libraries compiler-libs why3 gospel))
+
+(rule
+  (targets real_why3gospel.cmxs)
+  (deps why3gospel.cmxa)
+  (action (run ocamlfind ocamlopt
+                  -shared
+                  -linkall
+                  -linkpkg
+                  -package compiler-libs,why3,gospel
+                  %{deps}
+                  -o %{targets}
+  )))
 
 (install
   (section lib_root)
   (files
-   (why3gospel.cmxs as why3/plugins/why3gospel.cmxs))
+   (real_why3gospel.cmxs as why3/plugins/real_why3gospel.cmxs))
   (package why3gospel))
