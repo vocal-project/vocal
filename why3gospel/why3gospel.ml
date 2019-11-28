@@ -27,7 +27,7 @@ let use_ocaml loc =
 
 let read_file file nm c =
   let lb = Lexing.from_channel c in
-  Location.init lb file;
+  Gospel.Location.init lb file;
   Gospel.Parser_frontend.(parse_gospel (parse_ocaml_lb lb) nm)
 
 (* TODO
@@ -79,7 +79,7 @@ let filter_equiv =
 let type_check name nm sigs =
   let md = Gospel.Tmodule.init_muc name in
   let penv = Gospel.Typing.penv [] (Gospel.Utils.Sstr.singleton nm) in
-  let md = List.fold_left (Gospel.Typing.process_signature penv) md sigs in
+  let md = List.fold_left (Gospel.Typing.type_sig_item penv) md sigs in
   Gospel.Tmodule.wrap_up_muc md
 
 let read_channel env path file c =

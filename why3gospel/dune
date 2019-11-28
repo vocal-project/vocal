@@ -1,19 +1,20 @@
 
 (library
   (public_name why3gospel)
-  (flags :standard -w -9-32-27)
+  (flags :standard -w -9-32-27 -linkall)
+  (library_flags -linkall)
   (modules why3gospel_trans why3gospel)
-  (libraries compiler-libs why3 gospel))
+  (libraries why3 gospel))
 
 ;; cf https://discuss.ocaml.org/t/dune-problems-using-dynlink-plugins/2874
 (rule
   (targets real_why3gospel.cmxs)
   (deps why3gospel.cmxa)
-  (action (run ocamlfind ocamlopt
+  (action (run ocamlfind ocamlopt -verbose
                   -shared
                   -linkall
                   -linkpkg
-                  -package compiler-libs,why3,gospel
+                  -package gospel
                   %{deps}
                   -o %{targets}
   )))
@@ -23,3 +24,9 @@
   (files
    (real_why3gospel.cmxs as why3/plugins/real_why3gospel.cmxs))
   (package why3gospel))
+
+;; (install
+;;   (section lib_root)
+;;   (files
+;;    (why3gospel.cmxs as why3/plugins/why3gospel.cmxs))
+;;   (package why3gospel))

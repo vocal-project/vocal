@@ -8,7 +8,7 @@ type gdecl =
   | Gdecl of decl
   | Gmodule of ident * gdecl list
 
-let location { Location.loc_start = b; Location.loc_end = e } =
+let location { Gospel.Location.loc_start = b; Gospel.Location.loc_end = e } =
   Loc.extract (b, e)
 
 let dummy_loc = Loc.dummy_position
@@ -47,7 +47,7 @@ module Term = struct
     | Tt.Texists -> Dterm.DTexists
     | Tt.Tlambda -> Dterm.DTlambda
 
-  let rec pattern pat =
+  let (* rec *) pattern pat =
     let loc = get_opt_default location dummy_loc pat.Tt.p_loc in
     let mk_pattern pat_desc = mk_pattern pat_desc loc in
     let p_node = function
@@ -78,8 +78,8 @@ module Term = struct
 end
 
 let rec longident loc = function
-  | Longident.Lident s    -> Qident (mk_id s loc)
-  | Longident.Ldot (t, s) -> Qdot (longident loc t, mk_id s loc)
+  | Gospel.Longident.Lident s    -> Qident (mk_id s loc)
+  | Gospel.Longident.Ldot (t, s) -> Qdot (longident loc t, mk_id s loc)
   | _ -> assert false (* TODO? *)
 
 let mk_expr expr_desc expr_loc =
