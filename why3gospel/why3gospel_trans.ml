@@ -155,7 +155,7 @@ let val_decl vd g =
   let mk_param_no_spec ct =
     let loc = location ct.Ot.ptyp_loc in
     loc, None, false, core_type ct in
-  let param_list, ret, pat, mask, spec =
+  let param_list, ret, _pat, mask, spec =
     let core_ty_list = flat_ptyp_arrow vd.T.vd_type in
     let core_ty_list, last = Lists.chop_last core_ty_list in
     let param_list, pat, mask, spec = match vd.T.vd_spec with
@@ -171,20 +171,14 @@ let val_decl vd g =
           | T.Lnone  _ -> Ity.MaskVisible
           | T.Lghost _ -> Ity.MaskGhost
           | _          -> assert false in
-        let pat, mask = begin match s.T.sp_ret with
-          | [(Lnone vs) as lb] -> let loc = loc_of_vs vs in
-              let pat = Term.mk_pattern (Pvar (ident_of_lb_arg lb)) loc in
-              pat, Ity.MaskVisible
-          | [(Lghost vs) as lb] -> let loc = loc_of_vs vs in
-              let pat = Term.mk_pattern (Pvar (ident_of_lb_arg lb)) loc in
-              pat, Ity.MaskGhost
-          | lb_list -> let pat_list = List.map mk_pat lb_list in
-              let mask_list = List.map mk_mask lb_list in
-              let loc  = location vd.T.vd_loc (* TODO: better location? *) in
-              let pat  = Term.mk_pattern (Ptuple pat_list) loc in
-              let mask = Ity.MaskTuple mask_list in
-              pat, mask end in
-        param_list, pat, mask, spec s in
+        let lb_list = s.T.sp_ret in
+        let pat_list  = List.map mk_pat lb_list in
+        let mask_list = List.map mk_mask lb_list in
+        let _pat, mask = match pat_list, mask_list with
+        | [p], [m] -> p, m
+        | pl, ml   -> let loc = location vd.T.vd_loc in (* TODO: better loc? *)
+            Term.mk_pattern (Ptuple pl) loc, Ity.MaskTuple ml in
+        param_list, _pat, mask, spec s in
     param_list, Some (core_type last), pat, mask, spec in
   let e_any  = Eany (param_list, Expr.RKnone, ret, mask, spec) in
   let e_any  = mk_expr e_any (location vd.T.vd_loc) in
