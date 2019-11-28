@@ -10,7 +10,7 @@
 (rule
   (targets real_why3gospel.cmxs)
   (deps why3gospel.cmxa)
-  (action (run ocamlfind ocamlopt -verbose
+  (action (run ocamlfind ocamlopt
                   -shared
                   -linkall
                   -linkpkg
