@@ -19,7 +19,7 @@ let use ?(import=false) q =
   let id = match q with Qident id | Qdot (_, id) -> id in
   let loc = id.id_loc in
   Typing.open_scope loc id;
-  Typing.add_decl loc (Duse q);
+  Typing.add_decl loc (Dimport q); (*FIXME? Is this the good import decl? *)
   Typing.close_scope loc ~import
 
 let use_ocaml loc =
