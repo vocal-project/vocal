@@ -90,9 +90,9 @@ let loc_of_vs vs = Term.(location vs.Tt.vs_name.I.id_loc)
 let ident_of_lb_arg lb = Term.ident_of_vsymbol (T.vs_of_lb_arg lb)
 let loc_of_lb_arg lb = loc_of_vs (T.vs_of_lb_arg lb)
 
-(** given the result type [sp_ret] of a function, a GOSPEL postcondition [post]
-    (in the form of [term]), convert it into a Why3's [Ptree] postcondition of
-    the form [Loc.position * (pattern * term)] *)
+(** given the result type [sp_ret] of a function and a GOSPEL postcondition
+    [post] (in the form of [term]), convert it into a Why3's [Ptree]
+    postcondition of the form [Loc.position * (pattern * term)] *)
 let sp_post sp_ret post =
   let pvar_of_lb_arg_list lb_arg_list =
     let mk_pvar lb = (* create a [Pvar] pattern out of a [Tt.lb_arg] *)
@@ -175,9 +175,11 @@ let val_decl vd g =
         let pat_list  = List.map mk_pat lb_list in
         let mask_list = List.map mk_mask lb_list in
         let _pat, mask = match pat_list, mask_list with
-        | [p], [m] -> p, m
-        | pl, ml   -> let loc = location vd.T.vd_loc in (* TODO: better loc? *)
-            Term.mk_pattern (Ptuple pl) loc, Ity.MaskTuple ml in
+          | [], [] -> assert false
+          | [p], [m] -> p, m
+          | pl, ml   -> assert (List.length pl = List.length ml);
+              let loc = location vd.T.vd_loc in (* TODO: better location? *)
+              Term.mk_pattern (Ptuple pl) loc, Ity.MaskTuple ml in
         param_list, _pat, mask, spec s in
     param_list, Some (core_type last), pat, mask, spec in
   let e_any  = Eany (param_list, Expr.RKnone, ret, mask, spec) in
@@ -187,7 +189,7 @@ let val_decl vd g =
 
 let signature_item i = match i.T.sig_desc with
   (* GOSPEL-modified decls *)
-  | T.Sig_val (vd, g) (* of val_description * ghost *) ->
+  | T.Sig_val (vd, g) ->
       Gdecl (val_decl vd g)
   | T.Sig_type (_rec_flag, tdl, _gh) ->
       Gdecl (Dtype (List.map type_decl tdl))
