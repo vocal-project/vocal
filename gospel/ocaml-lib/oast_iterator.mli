@@ -22,6 +22,7 @@
 
 *)
 
+open Ocaml_common
 open Oparsetree
 
 (** {1 A generic Parsetree iterator} *)

@@ -8,7 +8,8 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-open Utils
+open Ocaml_common
+open Cutils
 open Oparsetree
 open Uast
 open Uast_utils
@@ -134,7 +135,7 @@ let type_spec ?(extra_spec=[]) t =
   let spec,attr = split_attr t.ptype_attributes in
   let spec = List.map attr2spec spec in
 
-  let tspec,fspec = Utils.split_at_f is_type_spec spec in
+  let tspec,fspec = Cutils.split_at_f is_type_spec spec in
   let tspec = List.map get_type_spec tspec in
   let tspec = tspec @ extra_spec in
   let tspec = List.fold_left tspec_union empty_tspec tspec in
@@ -352,7 +353,7 @@ and module_type_desc m =
   | Pmty_signature s ->
      Mod_signature (signature s)
   | Pmty_functor (l,m1,m2) ->
-     Mod_functor (l,Utils.opmap module_type m1, module_type m2)
+     Mod_functor (l,Cutils.opmap module_type m1, module_type m2)
   | Pmty_with (m,c) ->
      Mod_with (module_type m, List.map with_constraint c)
   | Pmty_typeof m ->
@@ -374,6 +375,6 @@ and module_declaration m =
 and module_type_declaration m =
   let attrs, specs = get_spec_attrs m.pmtd_attributes in
   let mtd = { mtdname = m.pmtd_name;
-              mtdtype = Utils.opmap module_type m.pmtd_type;
+              mtdtype = Cutils.opmap module_type m.pmtd_type;
               mtdattributes = attrs; mtdloc = m.pmtd_loc} in
   mtd, specs

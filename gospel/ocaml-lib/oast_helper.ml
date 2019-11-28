@@ -15,6 +15,7 @@
 
 (** Helpers to produce Oparsetree fragments *)
 
+open Ocaml_common
 open Oasttypes
 open Oparsetree
 open Odocstrings

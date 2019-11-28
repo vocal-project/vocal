@@ -13,6 +13,7 @@
 (*                                                                        *)
 (**************************************************************************)
 
+open Ocaml_common
 open Oasttypes;;
 open Format;;
 open Lexing;;

@@ -8,6 +8,8 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
+open Ocaml_common
+
 let is_none = function
   | None -> true | _ -> false
 

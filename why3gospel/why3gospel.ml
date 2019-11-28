@@ -78,7 +78,7 @@ let filter_equiv =
 
 let type_check name nm sigs =
   let md = Gospel.Tmodule.init_muc name in
-  let penv = Gospel.Typing.penv [] (Gospel.Utils.Sstr.singleton nm) in
+  let penv = Gospel.Typing.penv [] (Gospel.Cutils.Sstr.singleton nm) in
   let md = List.fold_left (Gospel.Typing.process_signature penv) md sigs in
   Gospel.Tmodule.wrap_up_muc md
 

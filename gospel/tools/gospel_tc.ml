@@ -27,7 +27,7 @@ let path2module p =
 let type_check name sigs =
   let md = init_muc name in
   let module_nm = path2module name in
-  let penv = penv !load_path (Utils.Sstr.singleton module_nm) in
+  let penv = penv !load_path (Cutils.Sstr.singleton module_nm) in
   let md = List.fold_left (process_signature penv) md sigs in
   wrap_up_muc md
 

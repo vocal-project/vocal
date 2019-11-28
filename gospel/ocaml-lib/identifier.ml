@@ -8,7 +8,8 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-open Utils
+open Cutils
+open Ocaml_common
 
 (** Attributes  *)
 

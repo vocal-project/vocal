@@ -20,7 +20,7 @@
   (* Ensure that record patterns don't miss any field. *)
 *)
 
-
+open Ocaml_common
 open Oparsetree
 open Location
 

@@ -9,7 +9,8 @@
 (**************************************************************************)
 
 open Identifier
-open Utils
+open Cutils
+open Ocaml_common
 
 (** type variables *)
 

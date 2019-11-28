@@ -18,6 +18,7 @@
 /* The parser definition */
 
 %{
+open Ocaml_common
 module Pervasives = Stdlib
 (* In 4.08+dev, 'Pervasives' is deprecated in favor of Stdlib. We need
    to disable the deprecation warning not because of any OCaml code

@@ -16,6 +16,7 @@
 (* The lexer definition *)
 
 {
+open Ocaml_common
 open Lexing
 open Misc
 open Oparser

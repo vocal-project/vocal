@@ -11,7 +11,8 @@
 
 open Ttypes
 open Tterm
-open Utils
+open Cutils
+open Ocaml_common
 
 type coercion_kind =
   | CRCleaf of lsymbol

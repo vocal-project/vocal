@@ -21,6 +21,7 @@
 (* Extensive Rewrite: Hongbo Zhang: University of Pennsylvania *)
 (* TODO more fine-grained precedence pretty-printing *)
 
+open Ocaml_common
 open Oasttypes
 open Format
 open Location

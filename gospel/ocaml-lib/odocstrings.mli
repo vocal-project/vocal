@@ -13,6 +13,8 @@
 (*                                                                        *)
 (**************************************************************************)
 
+open Ocaml_common
+
 (** Documentation comments
 
   {b Warning:} this module is unstable and part of

@@ -20,6 +20,7 @@
 
 *)
 
+open Ocaml_common
 open Oasttypes
 open Odocstrings
 open Oparsetree

@@ -13,6 +13,8 @@
 (*                                                                        *)
 (**************************************************************************)
 
+open Ocaml_common
+
 (** The lexical analyzer
 
   {b Warning:} this module is unstable and part of

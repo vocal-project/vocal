@@ -8,6 +8,7 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
+open Ocaml_common
 open Identifier
 open Oasttypes
 open Oparsetree

@@ -8,10 +8,11 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-open Utils
+open Cutils
 open Identifier
 open Ttypes
 open Tterm
+open Ocaml_common
 
 (* types *)
 
@@ -71,7 +72,7 @@ let specialize_ls ls =
   let rec spec ty = match ty.ty_node with
     | Tyvar tv -> find_tv tv
     | Tyapp (ts,tyl) -> Tapp (ts,List.map spec tyl) in
-  List.map spec ls.ls_args, Utils.opmap spec ls.ls_value
+  List.map spec ls.ls_args, Cutils.opmap spec ls.ls_value
 
 exception ConstructorExpected of lsymbol
 

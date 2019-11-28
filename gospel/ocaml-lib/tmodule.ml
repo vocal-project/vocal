@@ -8,11 +8,12 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-open Utils
+open Cutils
 open Identifier
 open Ttypes
 open Tterm
 open Tast
+open Ocaml_common
 
 (** Namespace *)
 

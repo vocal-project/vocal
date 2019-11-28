@@ -8,6 +8,7 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
+open Ocaml_common
 open Oparser
 open Uattr2spec
 

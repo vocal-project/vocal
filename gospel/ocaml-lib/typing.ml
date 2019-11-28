@@ -8,13 +8,14 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-open Utils
+open Ocaml_common
+open Cutils
 open Identifier
 open Uast
 open Ttypes
 open Tmodule
 
-(** Utils *)
+(** Cutils *)
 
 let string_list_of_qualid q =
   let rec fold_q acc = function
@@ -728,7 +729,7 @@ let process_exception_sig loc ns te =
 
 type parse_env = {
     lpaths  : string list;  (* loading paths *)
-    parsing : Utils.Sstr.t; (* files being parsed *)
+    parsing : Cutils.Sstr.t; (* files being parsed *)
 }
 
 let penv lpaths parsing = {lpaths; parsing}

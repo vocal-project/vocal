@@ -47,7 +47,7 @@ module Term = struct
     | Tt.Texists -> Dterm.DTexists
     | Tt.Tlambda -> Dterm.DTlambda
 
-  let rec pattern pat =
+  let (* rec *) pattern pat =
     let loc = get_opt_default location dummy_loc pat.Tt.p_loc in
     let mk_pattern pat_desc = mk_pattern pat_desc loc in
     let p_node = function
@@ -137,6 +137,7 @@ let rec core_type Ot.{ ptyp_desc; ptyp_loc } =
       PTtyapp (longident (location loc) txt, List.map core_type ctl)
   | _ -> assert false (* TODO *)
 
+(*
 let val_decl vd g =
   let rec flat_ptarrow pty = match pty with
     | PTtyvar _ | PTtuple _ | PTtyapp _ -> [pty]
@@ -157,7 +158,9 @@ let val_decl vd g =
     | None   -> empty_spec
     | Some s -> spec s in
   let e_any =
-  Dlet (mk_ident vd.vd_name, g, Expr.RKnone,
+  Dlet (mk_ident vd.vd_name, g, Expr.RKnone, assert false (*TODO*)) in
+  assert false (*TODO*)
+ *)
 
 let signature_item i = match i.T.sig_desc with
   (* GOSPEL-modified decls *)
