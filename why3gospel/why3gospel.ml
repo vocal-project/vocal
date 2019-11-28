@@ -102,7 +102,7 @@ let read_channel env path file c =
        Typing.open_scope id.id_loc id;
        List.iter add_decl dl;
        Typing.close_scope ~import:false id.id_loc in
-  List.iter add_decl f;
+  List.iter add_decl (List.flatten f);
   close_module Loc.dummy_position;
   let mm = close_file () in
   (* TODO *)

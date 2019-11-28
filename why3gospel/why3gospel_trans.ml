@@ -31,6 +31,7 @@ let type_decl td = {
 
 module Term = struct
   module Tt = Gospel.Tterm
+  module Ty = Gospel.Ttypes
   module I  = Gospel.Identifier
 
   let mk_term term_desc term_loc =
@@ -54,6 +55,21 @@ module Term = struct
       | _ -> assert false (* TODO *) in
     mk_pattern (p_node pat.Tt.p_node)
 
+  let rec ty Ty.{ty_node} = match ty_node with
+    | Ty.Tyvar {tv_name} ->
+        PTtyvar (mk_id tv_name.id_str (location tv_name.id_loc))
+    | Ty.Tyapp ({ts_ident}, tyl) ->
+        let qualid = mk_id ts_ident.id_str (location ts_ident.id_loc) in
+        PTtyapp (Qident qualid, List.map ty tyl)
+
+  let binop = function
+    | Tt.Tand      -> Dterm.DTand
+    | Tt.Tand_asym -> Dterm.DTand_asym
+    | Tt.Tor       -> Dterm.DTor
+    | Tt.Tor_asym  -> Dterm.DTor_asym
+    | Tt.Timplies  -> Dterm.DTimplies
+    | Tt.Tiff      -> Dterm.DTiff
+
   let rec term t =
     let loc = get_opt_default location dummy_loc t.Tt.t_loc in
     let mk_term term_desc = mk_term term_desc loc in
@@ -71,9 +87,20 @@ module Term = struct
       | Tt.Tcase (t, pat_term_list) ->
           let f_pair (pat, t) = pattern pat, term t in
           Tcase (term t, List.map f_pair pat_term_list)
-      | Tt.Tquant (q, vs_list, trigger, t) -> assert false (* TODO *)
-          (* Tquant (quant q,  *)
-      | _ -> assert false (* TODO *) in
+      | Tt.Tquant (q, vs_list, trigger, t) ->
+          let mk_trigger t = List.map term t in
+          let trigger = List.map mk_trigger trigger in
+          let mk_binder vs = let loc = vs.Tt.vs_name.I.id_loc in
+            let id  = ident_of_vsymbol vs in
+            let pty = ty vs.vs_ty in
+            location loc, Some id, false, Some pty in
+          Tquant (quant q, List.map mk_binder vs_list, trigger, term t)
+      | Tt.Tbinop (op, t1, t2) ->
+          Tbinop (term t1, binop op, term t2)
+      | Tt.Tapp ({ls_name}, term_list) -> let loc = ls_name.I.id_loc in
+          let term_list = List.map term term_list in
+          let id = mk_id ls_name.I.id_str (location loc) in
+          Tidapp (Qident id, term_list) in
     mk_term (t_node t.Tt.t_node)
 end
 
@@ -105,7 +132,7 @@ let spec val_spec = Term.{
   (* TODO: for now, we ignore the [checks] preconditions *)
   sp_pre     = List.map (fun (t, _) -> term t) val_spec.T.sp_pre;
   sp_post    = List.map (fun p -> sp_post val_spec.sp_ret p) val_spec.sp_post;
-  sp_xpost   = assert false (* TODO *);
+  sp_xpost   = [] (* TODO *);
   sp_reads   = [];
   sp_writes  = List.map term val_spec.sp_wr;
   sp_alias   = [];
@@ -190,9 +217,9 @@ let val_decl vd g =
 let signature_item i = match i.T.sig_desc with
   (* GOSPEL-modified decls *)
   | T.Sig_val (vd, g) ->
-      Gdecl (val_decl vd g)
+      [Gdecl (val_decl vd g)]
   | T.Sig_type (_rec_flag, tdl, _gh) ->
-      Gdecl (Dtype (List.map type_decl tdl))
+      [Gdecl (Dtype (List.map type_decl tdl))]
   | T.Sig_typext _ (*  of Oparsetree.type_extension *) ->
       assert false (*TODO*)
   | T.Sig_module _ (*  of module_declaration *) ->
@@ -205,7 +232,7 @@ let signature_item i = match i.T.sig_desc with
   | T.Sig_exception _ (* of type_exception *) ->
       assert false (*TODO*)
   | T.Sig_open _ (* of open_description * ghost *) ->
-      assert false (*TODO*)
+      [] (*TODO*)
   | T.Sig_include _ (* of Oparsetree.include_description *) ->
       assert false (*TODO*)
   | T.Sig_class _ (* of Oparsetree.class_description list *) ->
@@ -220,8 +247,8 @@ let signature_item i = match i.T.sig_desc with
   | T.Sig_use _ (* of string *) ->
       assert false (*TODO*)
   | T.Sig_function _ (* of function_ *) ->
-      assert false (*TODO*)
+      [] (*TODO*)
   | T.Sig_axiom _ (* of axiom *) ->
-      assert false (*TODO*)
+      [] (*TODO*)
 
 let signature = List.map signature_item
