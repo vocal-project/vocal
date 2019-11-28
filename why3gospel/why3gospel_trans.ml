@@ -82,10 +82,13 @@ let rec longident loc = function
   | Longident.Ldot (t, s) -> Qdot (longident loc t, mk_id s loc)
   | _ -> assert false (* TODO? *)
 
-let mk_expr expr_desc loc =
-  { expr_desc; expr_loc = location loc }
+let mk_expr expr_desc expr_loc =
+  { expr_desc; expr_loc }
+
+let loc_of_vs vs = Term.(location vs.Tt.vs_name.I.id_loc)
 
 let ident_of_lb_arg lb = Term.ident_of_vsymbol (T.vs_of_lb_arg lb)
+let loc_of_lb_arg lb = loc_of_vs (T.vs_of_lb_arg lb)
 
 (** given the result type [sp_ret] of a function, a GOSPEL postcondition [post]
     (in the form of [term]), convert it into a Why3's [Ptree] postcondition of
@@ -138,62 +141,91 @@ let rec core_type Ot.{ ptyp_desc; ptyp_loc } =
   | _ -> assert false (* TODO *)
 
 let val_decl vd g =
-  let rec flat_ptarrow pty = match pty with
-    | PTtyvar _ | PTtuple _ | PTtyapp _ -> [pty]
-    | PTarrow (t1, t2) -> flat_ptarrow t1 @ flat_ptarrow t2
+  let rec flat_ptyp_arrow ct = match ct.Ot.ptyp_desc with
+    | Ot.Ptyp_var _ | Ptyp_tuple _ | Ptyp_constr _ -> [ct]
+    | Ot.Ptyp_arrow (_, t1, t2) -> flat_ptyp_arrow t1 @ flat_ptyp_arrow t2
     | _ -> assert false (* TODO *) in
-  let mk_pre_param lb_arg =
+  let mk_param lb_arg ct =
     let loc = Term.(location (T.vs_of_lb_arg lb_arg).vs_name.I.id_loc) in
-    let id_ghost = match lb_arg with
-      | Lnone _ | Lquestion _ | Lnamed _ ->
-          Some (ident_of_lb_arg lb_arg), false
-      | Lghost _ -> Some (ident_of_lb_arg lb_arg), true in
-    let id, ghost = id_ghost in
-    loc, id, ghost in
-  (* TODO: when there is no spec, we shall create a Why3's [val] with nameless
-     arguments, i.e., we give only the types of the arguments. *)
-  let pre_param_list = assert false in
-  let spec = match vd.vd_spec with
-    | None   -> empty_spec
-    | Some s -> spec s in
-  let e_any =
-  Dlet (mk_ident vd.vd_name, g, Expr.RKnone,
+    let id, ghost = match lb_arg with
+      | Lnone _  -> Some (ident_of_lb_arg lb_arg), false
+      | Lghost _ -> Some (ident_of_lb_arg lb_arg), true
+      | _ -> assert false in
+    loc, id, ghost, core_type ct in
+  let mk_param_no_spec ct =
+    let loc = location ct.Ot.ptyp_loc in
+    loc, None, false, core_type ct in
+  let param_list, ret, pat, mask, spec =
+    let core_ty_list = flat_ptyp_arrow vd.T.vd_type in
+    let core_ty_list, last = Lists.chop_last core_ty_list in
+    let param_list, pat, mask, spec = match vd.T.vd_spec with
+    | None -> let param_list = List.map mk_param_no_spec core_ty_list in
+        (* when there is no specification, there is no pattern
+           in the return tuple *)
+        let pat = Term.mk_pattern Pwild (location last.Ot.ptyp_loc) in
+        param_list, pat, Ity.MaskVisible, empty_spec
+    | Some s -> let param_list = List.map2 mk_param s.T.sp_args core_ty_list in
+        let mk_pat lb = let loc = loc_of_lb_arg lb in
+          Term.mk_pattern (Pvar (ident_of_lb_arg lb)) loc in
+        let mk_mask = function
+          | T.Lnone  _ -> Ity.MaskVisible
+          | T.Lghost _ -> Ity.MaskGhost
+          | _          -> assert false in
+        let pat, mask = begin match s.T.sp_ret with
+          | [(Lnone vs) as lb] -> let loc = loc_of_vs vs in
+              let pat = Term.mk_pattern (Pvar (ident_of_lb_arg lb)) loc in
+              pat, Ity.MaskVisible
+          | [(Lghost vs) as lb] -> let loc = loc_of_vs vs in
+              let pat = Term.mk_pattern (Pvar (ident_of_lb_arg lb)) loc in
+              pat, Ity.MaskGhost
+          | lb_list -> let pat_list = List.map mk_pat lb_list in
+              let mask_list = List.map mk_mask lb_list in
+              let loc  = location vd.T.vd_loc (* TODO: better location? *) in
+              let pat  = Term.mk_pattern (Ptuple pat_list) loc in
+              let mask = Ity.MaskTuple mask_list in
+              pat, mask end in
+        param_list, pat, mask, spec s in
+    param_list, Some (core_type last), pat, mask, spec in
+  let e_any  = Eany (param_list, Expr.RKnone, ret, mask, spec) in
+  let e_any  = mk_expr e_any (location vd.T.vd_loc) in
+  let id_loc = location vd.vd_name.id_loc in
+  Dlet (mk_id vd.vd_name.id_str id_loc, g, Expr.RKnone, e_any)
 
 let signature_item i = match i.T.sig_desc with
   (* GOSPEL-modified decls *)
   | T.Sig_val (vd, g) (* of val_description * ghost *) ->
-     assert false (*TODO*)
+      Gdecl (val_decl vd g)
   | T.Sig_type (_rec_flag, tdl, _gh) ->
-     Gdecl (Dtype (List.map type_decl tdl))
+      Gdecl (Dtype (List.map type_decl tdl))
   | T.Sig_typext _ (*  of Oparsetree.type_extension *) ->
-     assert false (*TODO*)
+      assert false (*TODO*)
   | T.Sig_module _ (*  of module_declaration *) ->
-     assert false (*TODO*)
+      assert false (*TODO*)
   | T.Sig_recmodule _ (* of module_declaration list *) ->
-     assert false (*TODO*)
+      assert false (*TODO*)
   | T.Sig_modtype _ (*  of module_type_declaration *) ->
-     assert false (*TODO*)
+      assert false (*TODO*)
   (* OCaml decls *)
   | T.Sig_exception _ (* of type_exception *) ->
-     assert false (*TODO*)
+      assert false (*TODO*)
   | T.Sig_open _ (* of open_description * ghost *) ->
-     assert false (*TODO*)
+      assert false (*TODO*)
   | T.Sig_include _ (* of Oparsetree.include_description *) ->
-     assert false (*TODO*)
+      assert false (*TODO*)
   | T.Sig_class _ (* of Oparsetree.class_description list *) ->
-     assert false (*TODO*)
+      assert false (*TODO*)
   | T.Sig_class_type _ (* of Oparsetree.class_type_declaration list *) ->
-     assert false (*TODO*)
+      assert false (*TODO*)
   | T.Sig_attribute _ (* of Oparsetree.attribute *) ->
-     assert false (*TODO*)
+      assert false (*TODO*)
   | T.Sig_extension _ (* of Oparsetree.extension * Oparsetree.attributes *) ->
-     assert false (*TODO*)
+      assert false (*TODO*)
   (* GOSPEL-specific decls *)
   | T.Sig_use _ (* of string *) ->
-     assert false (*TODO*)
+      assert false (*TODO*)
   | T.Sig_function _ (* of function_ *) ->
-     assert false (*TODO*)
+      assert false (*TODO*)
   | T.Sig_axiom _ (* of axiom *) ->
-     assert false (*TODO*)
+      assert false (*TODO*)
 
 let signature = List.map signature_item
