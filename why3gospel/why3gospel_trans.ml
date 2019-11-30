@@ -16,6 +16,10 @@ let dummy_loc = Loc.dummy_position
 let get_opt_default f d = function None -> d | Some x -> f x
 
 let mk_id id_str id_loc =
+  let id_str = match id_str with
+    | "mixfix [_]" -> "mixfix []"
+    (* FIXME: many other cases; see src/core/ident.ml in Why3 sources *)
+    | _ -> id_str in
   { id_str; id_ats = []; id_loc }
 
 let type_decl td = {
