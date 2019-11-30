@@ -76,10 +76,15 @@ module Term = struct
     let t_node = function
       | Tt.Ttrue    -> Ttrue
       | Tt.Tfalse   -> Tfalse
-      | Tt.Tconst c -> assert false (* TODO *)
       | Tt.Tvar vs  -> Tident (Qident (ident_of_vsymbol vs))
       | Tt.Tnot t   -> Tnot (term t)
       | Tt.Told t   -> Tat (term t, mk_id Dexpr.old_label loc)
+      | Tt.Tconst c -> begin match c with
+          | Pconst_integer (s, None) ->
+              (* FIXME: check that negative parameter *)
+              let n = Number.(int_literal ILitDec ~neg:false s) in
+              Tconst (Constant.ConstInt n)
+          | _ -> assert false (* TODO *) end
       | Tt.Tif (t1, t2, t3) ->
           Tif (term t1, term t2, term t3)
       | Tt.Tlet (vs, t1, t2) ->
@@ -112,29 +117,55 @@ let rec longident loc = function
 let mk_expr expr_desc expr_loc =
   { expr_desc; expr_loc }
 
+let mk_logic_decl ld_loc ld_ident ld_params ld_type ld_def =
+  { ld_loc; ld_ident; ld_params; ld_type = ld_type; ld_def }
+
 let loc_of_vs vs = Term.(location vs.Tt.vs_name.I.id_loc)
 
 let ident_of_lb_arg lb = Term.ident_of_vsymbol (T.vs_of_lb_arg lb)
 let loc_of_lb_arg lb = loc_of_vs (T.vs_of_lb_arg lb)
 
-(** given the result type [sp_ret] of a function and a GOSPEL postcondition
-    [post] (in the form of [term]), convert it into a Why3's [Ptree]
-    postcondition of the form [Loc.position * (pattern * term)] *)
+(** Given the result type [sp_ret] of a function and a GOSPEL postcondition
+    [post] (in the form of [term]), convert it into a Why3's Ptree
+    postcondition of the form [Loc.position * (pattern * term)]. *)
 let sp_post sp_ret post =
-  let pvar_of_lb_arg_list lb_arg_list =
-    let mk_pvar lb = (* create a [Pvar] pattern out of a [Tt.lb_arg] *)
-      Term.mk_pattern (Pvar (ident_of_lb_arg lb)) dummy_loc in
-    List.map mk_pvar lb_arg_list in
-  let pat = Term.mk_pattern (Ptuple (pvar_of_lb_arg_list sp_ret)) dummy_loc in
-  dummy_loc, [pat, Term.term post]
+  let mk_post post =
+    let pvar_of_lb_arg_list lb_arg_list =
+      let mk_pvar lb = (* create a [Pvar] pattern out of a [Tt.lb_arg] *)
+        Term.mk_pattern (Pvar (ident_of_lb_arg lb)) dummy_loc in
+      List.map mk_pvar lb_arg_list in
+    let pat = match pvar_of_lb_arg_list sp_ret with
+      | [p] -> p
+      | pl  -> Term.mk_pattern (Ptuple pl) dummy_loc in
+    dummy_loc, [pat, Term.term post] in
+  List.map mk_post post
 
-let spec val_spec = Term.{
+open Term
+
+(** Convert a GOSPEL exception postcondition of the form
+    [(pattern * post) list Mxs.t] into a Why3's Ptree exceptional
+    postcondition of the form
+    [Loc.position * (qualid * (pattern * term) option) list]. *)
+let sp_xpost xpost =
+  let mk_xpost_list xs pat_post_list acc =
+    let loc = xs.Ty.xs_ident.I.id_loc in
+    let mk_xpost (_pat, post) =
+      let q = Qident (mk_id xs.Ty.xs_ident.I.id_str (location loc)) in
+      let post = term post in
+      q, Some (mk_pattern (Ptuple []) dummy_loc, post) in
+    (location loc, List.map mk_xpost pat_post_list) :: acc in
+  Ty.Mxs.fold mk_xpost_list xpost []
+
+let sp_writes writes =
+  List.map term writes
+
+let spec val_spec = {
   (* TODO: for now, we ignore the [checks] preconditions *)
   sp_pre     = List.map (fun (t, _) -> term t) val_spec.T.sp_pre;
-  sp_post    = List.map (fun p -> sp_post val_spec.sp_ret p) val_spec.sp_post;
-  sp_xpost   = [] (* TODO *);
+  sp_post    = sp_post val_spec.sp_ret val_spec.sp_post;
+  sp_xpost   = sp_xpost val_spec.sp_xpost;
   sp_reads   = [];
-  sp_writes  = List.map term val_spec.sp_wr;
+  sp_writes  = sp_writes val_spec.sp_wr;
   sp_alias   = [];
   sp_variant = [];
   sp_checkrw = false;
@@ -167,6 +198,7 @@ let rec core_type Ot.{ ptyp_desc; ptyp_loc } =
       PTtyapp (longident (location loc) txt, List.map core_type ctl)
   | _ -> assert false (* TODO *)
 
+(** Convert GOSPEL val declarations into Why3's Ptree [val] declarations. *)
 let val_decl vd g =
   let rec flat_ptyp_arrow ct = match ct.Ot.ptyp_desc with
     | Ot.Ptyp_var _ | Ptyp_tuple _ | Ptyp_constr _ -> [ct]
@@ -214,6 +246,29 @@ let val_decl vd g =
   let id_loc = location vd.vd_name.id_loc in
   Dlet (mk_id vd.vd_name.id_str id_loc, g, Expr.RKnone, e_any)
 
+(** Convert GOSPEL logical declaration (function or predicate) into
+     Why3's Ptree logical declaration. *)
+let function_ (T.{fun_ls = Tt.{ls_name; ls_value}} as f) =
+  let loc = location f.T.fun_loc in
+  let id_loc = location ls_name.I.id_loc in
+  let id = mk_id ls_name.I.id_str id_loc in
+  let mk_param Tt.{vs_name; vs_ty} =
+    let loc = location vs_name.I.id_loc in
+    let id  = mk_id vs_name.I.id_str loc in
+    let pty = ty vs_ty in
+    loc, Some id, false, pty in
+  let params = List.map mk_param f.fun_params in
+  let pty = Opt.map ty ls_value in
+  let term = Opt.map term f.T.fun_def in
+  Dlogic [mk_logic_decl loc id params pty term]
+
+(** Convert GOSPEL axioms into Why3's Ptree axioms. *)
+let axiom T.{ax_name; ax_term} =
+  let id_loc = location ax_name.I.id_loc in
+  let id = mk_id ax_name.I.id_str id_loc in
+  let term = term ax_term in
+  Dprop (Decl.Paxiom, id, term)
+
 let signature_item i = match i.T.sig_desc with
   (* GOSPEL-modified decls *)
   | T.Sig_val (vd, g) ->
@@ -232,6 +287,8 @@ let signature_item i = match i.T.sig_desc with
   | T.Sig_exception _ (* of type_exception *) ->
       assert false (*TODO*)
   | T.Sig_open _ (* of open_description * ghost *) ->
+      (* The GOSPEL standard library is opened by default. For now, we chose to
+         ignore it and will make a work-around with a custom Why3 file. *)
       [] (*TODO*)
   | T.Sig_include _ (* of Oparsetree.include_description *) ->
       assert false (*TODO*)
@@ -246,9 +303,9 @@ let signature_item i = match i.T.sig_desc with
   (* GOSPEL-specific decls *)
   | T.Sig_use _ (* of string *) ->
       assert false (*TODO*)
-  | T.Sig_function _ (* of function_ *) ->
-      [] (*TODO*)
-  | T.Sig_axiom _ (* of axiom *) ->
-      [] (*TODO*)
+  | T.Sig_function f ->
+      [Gdecl (function_ f)]
+  | T.Sig_axiom ax ->
+      [Gdecl (axiom ax)] (*TODO*)
 
 let signature = List.map signature_item

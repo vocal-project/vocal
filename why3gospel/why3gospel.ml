@@ -19,11 +19,12 @@ let use ?(import=false) q =
   let id = match q with Qident id | Qdot (_, id) -> id in
   let loc = id.id_loc in
   Typing.open_scope loc id;
-  Typing.add_decl loc (Dimport q); (*FIXME? Is this the good import decl? *)
+  let use_import = Duseimport (loc, import, [q, None]) in
+  Typing.add_decl loc use_import;
   Typing.close_scope loc ~import
 
 let use_ocaml loc =
-  use ~import:true (Qdot (Qident (mk_id ~loc "ocaml"), mk_id ~loc "OCaml"))
+  use ~import:true (Qdot (Qident (mk_id ~loc "array"), mk_id ~loc "Array"))
 
 let read_file file nm c =
   let lb = Lexing.from_channel c in
@@ -82,6 +83,19 @@ let type_check name nm sigs =
   let md = List.fold_left (Gospel.Typing.type_sig_item penv) md sigs in
   Gospel.Tmodule.wrap_up_muc md
 
+let use_import =
+  let q0 = Qdot (Qident (mk_id "int"), mk_id "Int") in
+  let q = Qdot (Qdot (Qident (mk_id "mach"), mk_id "array"), mk_id "Array63") in
+  let q2 = Qdot (Qident (mk_id "seq"), mk_id "Seq") in
+  let q3 = Qdot (Qident (mk_id "ocaml"), mk_id "Exceptions") in
+  let q4 = Qdot (Qident (mk_id "integer"), mk_id "Integer") in
+  let use0 = Duseimport (Loc.dummy_position, false, [q0, None]) in
+  let use = Duseimport (Loc.dummy_position, false, [q, None]) in
+  let use2 = Duseimport (Loc.dummy_position, false, [q2, None]) in
+  let use3 = Duseimport (Loc.dummy_position, false, [q3, None]) in
+  let use4 = Duseimport (Loc.dummy_position, false, [q4, None]) in
+  [Gdecl use0; Gdecl use; Gdecl use2; Gdecl use3; Gdecl use4]
+
 let read_channel env path file c =
   if !debug then eprintf "reading file '%s'@." file;
   (* let extra_uses, extra_vals = read_extra_file file in *)
@@ -102,7 +116,12 @@ let read_channel env path file c =
        Typing.open_scope id.id_loc id;
        List.iter add_decl dl;
        Typing.close_scope ~import:false id.id_loc in
-  List.iter add_decl (List.flatten f);
+  let f = List.flatten f in
+  let f = use_import @ f in
+  List.iter (fun d -> match d with
+      | Gdecl d -> Format.eprintf "%a@." Mlw_printer.pp_decl d
+      | _ -> assert false) f;
+  List.iter add_decl (f);
   close_module Loc.dummy_position;
   let mm = close_file () in
   (* TODO *)
