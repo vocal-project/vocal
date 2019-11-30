@@ -83,18 +83,15 @@ let type_check name nm sigs =
   let md = List.fold_left (Gospel.Typing.type_sig_item penv) md sigs in
   Gospel.Tmodule.wrap_up_muc md
 
-let use_import =
-  let q0 = Qdot (Qident (mk_id "int"), mk_id "Int") in
-  let q = Qdot (Qdot (Qident (mk_id "mach"), mk_id "array"), mk_id "Array63") in
-  let q2 = Qdot (Qident (mk_id "seq"), mk_id "Seq") in
-  let q3 = Qdot (Qident (mk_id "ocaml"), mk_id "Exceptions") in
-  let q4 = Qdot (Qident (mk_id "integer"), mk_id "Integer") in
-  let use0 = Duseimport (Loc.dummy_position, false, [q0, None]) in
-  let use = Duseimport (Loc.dummy_position, false, [q, None]) in
-  let use2 = Duseimport (Loc.dummy_position, false, [q2, None]) in
-  let use3 = Duseimport (Loc.dummy_position, false, [q3, None]) in
-  let use4 = Duseimport (Loc.dummy_position, false, [q4, None]) in
-  [Gdecl use0; Gdecl use; Gdecl use2; Gdecl use3; Gdecl use4]
+let use_vocal =
+  let vocal = Qdot (Qident (mk_id "vocal"), mk_id "Vocal") in
+  let array =
+    Qdot (Qdot (Qident (mk_id "mach"), mk_id "array"), mk_id "Array63") in
+  let seq = Qdot (Qident (mk_id "seq"), mk_id "Seq") in
+  let use_vocal = Duseimport (Loc.dummy_position, false, [vocal, None]) in
+  let use_array = Duseimport (Loc.dummy_position, false, [array, None]) in
+  let use_seq = Duseimport (Loc.dummy_position, false, [seq, None]) in
+  [Gdecl use_vocal; Gdecl use_array; Gdecl use_seq]
 
 let read_channel env path file c =
   if !debug then eprintf "reading file '%s'@." file;
@@ -116,12 +113,12 @@ let read_channel env path file c =
        Typing.open_scope id.id_loc id;
        List.iter add_decl dl;
        Typing.close_scope ~import:false id.id_loc in
-  let f = List.flatten f in
-  let f = use_import @ f in
-  List.iter (fun d -> match d with
-      | Gdecl d -> Format.eprintf "%a@." Mlw_printer.pp_decl d
-      | _ -> assert false) f;
-  List.iter add_decl (f);
+  let f = use_vocal @ List.flatten f in
+  (* For debugging only: *)
+  (* List.iter (fun d -> match d with
+   *     | Gdecl d -> Format.eprintf "%a@." Mlw_printer.pp_decl d
+   *     | _ -> assert false) f; *)
+  List.iter add_decl f;
   close_module Loc.dummy_position;
   let mm = close_file () in
   (* TODO *)

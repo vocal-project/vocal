@@ -62,6 +62,18 @@ module Term = struct
         let qualid = mk_id ts_ident.id_str (location ts_ident.id_loc) in
         PTtyapp (Qident qualid, List.map ty tyl)
 
+  let binder_of_vsymbol vs =
+    let loc = vs.Tt.vs_name.I.id_loc in
+    let id  = ident_of_vsymbol vs in
+    let pty = ty vs.vs_ty in
+    location loc, Some id, false, Some pty
+
+  let param_of_vsymbol Tt.{vs_name; vs_ty} =
+    let loc = location vs_name.I.id_loc in
+    let id  = mk_id vs_name.I.id_str loc in
+    let pty = ty vs_ty in
+    loc, Some id, false, pty
+
   let binop = function
     | Tt.Tand      -> Dterm.DTand
     | Tt.Tand_asym -> Dterm.DTand_asym
@@ -81,7 +93,7 @@ module Term = struct
       | Tt.Told t   -> Tat (term t, mk_id Dexpr.old_label loc)
       | Tt.Tconst c -> begin match c with
           | Pconst_integer (s, None) ->
-              (* FIXME: check that negative parameter *)
+              (* FIXME: check that [neg] parameter *)
               let n = Number.(int_literal ILitDec ~neg:false s) in
               Tconst (Constant.ConstInt n)
           | _ -> assert false (* TODO *) end
@@ -95,11 +107,7 @@ module Term = struct
       | Tt.Tquant (q, vs_list, trigger, t) ->
           let mk_trigger t = List.map term t in
           let trigger = List.map mk_trigger trigger in
-          let mk_binder vs = let loc = vs.Tt.vs_name.I.id_loc in
-            let id  = ident_of_vsymbol vs in
-            let pty = ty vs.vs_ty in
-            location loc, Some id, false, Some pty in
-          Tquant (quant q, List.map mk_binder vs_list, trigger, term t)
+          Tquant (quant q, List.map binder_of_vsymbol vs_list, trigger, term t)
       | Tt.Tbinop (op, t1, t2) ->
           Tbinop (term t1, binop op, term t2)
       | Tt.Tapp ({ls_name}, term_list) -> let loc = ls_name.I.id_loc in
@@ -252,12 +260,7 @@ let function_ (T.{fun_ls = Tt.{ls_name; ls_value}} as f) =
   let loc = location f.T.fun_loc in
   let id_loc = location ls_name.I.id_loc in
   let id = mk_id ls_name.I.id_str id_loc in
-  let mk_param Tt.{vs_name; vs_ty} =
-    let loc = location vs_name.I.id_loc in
-    let id  = mk_id vs_name.I.id_str loc in
-    let pty = ty vs_ty in
-    loc, Some id, false, pty in
-  let params = List.map mk_param f.fun_params in
+  let params = List.map param_of_vsymbol f.fun_params in
   let pty = Opt.map ty ls_value in
   let term = Opt.map term f.T.fun_def in
   Dlogic [mk_logic_decl loc id params pty term]
