@@ -1,3 +1,12 @@
+(**************************************************************************)
+(*                                                                        *)
+(*  GOSPEL -- A Specification Language for OCaml                          *)
+(*                                                                        *)
+(*  Copyright (c) 2018- The VOCaL Project                                 *)
+(*                                                                        *)
+(*  This software is free software, distributed under the MIT license     *)
+(*  (as described in file LICENSE enclosed).                              *)
+(**************************************************************************)
 
 open Format
 open Why3
@@ -83,15 +92,15 @@ let type_check name nm sigs =
   let md = List.fold_left (Gospel.Typing.type_sig_item penv) md sigs in
   Gospel.Tmodule.wrap_up_muc md
 
-let use_vocal =
-  let vocal = Qdot (Qident (mk_id "vocal"), mk_id "Vocal") in
+let use_gospel =
+  let gospel = Qdot (Qident (mk_id "gospel"), mk_id "Gospel") in
   let array =
     Qdot (Qdot (Qident (mk_id "mach"), mk_id "array"), mk_id "Array63") in
   let seq = Qdot (Qident (mk_id "seq"), mk_id "Seq") in
-  let use_vocal = Duseimport (Loc.dummy_position, false, [vocal, None]) in
+  let use_gospel = Duseimport (Loc.dummy_position, false, [gospel, None]) in
   let use_array = Duseimport (Loc.dummy_position, false, [array, None]) in
   let use_seq = Duseimport (Loc.dummy_position, false, [seq, None]) in
-  [Gdecl use_vocal; Gdecl use_array; Gdecl use_seq]
+  [Gdecl use_gospel; Gdecl use_array; Gdecl use_seq]
 
 let read_channel env path file c =
   if !debug then eprintf "reading file '%s'@." file;
@@ -113,7 +122,7 @@ let read_channel env path file c =
        Typing.open_scope id.id_loc id;
        List.iter add_decl dl;
        Typing.close_scope ~import:false id.id_loc in
-  let f = use_vocal @ List.flatten f in
+  let f = use_gospel @ List.flatten f in
   (* For debugging only: *)
   (* List.iter (fun d -> match d with
    *     | Gdecl d -> Format.eprintf "%a@." Mlw_printer.pp_decl d
