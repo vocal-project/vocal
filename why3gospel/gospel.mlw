@@ -18,6 +18,9 @@ module Gospel
 
   type integer = int
 
+  use int.ComputerDivision    (* FIXME? Euclidean division instead *)
+  function (/) (x y: int) : int = div x y
+
   (* TODO: many things are missing.
      See file ../gospel/stdlib/gospelstdlib.mli *)
 
