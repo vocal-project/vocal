@@ -56,16 +56,24 @@ module Term = struct
   let ident_of_vsymbol Tt.{vs_name = name} =
     mk_id name.I.id_str (location name.I.id_loc)
 
+  let ident_of_lsymbol Tt.{ls_name = name} =
+    mk_id name.I.id_str (location name.I.id_loc)
+
   let quant = function
     | Tt.Tforall -> Dterm.DTforall
     | Tt.Texists -> Dterm.DTexists
     | Tt.Tlambda -> Dterm.DTlambda
 
-  let (* rec *) pattern pat =
+  let rec pattern pat =
     let loc = get_opt_default location dummy_loc pat.Tt.p_loc in
     let mk_pattern pat_desc = mk_pattern pat_desc loc in
     let p_node = function
-      | _ -> assert false (* TODO *) in
+      | Tt.Pwild        -> Pwild
+      | Tt.Pvar vs      -> Pvar (ident_of_vsymbol vs)
+      | Tt.Por (p1, p2) -> Por (pattern p1, pattern p2)
+      | Tt.Pas (p, vs)  -> Pas (pattern p, ident_of_vsymbol vs, false)
+      | Tt.Papp (ls, pat_list) ->
+          Papp (Qident (ident_of_lsymbol ls), List.map pattern pat_list) in
     mk_pattern (p_node pat.Tt.p_node)
 
   let rec ty Ty.{ty_node} = match ty_node with
