@@ -1,23 +1,23 @@
-module ZipperClient
+(* module ZipperClient *)
 
-  clone import ZipperList.Sig as Z (* functor arg *)
+(*   clone import ZipperList.Sig as Z (\* functor arg *\) *)
 
-  use int.Int
-  use list.List
-  use list.Length
-  use import seq.Seq as S
-  use seq.OfList
+(*   use int.Int *)
+(*   use list.List *)
+(*   use list.Length *)
+(*   use import seq.Seq as S *)
+(*   use seq.OfList *)
 
-  let list_length (l: list 'a) : int
-    ensures { result = length l }
-  = let rec aux (z: t 'a) : int
-      requires { S.(==) z.seq l }
-      variant  { S.length z.seq - z.idx }
-      ensures  { result = S.length z.seq - z.idx }
-    = if Z.is_focused z then 1 + aux (Z.move_right z) else 0
-    in aux (Z.make l)
+(*   let list_length (l: list 'a) : int *)
+(*     ensures { result = length l } *)
+(*   = let rec aux (z: t 'a) : int *)
+(*       requires { S.(==) z.seq l } *)
+(*       variant  { S.length z.seq - z.idx } *)
+(*       ensures  { result = S.length z.seq - z.idx } *)
+(*     = if Z.is_focused z then 1 + aux (Z.move_right z) else 0 *)
+(*     in aux (Z.make l) *)
 
-end
+(* end *)
 
 module ZipperType
 
@@ -225,28 +225,29 @@ module Impl
 
 end
 
-module ZipperCorrect
-  use ZipperType
-  use Impl
+(* TODO: perform refinement proof with the new version of the plugin. *)
+(* module ZipperCorrect *)
+(*   use ZipperType *)
+(*   use Impl *)
 
-  clone ZipperList.Sig with
-    type t = t,
-    val is_empty = is_empty,
-    val empty = empty,
-    val move_left = move_left,
-    val move_right = move_right,
-    val length = length,
-    val is_focused = is_focused,
-    val focused = focused,
-    val make = make,
-    val to_list = to_list,
-    val remove_right = remove_right,
-    val remove_left = remove_left,
-    val insert_right = insert_right,
-    val insert_left = insert_left,
-    val move_all_left = move_all_left,
-    val move_all_right = move_all_right
-end
+(*   clone ZipperList.Sig with *)
+(*     type t = t, *)
+(*     val is_empty = is_empty, *)
+(*     val empty = empty, *)
+(*     val move_left = move_left, *)
+(*     val move_right = move_right, *)
+(*     val length = length, *)
+(*     val is_focused = is_focused, *)
+(*     val focused = focused, *)
+(*     val make = make, *)
+(*     val to_list = to_list, *)
+(*     val remove_right = remove_right, *)
+(*     val remove_left = remove_left, *)
+(*     val insert_right = insert_right, *)
+(*     val insert_left = insert_left, *)
+(*     val move_all_left = move_all_left, *)
+(*     val move_all_right = move_all_right *)
+(* end *)
 
 (*
  * Local Variables:

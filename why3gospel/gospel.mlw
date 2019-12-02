@@ -24,4 +24,37 @@ module Gospel
   (* TODO: many things are missing.
      See file ../gospel/stdlib/gospelstdlib.mli *)
 
+  scope Order
+
+    use int.Int
+    use mach.int.Int63
+
+    predicate is_pre_order (cmp: 'a -> 'a -> int63) =
+      (forall x. cmp x x = 0) /\
+      (forall x y. cmp x y = 0 <-> cmp y x = 0) /\
+      (forall x y. cmp x y < 0 <-> cmp y x > 0) /\
+      (forall x y z.
+        (cmp x y = 0 -> cmp y z = 0 -> cmp x z = 0) /\
+        (cmp x y = 0 -> cmp y z < 0 -> cmp x z < 0) /\
+        (cmp x y < 0 -> cmp y z = 0 -> cmp x z < 0) /\
+        (cmp x y < 0 -> cmp y z < 0 -> cmp x z < 0))
+
+  end
+
+  scope Comparable
+
+    use int.Int
+    use Order
+    use mach.int.Int63
+
+    type t
+
+    val function compare t t : int63
+
+    axiom is_pre_order: is_pre_order compare
+
+    predicate le (x y: t) = compare x y <= 0
+
+  end
+
 end

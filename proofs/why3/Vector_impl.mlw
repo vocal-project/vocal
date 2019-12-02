@@ -93,7 +93,6 @@ module Impl
 
   let unsafe_resize (a: t 'a) (n: int63) : unit
     requires { 0 <= n <= max_array_length }
-    writes   { a.data, a.size, a.data.elts, a.view }
     ensures  { n = a.size }
     ensures  { forall i. 0 <= i < MinMax.min ((old a).size) n ->
                  Seq.([]) a.view i = Seq.([]) (old a).view i }
@@ -127,7 +126,6 @@ module Impl
     a.size <- n
 
   let resize (a: t 'a) (n: int63) : unit
-    writes   { a.data, a.size, a.data.elts, a.view }
     ensures  { n = a.size }
     ensures  { forall i. 0 <= i < MinMax.min ((old a).size) n ->
                  Seq.([]) a.view i = Seq.([]) (old a).view i }
@@ -138,7 +136,6 @@ module Impl
   (** Array interface *)
 
   let clear (a: t 'a) : unit
-    writes   { a.data.elts, a.size, a.data, a.view }
     ensures  { a.size = 0 }
   = unsafe_resize a zero
 
@@ -385,45 +382,45 @@ module Impl
 
 end
 
-module Correct
+(* module Correct *)
 
-  use int.Int
-  use seq.Seq
-  use seq.OfList
-  use list.Nth
-  use option.Option
+(*   use int.Int *)
+(*   use seq.Seq *)
+(*   use seq.OfList *)
+(*   use list.Nth *)
+(*   use option.Option *)
 
-  use Impl
+(*   use Impl *)
 
-  clone Vector.Sig with
-    type t = t,
-    val create = create,
-    val make = make,
-    val init = init,
-    val resize = resize,
-    val unsafe_resize = unsafe_resize,
-    val clear = clear,
-    val is_empty = is_empty,
-    val length = length,
-    val get = get,
-    val set = set,
-    val sub = sub,
-    val fill = fill,
-    val blit = blit,
-    val append = append,
-    val merge_right = merge_right,
-    val map = map,
-    val mapi = mapi,
-    val copy = copy,
-    val fold_left = fold_left,
-    val fold_right = fold_right,
-    val push = push,
-    val pop = pop,
-    val pop_opt = pop_opt,
-    val top = top,
-    val top_opt = top_opt
+(*   clone Vector.Sig with *)
+(*     type t = t, *)
+(*     val create = create, *)
+(*     val make = make, *)
+(*     val init = init, *)
+(*     val resize = resize, *)
+(*     val unsafe_resize = unsafe_resize, *)
+(*     val clear = clear, *)
+(*     val is_empty = is_empty, *)
+(*     val length = length, *)
+(*     val get = get, *)
+(*     val set = set, *)
+(*     val sub = sub, *)
+(*     val fill = fill, *)
+(*     val blit = blit, *)
+(*     val append = append, *)
+(*     val merge_right = merge_right, *)
+(*     val map = map, *)
+(*     val mapi = mapi, *)
+(*     val copy = copy, *)
+(*     val fold_left = fold_left, *)
+(*     val fold_right = fold_right, *)
+(*     val push = push, *)
+(*     val pop = pop, *)
+(*     val pop_opt = pop_opt, *)
+(*     val top = top, *)
+(*     val top_opt = top_opt *)
 
-end
+(* end *)
 
 (*
  * Local Variables:

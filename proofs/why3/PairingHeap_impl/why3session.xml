@@ -1,161 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
 "http://why3.lri.fr/why3session.dtd">
-<why3session shape_version="5">
-<prover id="1" name="Z3" version="4.5.0" timelimit="1" steplimit="0" memlimit="1000"/>
-<prover id="2" name="Z3" version="4.4.0" timelimit="5" steplimit="0" memlimit="1000"/>
+<why3session shape_version="8">
+<prover id="0" name="Alt-Ergo" version="2.3.0" timelimit="1" steplimit="0" memlimit="1000"/>
 <prover id="3" name="CVC4" version="1.5" timelimit="1" steplimit="0" memlimit="1000"/>
-<prover id="4" name="Alt-Ergo" version="2.2.0" timelimit="5" steplimit="0" memlimit="1000"/>
-<file name="../PairingHeap_impl.mlw" proved="true">
+<file format="whyml" proved="true">
+<path name=".."/><path name="PairingHeap_impl.mlw"/>
 <theory name="Impl" proved="true">
  <goal name="Make.le_roots_trans" proved="true">
  <transf name="induction_ty_lex" proved="true" >
   <goal name="le_roots_trans.0" proved="true">
-  <proof prover="4"><result status="valid" time="0.19" steps="265"/></proof>
+  <proof prover="0"><result status="valid" time="0.17" steps="257"/></proof>
   </goal>
  </transf>
  </goal>
- <goal name="Make.VC size_heap_nonneg" expl="VC for size_heap_nonneg" proved="true">
- <proof prover="4"><result status="valid" time="0.02" steps="80"/></proof>
+ <goal name="Make.size_heap_nonneg&#39;vc" expl="VC for size_heap_nonneg" proved="true">
+ <proof prover="3"><result status="valid" time="0.14" steps="13077"/></proof>
  </goal>
- <goal name="Make.VC size_heap_list_nonneg" expl="VC for size_heap_list_nonneg" proved="true">
- <proof prover="4"><result status="valid" time="0.02" steps="99"/></proof>
+ <goal name="Make.size_heap_list_nonneg&#39;vc" expl="VC for size_heap_list_nonneg" proved="true">
+ <proof prover="3"><result status="valid" time="0.21" steps="17845"/></proof>
  </goal>
- <goal name="Make.VC size_empty" expl="VC for size_empty" proved="true">
- <proof prover="4"><result status="valid" time="0.02" steps="54"/></proof>
+ <goal name="Make.size_empty&#39;vc" expl="VC for size_empty" proved="true">
+ <proof prover="3"><result status="valid" time="0.14" steps="12309"/></proof>
  </goal>
- <goal name="Make.VC occ_heap_nonneg" expl="VC for occ_heap_nonneg" proved="true">
- <proof prover="4"><result status="valid" time="0.02" steps="91"/></proof>
+ <goal name="Make.occ_heap_nonneg&#39;vc" expl="VC for occ_heap_nonneg" proved="true">
+ <proof prover="3"><result status="valid" time="0.13" steps="13784"/></proof>
  </goal>
- <goal name="Make.VC occ_heap_list_nonneg" expl="VC for occ_heap_list_nonneg" proved="true">
- <proof prover="4"><result status="valid" time="0.02" steps="117"/></proof>
+ <goal name="Make.occ_heap_list_nonneg&#39;vc" expl="VC for occ_heap_list_nonneg" proved="true">
+ <proof prover="3"><result status="valid" time="0.25" steps="18403"/></proof>
  </goal>
- <goal name="Make.VC mem_heap" expl="VC for mem_heap" proved="true">
- <proof prover="3"><result status="valid" time="0.11"/></proof>
+ <goal name="Make.mem_heap&#39;vc" expl="VC for mem_heap" proved="true">
+ <proof prover="3"><result status="valid" time="0.11" steps="17736"/></proof>
  </goal>
- <goal name="Make.VC mem_heap_list" expl="VC for mem_heap_list" proved="true">
- <proof prover="4"><result status="valid" time="0.09" steps="505"/></proof>
+ <goal name="Make.mem_heap_list&#39;vc" expl="VC for mem_heap_list" proved="true">
+ <proof prover="3"><result status="valid" time="0.38" steps="22780"/></proof>
  </goal>
- <goal name="Make.VC root_is_minimum_heap" expl="VC for root_is_minimum_heap" proved="true">
- <proof prover="3"><result status="valid" time="0.10"/></proof>
+ <goal name="Make.root_is_minimum_heap&#39;vc" expl="VC for root_is_minimum_heap" proved="true">
+ <proof prover="3"><result status="valid" time="0.10" steps="17045"/></proof>
  </goal>
- <goal name="Make.VC heap" expl="VC for heap" proved="true">
- <proof prover="3"><result status="valid" time="0.04"/></proof>
+ <goal name="Make.heap&#39;vc" expl="VC for heap" proved="true">
+ <proof prover="3"><result status="valid" time="0.19" steps="15214"/></proof>
  </goal>
  <goal name="Make.size_nonneg" proved="true">
- <proof prover="4"><result status="valid" time="0.01" steps="51"/></proof>
+ <proof prover="3"><result status="valid" time="0.16" steps="13793"/></proof>
  </goal>
  <goal name="Make.le_root_heap_trans" proved="true">
- <proof prover="4"><result status="valid" time="0.12" steps="209"/></proof>
+ <proof prover="0"><result status="valid" time="0.12" steps="196"/></proof>
  </goal>
  <goal name="Make.le_root_trans" proved="true">
- <proof prover="4"><result status="valid" time="0.01" steps="59"/></proof>
+ <proof prover="3"><result status="valid" time="0.17" steps="13756"/></proof>
  </goal>
  <goal name="Make.occ_nonneg" proved="true">
- <proof prover="4"><result status="valid" time="0.01" steps="51"/></proof>
+ <proof prover="3"><result status="valid" time="0.17" steps="14063"/></proof>
  </goal>
  <goal name="Make.mem_t" proved="true">
- <proof prover="4"><result status="valid" time="0.03" steps="106"/></proof>
+ <proof prover="3"><result status="valid" time="0.16" steps="15498"/></proof>
  </goal>
  <goal name="Make.root_is_minimum" proved="true">
- <proof prover="4"><result status="valid" time="0.02" steps="69"/></proof>
+ <proof prover="3"><result status="valid" time="0.16" steps="14373"/></proof>
  </goal>
- <goal name="Make.VC empty" expl="VC for empty" proved="true">
- <proof prover="4"><result status="valid" time="0.02" steps="130"/></proof>
+ <goal name="Make.empty&#39;vc" expl="VC for empty" proved="true">
+ <proof prover="3"><result status="valid" time="0.20" steps="16801"/></proof>
  </goal>
- <goal name="Make.VC is_empty" expl="VC for is_empty" proved="true">
- <proof prover="4"><result status="valid" time="0.01" steps="76"/></proof>
+ <goal name="Make.is_empty&#39;vc" expl="VC for is_empty" proved="true">
+ <proof prover="3"><result status="valid" time="0.15" steps="13790"/></proof>
  </goal>
- <goal name="Make.VC find_min" expl="VC for find_min" proved="true">
- <proof prover="4"><result status="valid" time="0.01" steps="80"/></proof>
+ <goal name="Make.find_min&#39;vc" expl="VC for find_min" proved="true">
+ <proof prover="3"><result status="valid" time="0.17" steps="14879"/></proof>
  </goal>
- <goal name="Make.VC merge_heap" expl="VC for merge_heap" proved="true">
- <proof prover="4"><result status="valid" time="0.53" steps="2991"/></proof>
+ <goal name="Make.merge_heap&#39;vc" expl="VC for merge_heap" proved="true">
+ <proof prover="3"><result status="valid" time="0.44" steps="30540"/></proof>
  </goal>
- <goal name="Make.VC merge" expl="VC for merge" proved="true">
- <proof prover="4"><result status="valid" time="0.09" steps="394"/></proof>
+ <goal name="Make.merge&#39;vc" expl="VC for merge" proved="true">
+ <proof prover="3"><result status="valid" time="0.27" steps="20896"/></proof>
  </goal>
- <goal name="Make.VC insert" expl="VC for insert" proved="true">
- <proof prover="4"><result status="valid" time="0.24" steps="1051"/></proof>
+ <goal name="Make.insert&#39;vc" expl="VC for insert" proved="true">
+ <proof prover="3"><result status="valid" time="0.75" steps="41546"/></proof>
  </goal>
- <goal name="Make.VC merge_pairs_heap" expl="VC for merge_pairs_heap" proved="true">
- <proof prover="4"><result status="valid" time="0.35" steps="889"/></proof>
+ <goal name="Make.merge_pairs_heap&#39;vc" expl="VC for merge_pairs_heap" proved="true">
+ <proof prover="3"><result status="valid" time="0.42" steps="31516"/></proof>
  </goal>
- <goal name="Make.VC delete_min" expl="VC for delete_min" proved="true">
- <proof prover="4"><result status="valid" time="0.66" steps="1458"/></proof>
- </goal>
-</theory>
-<theory name="Correct" proved="true">
- <goal name="Sig.Make.X.is_pre_order" proved="true">
- <proof prover="4"><result status="valid" time="0.01" steps="22"/></proof>
- </goal>
- <goal name="Sig.Make.X.VC compare" expl="VC for compare" proved="true">
- <proof prover="4"><result status="valid" time="0.02" steps="22"/></proof>
- </goal>
- <goal name="Sig.Make.VC empty" expl="VC for empty" proved="true">
- <proof prover="4"><result status="valid" time="0.02" steps="91"/></proof>
- </goal>
- <goal name="Sig.Make.VC is_empty" expl="VC for is_empty" proved="true">
- <proof prover="4"><result status="valid" time="0.02" steps="89"/></proof>
- </goal>
- <goal name="Sig.Make.VC merge" expl="VC for merge" proved="true">
- <proof prover="4"><result status="valid" time="0.01" steps="197"/></proof>
- </goal>
- <goal name="Sig.Make.VC insert" expl="VC for insert" proved="true">
- <proof prover="4"><result status="valid" time="0.02" steps="318"/></proof>
- </goal>
- <goal name="Sig.Make.min_def" proved="true">
- <proof prover="2"><result status="valid" time="0.02"/></proof>
- </goal>
- <goal name="Sig.Make.VC find_min" expl="VC for find_min" proved="true">
- <proof prover="4"><result status="valid" time="0.02" steps="26"/></proof>
- </goal>
- <goal name="Sig.Make.VC delete_min" expl="VC for delete_min" proved="true">
- <proof prover="4"><result status="valid" time="0.16" steps="403"/></proof>
- </goal>
-</theory>
-<theory name="CompareInt" proved="true">
- <goal name="VC compare" expl="VC for compare" proved="true">
- <proof prover="3"><result status="valid" time="0.00"/></proof>
- </goal>
-</theory>
-<theory name="Client" proved="true">
- <goal name="Sig.Make.X.is_pre_order" proved="true">
- <proof prover="3"><result status="valid" time="0.47"/></proof>
- </goal>
- <goal name="Sig.Make.X.VC compare" expl="VC for compare" proved="true">
- <proof prover="3"><result status="valid" time="0.05"/></proof>
- </goal>
- <goal name="VC min3" expl="VC for min3" proved="true">
- <proof prover="1"><result status="valid" time="1.03"/></proof>
- </goal>
-</theory>
-<theory name="PHint" proved="true">
- <goal name="Impl.Make.X.is_pre_order" proved="true">
- <proof prover="3"><result status="valid" time="0.45"/></proof>
- </goal>
-</theory>
-<theory name="Main" proved="true">
- <goal name="Client.Sig.Make.VC empty" expl="VC for empty" proved="true">
- <proof prover="3"><result status="valid" time="0.13"/></proof>
- </goal>
- <goal name="Client.Sig.Make.VC is_empty" expl="VC for is_empty" proved="true">
- <proof prover="3"><result status="valid" time="0.12"/></proof>
- </goal>
- <goal name="Client.Sig.Make.VC merge" expl="VC for merge" proved="true">
- <proof prover="3"><result status="valid" time="0.32"/></proof>
- </goal>
- <goal name="Client.Sig.Make.VC insert" expl="VC for insert" proved="true">
- <proof prover="3"><result status="valid" time="0.25"/></proof>
- </goal>
- <goal name="Client.Sig.Make.min_def" proved="true">
- <proof prover="3"><result status="valid" time="0.31"/></proof>
- </goal>
- <goal name="Client.Sig.Make.VC find_min" expl="VC for find_min" proved="true">
- <proof prover="3"><result status="valid" time="0.08"/></proof>
- </goal>
- <goal name="Client.Sig.Make.VC delete_min" expl="VC for delete_min" proved="true">
- <proof prover="3"><result status="valid" time="0.18"/></proof>
+ <goal name="Make.delete_min&#39;vc" expl="VC for delete_min" proved="true">
+ <proof prover="3"><result status="valid" time="0.89" steps="52674"/></proof>
  </goal>
 </theory>
 </file>

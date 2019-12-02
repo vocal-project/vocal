@@ -14,7 +14,7 @@ module Impl
   use bag.Bag
 
   scope Make
-    clone import vocal.Comparable as X with axiom is_pre_order
+    clone import gospel.Comparable as X with axiom is_pre_order
 
     type elt = t
 
@@ -257,88 +257,88 @@ module Impl
 
 end
 
-module Correct
+(* module Correct *)
 
-  use Impl as PH
+(*   use Impl as PH *)
 
-  clone PairingHeap.Sig with (* Make = PH.Make *)
-    type Make.X.t = PH.Make.X.t,
-    function Make.X.cmp = PH.Make.X.compare,
-    lemma Make.X.is_pre_order,
-    val  Make.X.compare = PH.Make.X.compare,
-    type Make.heap = PH.Make.heap,
-    function Make.minimum = PH.Make.minimum,
-    lemma Make.min_def,
-    val Make.empty = PH.Make.empty,
-    val Make.is_empty = PH.Make.is_empty,
-    val Make.find_min = PH.Make.find_min,
-    val Make.delete_min = PH.Make.delete_min,
-    val Make.insert = PH.Make.insert,
-    val Make.merge = PH.Make.merge
+(*   clone PairingHeap.Sig with (\* Make = PH.Make *\) *)
+(*     type Make.X.t = PH.Make.X.t, *)
+(*     function Make.X.cmp = PH.Make.X.compare, *)
+(*     lemma Make.X.is_pre_order, *)
+(*     val  Make.X.compare = PH.Make.X.compare, *)
+(*     type Make.heap = PH.Make.heap, *)
+(*     function Make.minimum = PH.Make.minimum, *)
+(*     lemma Make.min_def, *)
+(*     val Make.empty = PH.Make.empty, *)
+(*     val Make.is_empty = PH.Make.is_empty, *)
+(*     val Make.find_min = PH.Make.find_min, *)
+(*     val Make.delete_min = PH.Make.delete_min, *)
+(*     val Make.insert = PH.Make.insert, *)
+(*     val Make.merge = PH.Make.merge *)
 
-end
+(* end *)
 
-(* A simple client that uses a heap to find the minimum of three integers *)
+(* (\* A simple client that uses a heap to find the minimum of three integers *\) *)
 
-module CompareInt
+(* module CompareInt *)
 
-  use int.Int
-  use mach.int.Int63
+(*   use int.Int *)
+(*   use mach.int.Int63 *)
 
-  let function compare (x y: int) : int63 =
-    if x < y then of_int (-1) else if x = y then zero else one
+(*   let function compare (x y: int) : int63 = *)
+(*     if x < y then of_int (-1) else if x = y then zero else one *)
 
-end
+(* end *)
 
-module Client
+(* module Client *)
 
-  use int.Int
-  use CompareInt
+(*   use int.Int *)
+(*   use CompareInt *)
 
-  clone PairingHeap.Sig with (* Make.X = CompareInt *)
-    type Make.X.t = int,
-    function Make.X.cmp = compare,
-    goal Make.X.is_pre_order,
-    axiom Make.min_def,
-    val Make.X.compare = compare
-  import Make
+(*   clone PairingHeap.Sig with (\* Make.X = CompareInt *\) *)
+(*     type Make.X.t = int, *)
+(*     function Make.X.cmp = compare, *)
+(*     goal Make.X.is_pre_order, *)
+(*     axiom Make.min_def, *)
+(*     val Make.X.compare = compare *)
+(*   import Make *)
 
-  let min3 (x y z: int) : int
-    ensures { result =  x \/ result =  y \/ result =  z }
-    ensures { result <= x /\ result <= y /\ result <= z }
-  = let h = empty () in
-    let h = insert x h in
-    let h = insert y h in
-    let h = insert z h in
-    find_min h
+(*   let min3 (x y z: int) : int *)
+(*     ensures { result =  x \/ result =  y \/ result =  z } *)
+(*     ensures { result <= x /\ result <= y /\ result <= z } *)
+(*   = let h = empty () in *)
+(*     let h = insert x h in *)
+(*     let h = insert y h in *)
+(*     let h = insert z h in *)
+(*     find_min h *)
 
-end
+(* end *)
 
-module PHint
+(* module PHint *)
 
-  use CompareInt
+(*   use CompareInt *)
 
-  clone Impl with (* Make.X = CompareInt *)
-    type Make.X.t = int,
-    val Make.X.compare = compare,
-    goal Make.X.is_pre_order,
-    axiom Make.minimum_heap_def
+(*   clone Impl with (\* Make.X = CompareInt *\) *)
+(*     type Make.X.t = int, *)
+(*     val Make.X.compare = compare, *)
+(*     goal Make.X.is_pre_order, *)
+(*     axiom Make.minimum_heap_def *)
 
-end
+(* end *)
 
-module Main
+(* module Main *)
 
-  use PHint as PH
+(*   use PHint as PH *)
 
-  clone Client with (* Sig = PH.Impl *)
-    type Sig.Make.heap = PH.Impl.Make.heap,
-    function Sig.Make.minimum = PH.Impl.Make.minimum,
-    goal Sig.Make.min_def,
-    val Sig.Make.empty = PH.Impl.Make.empty,
-    val Sig.Make.is_empty = PH.Impl.Make.is_empty,
-    val Sig.Make.find_min = PH.Impl.Make.find_min,
-    val Sig.Make.delete_min = PH.Impl.Make.delete_min,
-    val Sig.Make.insert = PH.Impl.Make.insert,
-    val Sig.Make.merge = PH.Impl.Make.merge
+(*   clone Client with (\* Sig = PH.Impl *\) *)
+(*     type Sig.Make.heap = PH.Impl.Make.heap, *)
+(*     function Sig.Make.minimum = PH.Impl.Make.minimum, *)
+(*     goal Sig.Make.min_def, *)
+(*     val Sig.Make.empty = PH.Impl.Make.empty, *)
+(*     val Sig.Make.is_empty = PH.Impl.Make.is_empty, *)
+(*     val Sig.Make.find_min = PH.Impl.Make.find_min, *)
+(*     val Sig.Make.delete_min = PH.Impl.Make.delete_min, *)
+(*     val Sig.Make.insert = PH.Impl.Make.insert, *)
+(*     val Sig.Make.merge = PH.Impl.Make.merge *)
 
-end
+(* end *)

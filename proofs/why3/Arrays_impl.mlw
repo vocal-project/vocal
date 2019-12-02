@@ -8,7 +8,7 @@ module Impl
   use seq.Occ
   use mach.array.Array63
   use ocaml.Pervasives
-  use vocal.Order
+  use gospel.Order
 
   let rec binary_search (cmp: 'a -> 'a -> int63)
                         (a: array 'a) (fromi toi: int63) (v: 'a) : int63
@@ -137,18 +137,18 @@ module Impl
 
 end
 
-module Correct
+(* module Correct *)
 
-  use Impl
-  clone Arrays.Sig with
-    val binary_search              = binary_search,
-    val binary_search_left         = binary_search_left,
-    val binary_search_right        = binary_search_right,
-    val unsafe_binary_search_right = unsafe_binary_search_right,
-    val binary_sort                = binary_sort,
-    val knuth_shuffle              = knuth_shuffle
+(*   use Impl *)
+(*   clone Arrays.Sig with *)
+(*     val binary_search              = binary_search, *)
+(*     val binary_search_left         = binary_search_left, *)
+(*     val binary_search_right        = binary_search_right, *)
+(*     val unsafe_binary_search_right = unsafe_binary_search_right, *)
+(*     val binary_sort                = binary_sort, *)
+(*     val knuth_shuffle              = knuth_shuffle *)
 
-end
+(* end *)
 
 (*
 Local Variables:
