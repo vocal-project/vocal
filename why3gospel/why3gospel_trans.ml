@@ -22,7 +22,7 @@ let location { Gospel.Location.loc_start = b; Gospel.Location.loc_end = e } =
 
 let dummy_loc = Loc.dummy_position
 
-let get_opt_default f d = function None -> d | Some x -> f x
+let map_opt_default f d = function None -> d | Some x -> f x
 
 let mk_id id_str id_loc =
   let id_str = match id_str with
@@ -30,17 +30,6 @@ let mk_id id_str id_loc =
     (* FIXME: many other cases; see src/core/ident.ml in Why3 sources *)
     | _ -> id_str in
   { id_str; id_ats = []; id_loc }
-
-let type_decl td = {
-  td_loc    = location td.T.td_loc;
-  td_ident  = assert false (*TODO*) (*ident*);
-  td_params = assert false (*TODO*) (*ident list*);
-  td_vis    = assert false (*TODO*) (*visibility*); (* records only *)
-  td_mut    = assert false (*TODO*) (*bool*);       (* records or abstract types *)
-  td_inv    = assert false (*TODO*) (*invariant*);  (* records only *)
-  td_wit    = assert false (*TODO*) (*(qualid * expr) list*);
-  td_def    = assert false (*TODO*) (*type_def*);
-}
 
 module Term = struct
   module Tt = Gospel.Tterm
@@ -65,7 +54,7 @@ module Term = struct
     | Tt.Tlambda -> Dterm.DTlambda
 
   let rec pattern pat =
-    let loc = get_opt_default location dummy_loc pat.Tt.p_loc in
+    let loc = map_opt_default location dummy_loc pat.Tt.p_loc in
     let mk_pattern pat_desc = mk_pattern pat_desc loc in
     let p_node = function
       | Tt.Pwild        -> Pwild
@@ -104,7 +93,7 @@ module Term = struct
     | Tt.Tiff      -> Dterm.DTiff
 
   let rec term t =
-    let loc = get_opt_default location dummy_loc t.Tt.t_loc in
+    let loc = map_opt_default location dummy_loc t.Tt.t_loc in
     let mk_term term_desc = mk_term term_desc loc in
     let t_node = function
       | Tt.Ttrue    -> Ttrue
@@ -136,7 +125,26 @@ module Term = struct
           let id = mk_id ls_name.I.id_str (location loc) in
           Tidapp (Qident id, term_list) in
     mk_term (t_node t.Tt.t_node)
+
+  let invariant inv =
+    term inv
+
 end
+
+let private_type = function
+  | T.Private -> Private
+  | T.Public  -> Public
+
+let type_decl (T.{td_ts = {ts_ident}} as td) = T.{
+  td_loc    = location td.td_loc;
+  td_ident  = mk_id ts_ident.id_str (location td.td_loc);
+  td_params = assert false (*TODO*) (*ident list*);
+  td_vis    = private_type td.td_private;
+  td_mut    = td.td_spec.ty_ephemeral;
+  td_inv    = List.map Term.invariant td.td_spec.ty_invariant;
+  td_wit    = [];
+  td_def    = assert false (*TODO*) (*type_def*);
+}
 
 let rec longident loc = function
   | Gospel.Longident.Lident s    -> Qident (mk_id s loc)
