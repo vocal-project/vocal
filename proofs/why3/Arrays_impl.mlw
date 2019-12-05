@@ -1,6 +1,7 @@
 
 module Impl
 
+  use gospel.Gospel
   use int.Int
   use mach.int.Refint63
   use mach.int.Int63
@@ -8,7 +9,7 @@ module Impl
   use seq.Occ
   use mach.array.Array63
   use ocaml.Pervasives
-  use gospel.Order
+  import Order
 
   let rec binary_search (cmp: 'a -> 'a -> int63)
                         (a: array 'a) (fromi toi: int63) (v: 'a) : int63
@@ -120,7 +121,15 @@ module Impl
     done
 
   use mach.int.Random63
-  use mach.array.Array63Swap
+  use mach.array.Array63Exchange
+
+  let swap (a:array 'a) (i j:int63) : unit
+    requires { 0 <= i < length a /\ 0 <= j < length a }
+    writes   { a }
+    ensures  { exchange (old a) a i j }
+  = let v = a[i] in
+    a[i] <- a[j];
+    a[j] <- v
 
   let knuth_shuffle (a: array 'a) : unit
     writes  { a, Random63.s }
