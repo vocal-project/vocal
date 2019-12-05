@@ -44,7 +44,7 @@ module Gospel
   scope Comparable
 
     use int.Int
-    use Order
+    import Order
     use mach.int.Int63
 
     type t

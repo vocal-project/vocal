@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="8">
+<prover id="0" name="Z3" version="4.8.4" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="1" name="Alt-Ergo" version="2.3.0" timelimit="1" steplimit="0" memlimit="1000"/>
+<file format="whyml" proved="true">
+<path name=".."/><path name="Mjrty_impl.mlw"/>
+<theory name="Mjrty" proved="true">
+ <goal name="mjrty&#39;vc" expl="VC for mjrty" proved="true">
+ <proof prover="0"><result status="valid" time="0.34" steps="677966"/></proof>
+ </goal>
+</theory>
+<theory name="Correct" proved="true">
+ <goal name="Sig.num_base" proved="true">
+ <proof prover="1"><result status="valid" time="0.03" steps="40"/></proof>
+ </goal>
+ <goal name="Sig.num_ind" proved="true">
+ <proof prover="1"><result status="valid" time="0.12" steps="196"/></proof>
+ </goal>
+ <goal name="Sig.mjrty&#39;vc" expl="VC for mjrty" proved="true">
+ <proof prover="1"><result status="valid" time="0.03" steps="87"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>
