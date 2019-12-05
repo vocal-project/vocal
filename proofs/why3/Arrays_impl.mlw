@@ -155,6 +155,7 @@ end
 (*     val binary_search_right        = binary_search_right, *)
 (*     val unsafe_binary_search_right = unsafe_binary_search_right, *)
 (*     val binary_sort                = binary_sort, *)
+(*     val swap                       = swap *)
 (*     val knuth_shuffle              = knuth_shuffle *)
 
 (* end *)

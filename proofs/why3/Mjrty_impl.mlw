@@ -1,5 +1,5 @@
 
-module Mjrty
+module Impl
 
   use int.Int
   use int.NumOf
@@ -10,7 +10,7 @@ module Mjrty
   use seq.Seq
   use mach.array.Array63
 
-  type candidate = string
+  type candidate [@ocaml:remove] = string
 
   (* the number of elements a[i] equal to c with lo <= i < hi *)
   function num (a: seq candidate) (c: candidate) (lo hi: int) : int
@@ -50,7 +50,7 @@ end
 
 module Correct
 
-  use Mjrty
+  use Impl
 
   clone Mjrty.Sig with function num, val mjrty
 
@@ -59,6 +59,6 @@ end
 
 (*
 Local Variables:
-compile-command: "why3 ide -L . mjrty_impl.mlw"
+compile-command: "make mjrty_impl.ide"
 End:
 *)

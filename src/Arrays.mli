@@ -60,6 +60,15 @@ val binary_sort: ('a -> 'a -> int) -> 'a array -> int -> int -> unit
       ensures  forall i j. fromi <= i <= j < toi -> cmp a[i] a[j] <= 0
       ensures  ArrayPermut.permut_sub (old a) a fromi toi *)
 
+val swap: 'a array -> int -> int -> unit
+(*@ swap a i j
+      requires 0 <= i < length a && 0 <= j < length a
+      modifies a
+      ensures  a[i] = (old a)[j]
+      ensures  a[j] = (old a)[i]
+      ensures  forall k. 0 <= k < length a ->
+               k <> i -> k <> j -> a[k] = (old a)[k] *)
+
 val knuth_shuffle: 'a array -> unit
 (*@ knuth_shuffle a
       modifies a

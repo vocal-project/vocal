@@ -6,9 +6,9 @@
 <prover id="1" name="Alt-Ergo" version="2.3.0" timelimit="1" steplimit="0" memlimit="1000"/>
 <file format="whyml" proved="true">
 <path name=".."/><path name="Mjrty_impl.mlw"/>
-<theory name="Mjrty" proved="true">
+<theory name="Impl" proved="true">
  <goal name="mjrty&#39;vc" expl="VC for mjrty" proved="true">
- <proof prover="0"><result status="valid" time="0.34" steps="677966"/></proof>
+ <proof prover="0"><result status="valid" time="0.40" steps="677966"/></proof>
  </goal>
 </theory>
 <theory name="Correct" proved="true">
