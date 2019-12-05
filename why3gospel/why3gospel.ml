@@ -32,7 +32,7 @@ let use ?(import=false) q =
   Typing.add_decl loc use_import;
   Typing.close_scope loc ~import
 
-let use_ocaml loc =
+let use_array loc =
   use ~import:true (Qdot (Qident (mk_id ~loc "array"), mk_id ~loc "Array"))
 
 let read_file file nm c =
@@ -114,7 +114,7 @@ let read_channel env path file c =
   open_file env path;
   let id = mk_id "Sig" in
   open_module id;
-  use_ocaml id.id_loc;
+  use_array id.id_loc;
   (* List.iter use extra_uses; *)
   let rec add_decl = function
     | Gdecl d -> Typing.add_decl Loc.dummy_position d;
