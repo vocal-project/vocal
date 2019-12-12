@@ -21,6 +21,9 @@ module Gospel
   use int.ComputerDivision    (* FIXME? Euclidean division instead *)
   function (/) (x y: int) : int = div x y
 
+  use mach.int.Int63
+  function integer_of_int (x: int63) : int = to_int x
+
   (* TODO: many things are missing.
      See file ../gospel/stdlib/gospelstdlib.mli *)
 
@@ -56,5 +59,7 @@ module Gospel
     predicate le (x y: t) = compare x y <= 0
 
   end
+
+  use export ocaml.Sys
 
 end
