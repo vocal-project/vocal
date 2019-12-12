@@ -9,9 +9,9 @@
 (**************************************************************************)
 
 module T = Gospel.Tast
+module Ot = Gospel.Oparsetree
 open Why3
 open Ptree
-module Ot = Gospel.Oparsetree
 
 type gdecl =
   | Gdecl of decl
@@ -31,6 +31,9 @@ let mk_id id_str id_loc =
     | _ -> id_str in
   { id_str; id_ats = []; id_loc }
 
+let mk_field f_loc f_ident f_pty f_mutable f_ghost =
+  { f_loc; f_ident; f_pty; f_mutable; f_ghost }
+
 module Term = struct
   module Tt = Gospel.Tterm
   module Ty = Gospel.Ttypes
@@ -43,6 +46,10 @@ module Term = struct
     { pat_desc; pat_loc }
 
   let ident_of_vsymbol Tt.{vs_name = name} =
+    Format.eprintf "ident_of_vsymbol: %s@." name.I.id_str;
+    mk_id name.I.id_str (location name.I.id_loc)
+
+  let ident_of_tvsymbol Ty.{tv_name = name} =
     mk_id name.I.id_str (location name.I.id_loc)
 
   let ident_of_lsymbol Tt.{ls_name = name} =
@@ -120,14 +127,16 @@ module Term = struct
           Tquant (quant q, List.map binder_of_vsymbol vs_list, trigger, term t)
       | Tt.Tbinop (op, t1, t2) ->
           Tbinop (term t1, binop op, term t2)
-      | Tt.Tapp ({ls_name}, term_list) -> let loc = ls_name.I.id_loc in
+      | Tt.Tapp (ls, []) ->
+          (* FIXME? is this the correct semantics for
+                    zero-arguments applications? *)
+          Tident (Qident (ident_of_lsymbol ls))
+      | Tt.Tapp ({ls_name}, term_list) ->
+          let loc = ls_name.I.id_loc in
           let term_list = List.map term term_list in
           let id = mk_id ls_name.I.id_str (location loc) in
           Tidapp (Qident id, term_list) in
     mk_term (t_node t.Tt.t_node)
-
-  let invariant inv =
-    term inv
 
 end
 
@@ -135,15 +144,31 @@ let private_type = function
   | T.Private -> Private
   | T.Public  -> Public
 
-let type_decl (T.{td_ts = {ts_ident}} as td) = T.{
+open Term
+
+let td_params (tvs, _) =
+  ident_of_tvsymbol tvs
+
+let td_def_of_ty_field ty_field =
+  let field_of_lsymbol ls =
+    let id = ident_of_lsymbol ls in
+    let pty = match ls.Tt.ls_value with
+      | None    -> assert false
+      | Some ty -> Term.ty ty in
+    (* FIXME: mutability status of fields. Non-mutable fields are not supported
+       by the current implementation of the GOSPEL type-checker. *)
+    mk_field id.id_loc id pty true false in
+  TDrecord (List.map field_of_lsymbol ty_field)
+
+let type_decl (T.{td_ts = {ts_ident}; td_spec} as td) = T.{
   td_loc    = location td.td_loc;
   td_ident  = mk_id ts_ident.id_str (location td.td_loc);
-  td_params = assert false (*TODO*) (*ident list*);
+  td_params = List.map td_params td.td_params;
   td_vis    = private_type td.td_private;
-  td_mut    = td.td_spec.ty_ephemeral;
-  td_inv    = List.map Term.invariant td.td_spec.ty_invariant;
+  td_mut    = td_spec.ty_ephemeral;
+  td_inv    = List.map Term.term td_spec.ty_invariant;
   td_wit    = [];
-  td_def    = assert false (*TODO*) (*type_def*);
+  td_def    = td_def_of_ty_field td_spec.ty_field
 }
 
 let rec longident loc = function
@@ -163,7 +188,7 @@ let ident_of_lb_arg lb = Term.ident_of_vsymbol (T.vs_of_lb_arg lb)
 let loc_of_lb_arg lb = loc_of_vs (T.vs_of_lb_arg lb)
 
 (** Given the result type [sp_ret] of a function and a GOSPEL postcondition
-    [post] (in the form of [term]), convert it into a Why3's Ptree
+    [post] (represented as a [term]), convert it into a Why3's Ptree
     postcondition of the form [Loc.position * (pattern * term)]. *)
 let sp_post sp_ret post =
   let mk_post post =
