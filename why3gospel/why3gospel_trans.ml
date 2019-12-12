@@ -46,7 +46,6 @@ module Term = struct
     { pat_desc; pat_loc }
 
   let ident_of_vsymbol Tt.{vs_name = name} =
-    Format.eprintf "ident_of_vsymbol: %s@." name.I.id_str;
     mk_id name.I.id_str (location name.I.id_loc)
 
   let ident_of_tvsymbol Ty.{tv_name = name} =
@@ -296,7 +295,8 @@ let val_decl vd g =
         let pat_list  = List.map mk_pat lb_list in
         let mask_list = List.map mk_mask lb_list in
         let pat, mask = match pat_list, mask_list with
-          | [], [] -> assert false
+          | [], []   -> (* in this case, the return is of type unit *)
+              Term.mk_pattern Pwild dummy_loc, Ity.MaskVisible
           | [p], [m] -> p, m
           | pl, ml   -> assert (List.length pl = List.length ml);
               let loc = location vd.T.vd_loc in (* TODO: better location? *)
