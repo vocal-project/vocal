@@ -31,7 +31,7 @@ let mk_id id_str id_loc =
     | _ -> id_str in
   { id_str; id_ats = []; id_loc }
 
-let mk_field f_loc f_ident f_pty f_mutable f_ghost =
+let mk_field ~mut:f_mutable ~ghost:f_ghost f_loc f_ident f_pty  =
   { f_loc; f_ident; f_pty; f_mutable; f_ghost }
 
 module Term = struct
@@ -108,8 +108,7 @@ module Term = struct
       | Tt.Tnot t   -> Tnot (term t)
       | Tt.Told t   -> Tat (term t, mk_id Dexpr.old_label loc)
       | Tt.Tconst c -> begin match c with
-          | Pconst_integer (s, None) ->
-              (* FIXME: check that [neg] parameter *)
+          | Pconst_integer (s, None) -> (* FIXME: check that [neg] parameter *)
               let n = Number.(int_literal ILitDec ~neg:false s) in
               Tconst (Constant.ConstInt n)
           | _ -> assert false (* TODO *) end
@@ -148,15 +147,11 @@ open Term
 let td_params (tvs, _) =
   ident_of_tvsymbol tvs
 
-let td_def_of_ty_field ty_field =
-  let field_of_lsymbol ls =
-    let id = ident_of_lsymbol ls in
-    let pty = match ls.Tt.ls_value with
-      | None    -> assert false
-      | Some ty -> Term.ty ty in
-    (* FIXME: mutability status of fields. Non-mutable fields are not supported
-       by the current implementation of the GOSPEL type-checker. *)
-    mk_field id.id_loc id pty true false in
+let td_def_of_ty_fields ty_field =
+  let field_of_lsymbol (ls, mut) =
+    let id  = ident_of_lsymbol ls in
+    let pty = Term.ty (Opt.get ls.Tt.ls_value) in
+    mk_field id.id_loc id pty ~mut ~ghost:false in
   TDrecord (List.map field_of_lsymbol ty_field)
 
 let type_decl (T.{td_ts = {ts_ident}; td_spec} as td) = T.{
@@ -165,9 +160,9 @@ let type_decl (T.{td_ts = {ts_ident}; td_spec} as td) = T.{
   td_params = List.map td_params td.td_params;
   td_vis    = private_type td.td_private;
   td_mut    = td_spec.ty_ephemeral;
-  td_inv    = List.map Term.term td_spec.ty_invariant;
+  td_inv    = List.map Term.term td_spec.ty_invariants;
   td_wit    = [];
-  td_def    = td_def_of_ty_field td_spec.ty_field
+  td_def    = td_def_of_ty_fields td_spec.ty_fields
 }
 
 let rec longident loc = function
