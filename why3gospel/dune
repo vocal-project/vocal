@@ -3,7 +3,7 @@
   (public_name why3gospel)
   (flags :standard -w -9-32-27 -linkall)
   (library_flags -linkall)
-  (modules why3gospel_trans why3gospel_driver why3gospel)
+  (modules why3gospel_driver why3gospel_trans why3gospel)
   (libraries why3 gospel))
 
 ;; cf https://discuss.ocaml.org/t/dune-problems-using-dynlink-plugins/2874

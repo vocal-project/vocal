@@ -10,9 +10,16 @@
 
 module I  = Gospel.Identifier
 module Ty = Gospel.Ttypes
+open Gospel.Utils
 
-type syntax_map = string I.Mid.t
+type syntax_map = string Hstr.t
 
-(* let driver = Ty.[
- *   ts_integer.ts_ident, "int";
- *   ts_ *)
+let driver: syntax_map = Hstr.create 16
+let () = List.iter (fun (x, y) -> Hstr.add driver x y)
+    Ty.[
+      ts_integer.ts_ident.I.id_str, "int";
+      "int", "int63";
+    ]
+
+let query_syntax str =
+  Hstr.find_opt driver str
