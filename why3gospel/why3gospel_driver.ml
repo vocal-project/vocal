@@ -7,3 +7,12 @@
     Why3 standard library. The translation plugin should then consume such
     file, similarly to how Why3 extraction mechanism deals with drivers.
     Finally, this would avoid the dependecy on the [gospel.mlw] file. *)
+
+module I  = Gospel.Identifier
+module Ty = Gospel.Ttypes
+
+type syntax_map = string I.Mid.t
+
+(* let driver = Ty.[
+ *   ts_integer.ts_ident, "int";
+ *   ts_ *)
