@@ -153,24 +153,21 @@ let td_def_of_ty_fields ty_field =
   let field_of_lsymbol (ls, mut) =
     let id  = Term.ident_of_lsymbol ls in
     let pty = Term.ty Term.(Opt.get ls.Tt.ls_value) in
-    mk_field id.id_loc id pty ~mut ~ghost:false in
+    mk_field id.id_loc id pty ~mut ~ghost:true in
   TDrecord (List.map field_of_lsymbol ty_field)
 
 let type_decl (T.{td_ts = {ts_ident}; td_spec} as td) = T.{
   td_loc    = location td.td_loc;
   td_ident  = mk_id ts_ident.id_str (location td.td_loc);
   td_params = List.map td_params td.td_params;
-  td_vis    = private_type td.td_private;
+  td_vis    = Private; (* GOSPEL type declarations must always be interpreted
+                          as private types, from a Why3 point of view, in order
+                          for one to be able to perform type refinement. *)
   td_mut    = td_spec.ty_ephemeral;
   td_inv    = List.map Term.term td_spec.ty_invariants;
   td_wit    = [];
   td_def    = td_def_of_ty_fields td_spec.ty_fields
 }
-
-let rec longident loc = function
-  | Gospel.Longident.Lident s    -> Qident (mk_id s loc)
-  | Gospel.Longident.Ldot (t, s) -> Qdot (longident loc t, mk_id s loc)
-  | _ -> assert false (* TODO? *)
 
 let mk_expr expr_desc expr_loc =
   { expr_desc; expr_loc }
@@ -253,10 +250,18 @@ let rec core_type Ot.{ ptyp_desc; ptyp_loc } =
   | Ptyp_tuple ctl ->
       PTtuple (List.map core_type ctl)
   | Ptyp_constr ({txt; loc}, ctl) ->
+      let mk_str id_str = match query_syntax id_str with
+        | None   -> id_str
+        | Some s -> s in
+      let rec longident loc = function
+        | Gospel.Longident.Lident s    -> Qident (mk_id (mk_str s) loc)
+        | Gospel.Longident.Ldot (t, s) ->
+            Qdot (longident loc t, mk_id (mk_str s) loc)
+        | _ -> assert false (* TODO? *) in
       PTtyapp (longident (location loc) txt, List.map core_type ctl)
   | _ -> assert false (* TODO *)
 
-(** Convert GOSPEL val declarations into Why3's Ptree [val] declarations. *)
+(** Convert GOSPEL [val] declarations into Why3's Ptree [val] declarations. *)
 let val_decl vd g =
   let rec flat_ptyp_arrow ct = match ct.Ot.ptyp_desc with
     | Ot.Ptyp_var _ | Ptyp_tuple _ | Ptyp_constr _ -> [ct]
