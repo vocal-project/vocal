@@ -12,6 +12,7 @@ module T = Gospel.Tast
 module Ot = Gospel.Oparsetree
 open Why3
 open Ptree
+open Why3gospel_driver
 
 type gdecl =
   | Gdecl of decl
@@ -74,8 +75,11 @@ module Term = struct
   let rec ty Ty.{ty_node} = match ty_node with
     | Ty.Tyvar {tv_name} ->
         PTtyvar (mk_id tv_name.id_str (location tv_name.id_loc))
-    | Ty.Tyapp ({ts_ident}, tyl) ->
-        let qualid = mk_id ts_ident.id_str (location ts_ident.id_loc) in
+    | Ty.Tyapp ({ts_ident}, tyl) -> let loc = location ts_ident.id_loc in
+        let id_str = match query_syntax ts_ident.id_str with
+            | None   -> ts_ident.id_str
+            | Some s -> s in
+        let qualid = mk_id id_str loc in
         PTtyapp (Qident qualid, List.map ty tyl)
 
   let binder_of_vsymbol vs =
@@ -142,15 +146,13 @@ let private_type = function
   | T.Private -> Private
   | T.Public  -> Public
 
-open Term
-
 let td_params (tvs, _) =
-  ident_of_tvsymbol tvs
+  Term.ident_of_tvsymbol tvs
 
 let td_def_of_ty_fields ty_field =
   let field_of_lsymbol (ls, mut) =
-    let id  = ident_of_lsymbol ls in
-    let pty = Term.ty (Opt.get ls.Tt.ls_value) in
+    let id  = Term.ident_of_lsymbol ls in
+    let pty = Term.ty Term.(Opt.get ls.Tt.ls_value) in
     mk_field id.id_loc id pty ~mut ~ghost:false in
   TDrecord (List.map field_of_lsymbol ty_field)
 

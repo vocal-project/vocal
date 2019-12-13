@@ -94,13 +94,15 @@ let type_check name nm sigs =
 
 let use_gospel =
   let gospel = Qdot (Qident (mk_id "gospel"), mk_id "Gospel") in
+  let int63 = Qdot (Qdot (Qident (mk_id "mach"), mk_id "int"), mk_id "Int63") in
   let array =
     Qdot (Qdot (Qident (mk_id "mach"), mk_id "array"), mk_id "Array63") in
   let seq = Qdot (Qident (mk_id "seq"), mk_id "Seq") in
   let use_gospel = Duseimport (Loc.dummy_position, false, [gospel, None]) in
+  let use_int63 = Duseimport (Loc.dummy_position, false, [int63, None]) in
   let use_array = Duseimport (Loc.dummy_position, false, [array, None]) in
   let use_seq = Duseimport (Loc.dummy_position, false, [seq, None]) in
-  [Gdecl use_gospel; Gdecl use_array; Gdecl use_seq]
+  [Gdecl use_gospel; Gdecl use_int63; Gdecl use_array; Gdecl use_seq]
 
 let read_channel env path file c =
   if !debug then eprintf "reading file '%s'@." file;
