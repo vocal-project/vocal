@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="8">
+<prover id="0" name="Alt-Ergo" version="2.3.0" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="1" name="CVC4" version="1.5" timelimit="1" steplimit="0" memlimit="1000"/>
+<file format="whyml" proved="true">
+<path name=".."/><path name="RingBuffer_impl.mlw"/>
+<theory name="RingBufferImpl" proved="true">
+ <goal name="buffer&#39;vc" expl="VC for buffer" proved="true">
+ <proof prover="1"><result status="valid" time="0.09" steps="12830"/></proof>
+ </goal>
+ <goal name="create&#39;vc" expl="VC for create" proved="true">
+ <proof prover="1"><result status="valid" time="0.07" steps="14767"/></proof>
+ </goal>
+ <goal name="length&#39;vc" expl="VC for length" proved="true">
+ <proof prover="1"><result status="valid" time="0.03" steps="8179"/></proof>
+ </goal>
+ <goal name="clear&#39;vc" expl="VC for clear" proved="true">
+ <proof prover="1"><result status="valid" time="0.16" steps="24790"/></proof>
+ </goal>
+ <goal name="push&#39;vc" expl="VC for push" proved="true">
+ <proof prover="1"><result status="valid" time="0.86" steps="75627"/></proof>
+ </goal>
+ <goal name="peek&#39;vc" expl="VC for peek" proved="true">
+ <proof prover="1"><result status="valid" time="0.09" steps="14294"/></proof>
+ </goal>
+ <goal name="pop&#39;vc" expl="VC for pop" proved="true">
+ <proof prover="1"><result status="valid" time="0.60" steps="59330"/></proof>
+ </goal>
+</theory>
+<theory name="Correct" proved="true">
+ <goal name="snoc_append" proved="true">
+ <proof prover="1"><result status="valid" time="0.09" steps="14785"/></proof>
+ </goal>
+ <goal name="cons_dot_dot_one" proved="true">
+ <proof prover="0"><result status="valid" time="0.02" steps="82"/></proof>
+ <proof prover="1"><result status="timeout" time="1.00" steps="96146"/></proof>
+ </goal>
+ <goal name="Sig.buffer&#39;vc" expl="VC for buffer" proved="true">
+ <proof prover="1"><result status="valid" time="0.10" steps="18299"/></proof>
+ </goal>
+ <goal name="Sig.create&#39;vc" expl="VC for create" proved="true">
+ <proof prover="1"><result status="valid" time="0.09" steps="13749"/></proof>
+ </goal>
+ <goal name="Sig.length&#39;vc" expl="VC for length" proved="true">
+ <proof prover="1"><result status="valid" time="0.11" steps="18292"/></proof>
+ </goal>
+ <goal name="Sig.clear&#39;vc" expl="VC for clear" proved="true">
+ <proof prover="1"><result status="valid" time="0.03" steps="13030"/></proof>
+ </goal>
+ <goal name="Sig.push&#39;vc" expl="VC for push" proved="true">
+ <proof prover="1"><result status="valid" time="0.11" steps="19885"/></proof>
+ </goal>
+ <goal name="Sig.peek&#39;vc" expl="VC for peek" proved="true">
+ <proof prover="1"><result status="valid" time="0.07" steps="18361"/></proof>
+ </goal>
+ <goal name="Sig.pop&#39;vc" expl="VC for pop" proved="true">
+ <proof prover="1"><result status="valid" time="0.09" steps="21481"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>

@@ -3,8 +3,8 @@ type 'a buffer
 (*@         model capacity: integer *)
 (*@ invariant length sequence <= capacity <= Sys.max_array_length *)
 
-val create: int -> dummy:'a -> 'a buffer
-(*@ b = create n ~dummy
+val create: int -> 'a -> 'a buffer
+(*@ b = create n dummy
       requires 0 < n <= Sys.max_array_length
       ensures  b.capacity = n
       ensures  b.sequence = empty *)
@@ -18,8 +18,8 @@ val clear: 'a buffer -> unit
       modifies b
       ensures  b.sequence = empty *)
 
-val push: 'a buffer -> elt:'a -> unit
-(*@ push b ~elt
+val push: 'a buffer -> 'a -> unit
+(*@ push b elt
       requires length b.sequence < b.capacity
       modifies b
       ensures  length b.sequence = length (old b.sequence) + 1
@@ -36,4 +36,4 @@ val pop: 'a buffer -> 'a
       modifies b
       ensures  length b.sequence = length (old b.sequence) - 1
       ensures  r = (old b.sequence)[0]
-      ensures  old b.sequence = Seq.cons r (old b.sequence) *)
+      ensures  old b.sequence = Seq.cons r b.sequence *)

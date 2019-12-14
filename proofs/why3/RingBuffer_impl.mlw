@@ -1,0 +1,105 @@
+
+(* The 2nd Verified Software Competition (VSTTE 2012)
+   https://sites.google.com/site/vstte2012/compet
+
+   Problem 3:
+   Queue data structure implemented using a ring buffer
+
+   Alternative solution using a model stored in a ghost field *)
+
+
+module RingBufferImpl
+
+  use int.Int, mach.int.Int63
+  use import seq.Seq as S
+  use import mach.array.Array63 as A
+  use ocaml.Sys
+
+  (* We need this axiom since the buffer must contain at least one element. *)
+  axiom positive_max_array_length : 1 <= max_array_length
+
+  type buffer 'a = {
+    mutable first: int63;
+    mutable   len: int63;        (* number of elements           *)
+             data: array 'a;
+    ghost         capacity: int; (* total capacity of the buffer *)
+    ghost mutable sequence: S.seq 'a;
+  } invariant { capacity = A.length data <= max_array_length }
+    invariant { 0 <= first <  capacity }
+    invariant { 0 <= len   <= capacity }
+    invariant { len = S.length sequence }
+    invariant { forall i: int. 0 <= i < len ->
+     (first + i < capacity -> S.get sequence i = data[first + i]) /\
+     (0 <= first + i - capacity ->
+       S.get sequence i = data[first + i - capacity]) }
+    by { first    = 0; len = 0; data = make 1 (any 'a);
+         sequence = S.empty; capacity = 1 }
+
+  (* code *)
+
+  let create (n: int63) (dummy: 'a) : buffer 'a
+    requires { 0 < n <= max_array_length }
+    ensures  { capacity result = n }
+    ensures  { result.sequence = S.empty }
+  = { first = 0; len = 0; data = make n dummy;
+      sequence = S.empty; capacity = to_int n }
+
+  let length (b: buffer 'a) : int63
+    ensures { result = len b }
+  = b.len
+
+  let clear (b: buffer 'a) : unit
+    writes  { b.len, b.sequence }
+    ensures { len b = 0 }
+    ensures { b.sequence = S.empty }
+  = ghost (b.sequence <- S.empty);
+    b.len <- 0
+
+  let push (b: buffer 'a) (x: 'a) : unit
+    requires { len b < capacity b }
+    writes   { b.data.elts, b.len, b.sequence }
+    ensures  { len b = (old (len b)) + 1 }
+    ensures  { b.sequence = S.snoc (old b.sequence) x }
+  = ghost (b.sequence <- S.snoc b.sequence x);
+    let n = A.length b.data in
+    let i = if b.first >= n - b.len then b.first + (b.len - n)
+            else b.first + b.len in
+    b.data[i] <- x;
+    b.len <- b.len + 1
+
+  let peek (b: buffer 'a) : 'a
+    requires { len b > 0 }
+    ensures  { result = S.get b.sequence 0 }
+  = b.data[b.first]
+
+  let pop (b: buffer 'a) : 'a
+    requires { len b > 0 }
+    writes   { b.first, b.len, b.sequence }
+    ensures  { len b = (old (len b)) - 1 }
+    ensures  { result = S.get (old b.sequence) 0 }
+    ensures  { b.sequence = (old b.sequence)[1..] }
+  = ghost (b.sequence <- b.sequence[1..]);
+    let r = b.data[b.first] in
+    b.len <- b.len - 1;
+    let n = A.length b.data in
+    b.first <- b.first + 1;
+    if b.first = n then b.first <- 0;
+    r
+end
+
+module Correct
+
+  use seq.Seq, int.Int
+  use RingBufferImpl
+
+  lemma snoc_append: forall s: seq 'a, v: 'a.
+    snoc s v == s ++ cons v empty
+
+  lemma cons_dot_dot_one: forall s1 s2: seq 'a.
+    length s2 > 0 -> s1 == s2[1..] -> s2 == cons s2[0] s1
+
+  clone RingBuffer.Sig with
+    type buffer,
+    val  create, val length, val clear, val push, val peek, val pop
+
+end
