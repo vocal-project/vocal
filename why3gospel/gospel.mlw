@@ -59,4 +59,13 @@ module Gospel
 
   use export ocaml.Sys
 
+  use mach.int.Int63
+
+  function integer_of_int (x: int63) : int = to_int x
+
+  predicate le (x y: int63) = x <= y
+
+  clone export seq.Sorted with
+    type t = int63, predicate le = le
+
 end
