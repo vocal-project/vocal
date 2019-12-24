@@ -1,13 +1,4 @@
 
-(* The 2nd Verified Software Competition (VSTTE 2012)
-   https://sites.google.com/site/vstte2012/compet
-
-   Problem 3:
-   Queue data structure implemented using a ring buffer
-
-   Alternative solution using a model stored in a ghost field *)
-
-
 module RingBufferImpl
 
   use int.Int, mach.int.Int63
@@ -19,23 +10,24 @@ module RingBufferImpl
   axiom positive_max_array_length : 1 <= max_array_length
 
   type buffer 'a = {
+            (* dummy: 'a; *)
+             data: array 'a;
     mutable first: int63;
     mutable   len: int63;        (* number of elements           *)
-             data: array 'a;
     ghost         capacity: int; (* total capacity of the buffer *)
     ghost mutable sequence: S.seq 'a;
   } invariant { capacity = A.length data <= max_array_length }
     invariant { 0 <= first <  capacity }
     invariant { 0 <= len   <= capacity }
     invariant { len = S.length sequence }
-    invariant { forall i: int. 0 <= i < len ->
+    invariant { forall i. 0 <= i < len ->
      (first + i < capacity -> S.get sequence i = data[first + i]) /\
      (0 <= first + i - capacity ->
        S.get sequence i = data[first + i - capacity]) }
-    by { first    = 0; len = 0; data = make 1 (any 'a);
+    (* invariant { forall i. 0 <= i < capacity - len -> *)
+    (*   (first + len + i < capacity -> data[first + len + i] = dummy) } *)
+    by { (* dummy = any 'a; *) first = 0; len = 0; data = make 1 (any 'a);
          sequence = S.empty; capacity = 1 }
-
-  (* code *)
 
   let create (n: int63) (dummy: 'a) : buffer 'a
     requires { 0 < n <= max_array_length }
@@ -85,6 +77,15 @@ module RingBufferImpl
     b.first <- b.first + 1;
     if b.first = n then b.first <- 0;
     r
+
+  let get (b: buffer 'a) (i: int63) : 'a
+    requires { 0 <= i < len b }
+    ensures  { result = S.get b.sequence i }
+  = let n = A.length b.data in
+    let i = if b.first >= n - i then b.first + (i - n)
+            else b.first + i in
+    b.data[i]
+
 end
 
 module Correct
@@ -96,10 +97,10 @@ module Correct
     snoc s v == s ++ cons v empty
 
   lemma cons_dot_dot_one: forall s1 s2: seq 'a.
-    length s2 > 0 -> s1 == s2[1..] -> s2 == cons s2[0] s1
+    length s2 > 0 -> s1 == s2[1 ..] -> s2 == cons s2[0] s1
 
   clone RingBuffer.Sig with
     type buffer,
-    val  create, val length, val clear, val push, val peek, val pop
+    val  create, val length, val clear, val push, val peek, val pop, val get
 
 end
