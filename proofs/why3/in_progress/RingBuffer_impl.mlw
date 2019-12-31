@@ -9,8 +9,17 @@ module RingBufferImpl
   (* We need this axiom since the buffer must contain at least one element. *)
   axiom positive_max_array_length : 1 <= max_array_length
 
+  (* We need this constant for the type invariant witness, in order to able to
+     assign the [dummy] field the same value used to populate the initialy
+     created [data] array. If, instead, we use [any 'a] twice, we are not able
+     to assert that these two values are equal.
+
+     The use of [constant] does not result in a contradiction, since the logic
+     of Why3 assumes every type to be inhabited. *)
+  constant d: 'a
+
   type buffer 'a = {
-            (* dummy: 'a; *)
+            dummy: 'a;
              data: array 'a;
     mutable first: int63;
     mutable   len: int63;        (* number of elements           *)
@@ -21,19 +30,19 @@ module RingBufferImpl
     invariant { 0 <= len   <= capacity }
     invariant { len = S.length sequence }
     invariant { forall i. 0 <= i < len ->
-     (first + i < capacity -> S.get sequence i = data[first + i]) /\
-     (0 <= first + i - capacity ->
-       S.get sequence i = data[first + i - capacity]) }
-    (* invariant { forall i. 0 <= i < capacity - len -> *)
-    (*   (first + len + i < capacity -> data[first + len + i] = dummy) } *)
-    by { (* dummy = any 'a; *) first = 0; len = 0; data = make 1 (any 'a);
+      if first + i < capacity then S.get sequence i = data[first + i]
+      else S.get sequence i = data[first + i - capacity] }
+    invariant { forall i. len <= i < capacity ->
+      if first + i < capacity then data[first + i] = dummy
+      else data[first + i - capacity] = dummy }
+    by { dummy = d; first = 0; len = 0; data = make 1 d;
          sequence = S.empty; capacity = 1 }
 
   let create (n: int63) (dummy: 'a) : buffer 'a
     requires { 0 < n <= max_array_length }
     ensures  { capacity result = n }
     ensures  { result.sequence = S.empty }
-  = { first = 0; len = 0; data = make n dummy;
+  = { first = 0; len = 0; data = make n dummy; dummy = dummy;
       sequence = S.empty; capacity = to_int n }
 
   let length (b: buffer 'a) : int63
@@ -41,15 +50,14 @@ module RingBufferImpl
   = b.len
 
   let clear (b: buffer 'a) : unit
-    writes  { b.len, b.sequence }
     ensures { len b = 0 }
     ensures { b.sequence = S.empty }
   = ghost (b.sequence <- S.empty);
+    fill b.data 0 (length b.data) b.dummy;
     b.len <- 0
 
   let push (b: buffer 'a) (x: 'a) : unit
     requires { len b < capacity b }
-    writes   { b.data.elts, b.len, b.sequence }
     ensures  { len b = (old (len b)) + 1 }
     ensures  { b.sequence = S.snoc (old b.sequence) x }
   = ghost (b.sequence <- S.snoc b.sequence x);
@@ -66,16 +74,20 @@ module RingBufferImpl
 
   let pop (b: buffer 'a) : 'a
     requires { len b > 0 }
-    writes   { b.first, b.len, b.sequence }
     ensures  { len b = (old (len b)) - 1 }
     ensures  { result = S.get (old b.sequence) 0 }
     ensures  { b.sequence = (old b.sequence)[1..] }
-  = ghost (b.sequence <- b.sequence[1..]);
+  = ghost (b.sequence <- b.sequence[1 ..]);
     let r = b.data[b.first] in
     b.len <- b.len - 1;
+    b.data[b.first] <- b.dummy;
     let n = A.length b.data in
     b.first <- b.first + 1;
-    if b.first = n then b.first <- 0;
+    if b.first = n then begin
+      assert { forall i. b.len + 1 <= i < b.capacity -> i - 1 >= 0 ->
+        b.data[i - 1] = b.dummy by
+        b.data[b.capacity - 1 + i - b.capacity] = b.dummy };
+      b.first <- 0 end;
     r
 
   let get (b: buffer 'a) (i: int63) : 'a
@@ -85,6 +97,18 @@ module RingBufferImpl
     let i = if b.first >= n - i then b.first + (i - n)
             else b.first + i in
     b.data[i]
+
+  let copy (b: buffer 'a) : buffer 'a
+    ensures { len b = len result }
+    ensures { capacity b = capacity result }
+    ensures { forall i. 0 <= i < len result ->
+      result.sequence[i] = b.sequence[i] }
+  = { dummy    = b.dummy;
+      data     = copy b.data;
+      first    = b.first;
+      len      = b.len;
+      capacity = b.capacity;
+      sequence = b.sequence; }
 
 end
 
@@ -101,6 +125,7 @@ module Correct
 
   clone RingBuffer.Sig with
     type buffer,
-    val  create, val length, val clear, val push, val peek, val pop, val get
+    val  create, val length, val clear, val push,
+    val  peek,   val pop,    val get,   val copy
 
 end

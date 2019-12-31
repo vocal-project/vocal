@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="8">
+<prover id="0" name="Alt-Ergo" version="2.3.0" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="2" name="Z3" version="4.8.6" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="3" name="CVC4" version="1.7" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="4" name="Z3" version="4.5.0" timelimit="5" steplimit="0" memlimit="1000"/>
+<file format="whyml">
+<path name=".."/><path name="RingBuffer_impl.mlw"/>
+<theory name="RingBufferImpl">
+ <goal name="buffer&#39;vc" expl="VC for buffer" proved="true">
+ <proof prover="0"><result status="valid" time="0.01" steps="71"/></proof>
+ </goal>
+ <goal name="create&#39;vc" expl="VC for create" proved="true">
+ <proof prover="0"><result status="valid" time="0.02" steps="113"/></proof>
+ </goal>
+ <goal name="length&#39;vc" expl="VC for length" proved="true">
+ <proof prover="0"><result status="valid" time="0.01" steps="8"/></proof>
+ </goal>
+ <goal name="clear&#39;vc" expl="VC for clear" proved="true">
+ <proof prover="0"><result status="valid" time="0.31" steps="1249"/></proof>
+ </goal>
+ <goal name="push&#39;vc" expl="VC for push" proved="true">
+ <transf name="split_vc" proved="true" >
+  <goal name="push&#39;vc.0" expl="integer overflow" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="92"/></proof>
+  </goal>
+  <goal name="push&#39;vc.1" expl="integer overflow" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="129"/></proof>
+  </goal>
+  <goal name="push&#39;vc.2" expl="integer overflow" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="34"/></proof>
+  </goal>
+  <goal name="push&#39;vc.3" expl="integer overflow" proved="true">
+  <proof prover="0"><result status="valid" time="0.07" steps="140"/></proof>
+  </goal>
+  <goal name="push&#39;vc.4" expl="index in array bounds" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="104"/></proof>
+  </goal>
+  <goal name="push&#39;vc.5" expl="integer overflow" proved="true">
+  <proof prover="0"><result status="valid" time="0.09" steps="191"/></proof>
+  </goal>
+  <goal name="push&#39;vc.6" expl="type invariant" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="93"/></proof>
+  </goal>
+  <goal name="push&#39;vc.7" expl="type invariant" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="42"/></proof>
+  </goal>
+  <goal name="push&#39;vc.8" expl="type invariant" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="48"/></proof>
+  </goal>
+  <goal name="push&#39;vc.9" expl="type invariant" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="50"/></proof>
+  </goal>
+  <goal name="push&#39;vc.10" expl="type invariant" proved="true">
+  <proof prover="2"><result status="valid" time="0.18" steps="337380"/></proof>
+  </goal>
+  <goal name="push&#39;vc.11" expl="type invariant" proved="true">
+  <transf name="split_vc" proved="true" >
+   <goal name="push&#39;vc.11.0" expl="type invariant" proved="true">
+   <proof prover="0"><result status="valid" time="0.06" steps="178"/></proof>
+   </goal>
+   <goal name="push&#39;vc.11.1" expl="type invariant" proved="true">
+   <proof prover="0"><result status="valid" time="0.63" steps="984"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="push&#39;vc.12" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.01" steps="46"/></proof>
+  </goal>
+  <goal name="push&#39;vc.13" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="47"/></proof>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="peek&#39;vc" expl="VC for peek" proved="true">
+ <proof prover="0"><result status="valid" time="0.03" steps="78"/></proof>
+ </goal>
+ <goal name="pop&#39;vc" expl="VC for pop">
+ <transf name="split_vc" >
+  <goal name="pop&#39;vc.0" expl="precondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.02" steps="24"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.1" expl="index in array bounds" proved="true">
+  <proof prover="0"><result status="valid" time="0.02" steps="25"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.2" expl="integer overflow" proved="true">
+  <proof prover="0"><result status="valid" time="0.02" steps="24"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.3" expl="index in array bounds" proved="true">
+  <proof prover="0"><result status="valid" time="0.02" steps="27"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.4" expl="integer overflow" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="96"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.5" expl="assertion" proved="true">
+  <transf name="split_vc" proved="true" >
+   <goal name="pop&#39;vc.5.0" expl="assertion" proved="true">
+   <proof prover="0"><result status="valid" time="0.07" steps="399"/></proof>
+   </goal>
+   <goal name="pop&#39;vc.5.1" expl="VC for pop" proved="true">
+   <proof prover="0"><result status="valid" time="0.01" steps="27"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="pop&#39;vc.6" expl="type invariant" proved="true">
+  <proof prover="0"><result status="valid" time="0.02" steps="72"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.7" expl="type invariant" proved="true">
+  <proof prover="0"><result status="valid" time="0.02" steps="38"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.8" expl="type invariant" proved="true">
+  <proof prover="0"><result status="valid" time="0.01" steps="41"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.9" expl="type invariant" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="138"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.10" expl="type invariant" proved="true">
+  <proof prover="0"><result status="valid" time="0.10" steps="332"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.11" expl="type invariant" proved="true">
+  <transf name="split_vc" proved="true" >
+   <goal name="pop&#39;vc.11.0" expl="type invariant" proved="true">
+   <transf name="assert" proved="true" arg1="(forall i. b_len + 1 &lt;= i &lt; capacity b2 -&gt; i - 1 &gt;= 0 -&gt; (elts b_data)[i - 1] = dummy b2)">
+    <goal name="pop&#39;vc.11.0.0" expl="asserted formula" proved="true">
+    <proof prover="0"><result status="valid" time="0.02" steps="44"/></proof>
+    </goal>
+    <goal name="pop&#39;vc.11.0.1" expl="type invariant" proved="true">
+    <transf name="remove" proved="true" arg1="abs,div,mod,max_int,min_int,(==),empty,singleton,cons,snoc,([..]),([_..]),([.._]),(++),d,b,r,b1,Abs_le,Abs_pos,Div_mod,Div_bound,Mod_bound,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,max_int&#39;def,min_int&#39;def,length_nonnegative,(==)&#39;spec,empty&#39;def,set&#39;spec,singleton&#39;spec,cons&#39;spec,snoc&#39;spec,([..])&#39;spec,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,(++)&#39;spec,non_neg_max_array_length,positive_max_array_length,H1,Ensures1,Assert,LoopInvariant,LoopInvariant1,H3,H4,H5,H6,H7,H8,H9,H10">
+     <goal name="pop&#39;vc.11.0.1.0" expl="type invariant" proved="true">
+     <proof prover="4"><result status="valid" time="0.07" steps="109752"/></proof>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   <transf name="inline_goal" proved="true" >
+    <goal name="pop&#39;vc.11.0.0" expl="type invariant" proved="true">
+    <transf name="split_all_full" proved="true" >
+     <goal name="pop&#39;vc.11.0.0.0" expl="type invariant" proved="true">
+     <proof prover="0"><result status="valid" time="0.04" steps="123"/></proof>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="pop&#39;vc.11.1" expl="type invariant" proved="true">
+   <proof prover="0"><result status="valid" time="0.01" steps="36"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="pop&#39;vc.12" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.02" steps="46"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.13" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="49"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.14" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.02" steps="49"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.15" expl="type invariant" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="73"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.16" expl="type invariant" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="77"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.17" expl="type invariant" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="44"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.18" expl="type invariant" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="146"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.19" expl="type invariant" proved="true">
+  <proof prover="0"><result status="valid" time="0.45" steps="1086"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.20" expl="type invariant">
+  <transf name="split_vc" >
+   <goal name="pop&#39;vc.20.0" expl="type invariant">
+   <proof prover="0"><result status="timeout" time="1.00"/></proof>
+   <proof prover="2"><result status="timeout" time="1.00" steps="1153856"/></proof>
+   <proof prover="3"><undone/></proof>
+   <proof prover="4"><result status="timeout" time="5.00" steps="851115"/></proof>
+   </goal>
+   <goal name="pop&#39;vc.20.1" expl="type invariant">
+   <proof prover="0"><result status="timeout" time="1.00"/></proof>
+   <proof prover="2"><result status="timeout" time="1.00" steps="1136660"/></proof>
+   <proof prover="3"><undone/></proof>
+   <proof prover="4"><result status="timeout" time="5.00" steps="829838"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="pop&#39;vc.21" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.01" steps="46"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.22" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="49"/></proof>
+  </goal>
+  <goal name="pop&#39;vc.23" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.01" steps="49"/></proof>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="get&#39;vc" expl="VC for get" proved="true">
+ <proof prover="0"><result status="valid" time="0.49" steps="1051"/></proof>
+ </goal>
+ <goal name="copy&#39;vc" expl="VC for copy" proved="true">
+ <proof prover="0"><result status="valid" time="0.44" steps="1819"/></proof>
+ </goal>
+</theory>
+<theory name="Correct" proved="true">
+ <goal name="snoc_append" proved="true">
+ <proof prover="0"><result status="valid" time="0.03" steps="79"/></proof>
+ </goal>
+ <goal name="cons_dot_dot_one" proved="true">
+ <proof prover="0"><result status="valid" time="0.02" steps="82"/></proof>
+ </goal>
+ <goal name="Sig.buffer&#39;vc" expl="VC for buffer" proved="true">
+ <proof prover="0"><result status="valid" time="0.02" steps="33"/></proof>
+ </goal>
+ <goal name="Sig.create&#39;vc" expl="VC for create" proved="true">
+ <proof prover="0"><result status="valid" time="0.01" steps="14"/></proof>
+ </goal>
+ <goal name="Sig.length&#39;vc" expl="VC for length" proved="true">
+ <proof prover="0"><result status="valid" time="0.02" steps="24"/></proof>
+ </goal>
+ <goal name="Sig.clear&#39;vc" expl="VC for clear" proved="true">
+ <proof prover="0"><result status="valid" time="0.01" steps="46"/></proof>
+ </goal>
+ <goal name="Sig.push&#39;vc" expl="VC for push" proved="true">
+ <proof prover="0"><result status="valid" time="0.06" steps="189"/></proof>
+ </goal>
+ <goal name="Sig.peek&#39;vc" expl="VC for peek" proved="true">
+ <proof prover="0"><result status="valid" time="0.02" steps="26"/></proof>
+ </goal>
+ <goal name="Sig.pop&#39;vc" expl="VC for pop" proved="true">
+ <proof prover="0"><result status="valid" time="0.08" steps="241"/></proof>
+ </goal>
+ <goal name="Sig.get&#39;vc" expl="VC for get" proved="true">
+ <proof prover="0"><result status="valid" time="0.01" steps="28"/></proof>
+ </goal>
+ <goal name="Sig.copy&#39;vc" expl="VC for copy" proved="true">
+ <proof prover="0"><result status="valid" time="0.03" steps="127"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>

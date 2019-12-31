@@ -37,3 +37,15 @@ val pop: 'a buffer -> 'a
       ensures  length b.sequence = length (old b.sequence) - 1
       ensures  r = (old b.sequence)[0]
       ensures  old b.sequence = Seq.cons r b.sequence *)
+
+val get: 'a buffer -> int -> 'a
+(*@ r = get b i
+      requires 0 <= i < length b.sequence
+      ensures  r = b.sequence[i] *)
+
+val copy: 'a buffer -> 'a buffer
+(*@ r = copy b
+      ensures length b.sequence = length r.sequence
+      ensures b.capacity = r.capacity
+      ensures forall i. 0 <= i < length r.sequence ->
+        b.sequence[i] = r.sequence[i] *)
