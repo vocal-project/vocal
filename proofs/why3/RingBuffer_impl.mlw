@@ -1,0 +1,131 @@
+
+module RingBufferImpl
+
+  use int.Int, mach.int.Int63
+  use import seq.Seq as S
+  use import mach.array.Array63 as A
+  use ocaml.Sys
+
+  (* We need this axiom since the buffer must contain at least one element. *)
+  axiom positive_max_array_length : 1 <= max_array_length
+
+  (* We need this constant for the type invariant witness, in order to able to
+     assign the [dummy] field the same value used to populate the initialy
+     created [data] array. If, instead, we use [any 'a] twice, we are not able
+     to assert that these two values are equal.
+
+     The use of [constant] does not result in a contradiction, since the logic
+     of Why3 assumes every type to be inhabited. *)
+  constant d: 'a
+
+  type buffer 'a = {
+            dummy: 'a;
+             data: array 'a;
+    mutable first: int63;
+    mutable   len: int63;        (* number of elements           *)
+    ghost         capacity: int; (* total capacity of the buffer *)
+    ghost mutable sequence: S.seq 'a;
+  } invariant { capacity = A.length data <= max_array_length }
+    invariant { 0 <= first <  capacity }
+    invariant { 0 <= len   <= capacity }
+    invariant { len = S.length sequence }
+    invariant { forall i. 0 <= i < len ->
+      if first + i < capacity then S.get sequence i = data[first + i]
+      else S.get sequence i = data[first + i - capacity] }
+    invariant { forall i. len <= i < capacity ->
+      if first + i < capacity then data[first + i] = dummy
+      else data[first + i - capacity] = dummy }
+    by { dummy = d; first = 0; len = 0; data = make 1 d;
+         sequence = S.empty; capacity = 1 }
+
+  let create (n: int63) (dummy: 'a) : buffer 'a
+    requires { 0 < n <= max_array_length }
+    ensures  { capacity result = n }
+    ensures  { result.sequence = S.empty }
+  = { first = 0; len = 0; data = make n dummy; dummy = dummy;
+      sequence = S.empty; capacity = to_int n }
+
+  let length (b: buffer 'a) : int63
+    ensures { result = len b }
+  = b.len
+
+  let clear (b: buffer 'a) : unit
+    ensures { len b = 0 }
+    ensures { b.sequence = S.empty }
+  = ghost (b.sequence <- S.empty);
+    fill b.data 0 (length b.data) b.dummy;
+    b.len <- 0
+
+  let push (b: buffer 'a) (x: 'a) : unit
+    requires { len b < capacity b }
+    ensures  { len b = (old (len b)) + 1 }
+    ensures  { b.sequence = S.snoc (old b.sequence) x }
+  = ghost (b.sequence <- S.snoc b.sequence x);
+    let n = A.length b.data in
+    let i = if b.first >= n - b.len then b.first + (b.len - n)
+            else b.first + b.len in
+    b.data[i] <- x;
+    b.len <- b.len + 1
+
+  let peek (b: buffer 'a) : 'a
+    requires { len b > 0 }
+    ensures  { result = S.get b.sequence 0 }
+  = b.data[b.first]
+
+  let pop (b: buffer 'a) : 'a
+    requires { len b > 0 }
+    ensures  { len b = (old (len b)) - 1 }
+    ensures  { result = S.get (old b.sequence) 0 }
+    ensures  { b.sequence = (old b.sequence)[1..] }
+  = ghost (b.sequence <- b.sequence[1 ..]);
+    let r = b.data[b.first] in
+    b.len <- b.len - 1;
+    b.data[b.first] <- b.dummy;
+    let n = A.length b.data in
+    b.first <- b.first + 1;
+    if b.first = n then begin
+      assert { forall i. b.len + 1 <= i < b.capacity -> i - 1 >= 0 ->
+        b.data[i - 1] = b.dummy by
+        b.data[b.capacity - 1 + i - b.capacity] = b.dummy };
+      b.first <- 0 end;
+    r
+
+  let get (b: buffer 'a) (i: int63) : 'a
+    requires { 0 <= i < len b }
+    ensures  { result = S.get b.sequence i }
+  = let n = A.length b.data in
+    let i = if b.first >= n - i then b.first + (i - n)
+            else b.first + i in
+    b.data[i]
+
+  let copy (b: buffer 'a) : buffer 'a
+    ensures { len b = len result }
+    ensures { capacity b = capacity result }
+    ensures { forall i. 0 <= i < len result ->
+      result.sequence[i] = b.sequence[i] }
+  = { dummy    = b.dummy;
+      data     = copy b.data;
+      first    = b.first;
+      len      = b.len;
+      capacity = b.capacity;
+      sequence = b.sequence; }
+
+end
+
+module Correct
+
+  use seq.Seq, int.Int
+  use RingBufferImpl
+
+  lemma snoc_append: forall s: seq 'a, v: 'a.
+    snoc s v == s ++ cons v empty
+
+  lemma cons_dot_dot_one: forall s1 s2: seq 'a.
+    length s2 > 0 -> s1 == s2[1 ..] -> s2 == cons s2[0] s1
+
+  clone RingBuffer.Sig with
+    type buffer,
+    val  create, val length, val clear, val push,
+    val  peek,   val pop,    val get,   val copy
+
+end
