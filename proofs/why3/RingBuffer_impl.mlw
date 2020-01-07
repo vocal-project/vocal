@@ -1,5 +1,5 @@
 
-module RingBufferImpl
+module Impl
 
   use int.Int, mach.int.Int63
   use import seq.Seq as S
@@ -115,7 +115,7 @@ end
 module Correct
 
   use seq.Seq, int.Int
-  use RingBufferImpl
+  use Impl
 
   lemma snoc_append: forall s: seq 'a, v: 'a.
     snoc s v == s ++ cons v empty
