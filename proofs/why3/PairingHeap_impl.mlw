@@ -290,41 +290,46 @@ module Correct
 
 end
 
-(* (\* A simple client that uses a heap to find the minimum of three integers *\) *)
+(* A simple client that uses a heap to find the minimum of three integers *)
 
-(* module CompareInt *)
+module CompareInt
 
-(*   use int.Int *)
-(*   use mach.int.Int63 *)
+  use int.Int
+  use mach.int.Int63
 
-(*   let function compare (x y: int) : int63 = *)
-(*     if x < y then of_int (-1) else if x = y then zero else one *)
+  function cmp : int -> int -> int63
+  axiom cmp_def: forall x y: int.
+   cmp x y = if x < y then -1 else if x = y then zero else one
 
-(* end *)
+  let compare (x y: int) : int63
+    ensures { result = cmp x y }
+  = if x < y then of_int (-1) else if x = y then zero else one
 
-(* module Client *)
+end
 
-(*   use int.Int *)
-(*   use CompareInt *)
+module Client
 
-(*   clone PairingHeap.Sig with (\* Make.X = CompareInt *\) *)
-(*     type Make.X.t = int, *)
-(*     function Make.X.cmp = compare, *)
-(*     goal Make.X.is_pre_order, *)
-(*     axiom Make.min_def, *)
-(*     val Make.X.compare = compare *)
-(*   import Make *)
+  use int.Int
+  use CompareInt
 
-(*   let min3 (x y z: int) : int *)
-(*     ensures { result =  x \/ result =  y \/ result =  z } *)
-(*     ensures { result <= x /\ result <= y /\ result <= z } *)
-(*   = let h = empty () in *)
-(*     let h = insert x h in *)
-(*     let h = insert y h in *)
-(*     let h = insert z h in *)
-(*     find_min h *)
+  clone PairingHeap.Sig with (* Make.X = CompareInt *)
+    type Make.X.t = int,
+    function Make.X.cmp = cmp,
+    goal Make.X.is_pre_order,
+    axiom Make.min_def,
+    val Make.X.compare = compare
+  import Make
 
-(* end *)
+  let min3 (x y z: int) : int
+    ensures { result =  x \/ result =  y \/ result =  z }
+    ensures { result <= x /\ result <= y /\ result <= z }
+  = let h = empty () in
+    let h = insert x h in
+    let h = insert y h in
+    let h = insert z h in
+    find_min h
+
+end
 
 (* module PHint *)
 
