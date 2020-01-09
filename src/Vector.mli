@@ -33,7 +33,6 @@
 type 'a t
 (** The polymorphic type of vectors.
     This is a mutable data type. *)
-(*@ ephemeral *)
 (*@ mutable model view: 'a seq *)
 (*@ invariant length view <= Sys.max_array_length *)
 

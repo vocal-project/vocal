@@ -394,18 +394,18 @@ module Impl
 
 end
 
-(* module Correct *)
+module Correct
 
-(*   use int.Int *)
-(*   use seq.Seq *)
-(*   use seq.OfList *)
-(*   use list.Nth *)
-(*   use option.Option *)
+  use int.Int
+  use seq.Seq
+  use seq.OfList
+  use list.Nth
+  use option.Option
 
-(*   use Impl *)
+  use Impl
 
-(*   clone Vector.Sig with *)
-(*     type t = t, *)
+  clone Vector.Sig with
+    type t = t
 (*     val create = create, *)
 (*     val make = make, *)
 (*     val init = init, *)
@@ -432,7 +432,7 @@ end
 (*     val top = top, *)
 (*     val top_opt = top_opt *)
 
-(* end *)
+end
 
 (*
  * Local Variables:
