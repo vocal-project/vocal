@@ -8,8 +8,7 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-(* Author:
-     Mário Pereira (NOVA-LINCS, Universidade Nova de Lisboa) *)
+(* Author: Mário Pereira (NOVA-LINCS, Universidade Nova de Lisboa) *)
 
 module Impl
 

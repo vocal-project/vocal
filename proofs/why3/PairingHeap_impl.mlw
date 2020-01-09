@@ -8,7 +8,8 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-(* Author: Mário Pereira (LRI, Univ Paris-Saclay) *)
+(* Author: Mário Pereira (LRI, Univ Paris-Saclay then
+                          NOVA-LINCS, Universidade Nova de Lisboa) *)
 
 (** Pairing heaps (M. Fredman, R. Sedgewick, D. Sleator, R. Tarjan, 1986).
 

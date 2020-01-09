@@ -9,7 +9,8 @@
 (**************************************************************************)
 
 (* Authors:
-     Mário Pereira (LRI, Univ Paris-Saclay)
+     Mário Pereira (LRI, Univ Paris-Saclay then
+                    NOVA-LINCS, Universidade Nova de Lisboa)
      Jean-Christophe Filliâtre (CNRS, LRI, Univ Paris-Saclay) *)
 
 (* Mutable queue implementation, following OCaml's queue implementation *)
