@@ -51,7 +51,7 @@ end) : sig
   (*@ predicate is_minimum (x: elt) (h: heap) =
         mem x h /\ forall e. mem e h -> X.cmp x e <= 0 *)
 
-  (*@ function minimum: heap -> elt *)
+  (*@ function minimum (h: heap) : elt *)
   (*@ axiom min_def: forall h. 0 < card h.bag -> is_minimum (minimum h) h *)
 
   val find_min : heap -> elt

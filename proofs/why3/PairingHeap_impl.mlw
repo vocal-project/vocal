@@ -268,26 +268,26 @@ module Impl
 
 end
 
-(* module Correct *)
+module Correct
 
-(*   use Impl as PH *)
+  use Impl as PH
 
-(*   clone PairingHeap.Sig with (\* Make = PH.Make *\) *)
-(*     type Make.X.t = PH.Make.X.t, *)
-(*     function Make.X.cmp = PH.Make.X.compare, *)
-(*     lemma Make.X.is_pre_order, *)
-(*     val  Make.X.compare = PH.Make.X.compare, *)
-(*     type Make.heap = PH.Make.heap, *)
-(*     function Make.minimum = PH.Make.minimum, *)
-(*     lemma Make.min_def, *)
-(*     val Make.empty = PH.Make.empty, *)
-(*     val Make.is_empty = PH.Make.is_empty, *)
-(*     val Make.find_min = PH.Make.find_min, *)
-(*     val Make.delete_min = PH.Make.delete_min, *)
-(*     val Make.insert = PH.Make.insert, *)
-(*     val Make.merge = PH.Make.merge *)
+  clone PairingHeap.Sig with (* Make = PH.Make *)
+    lemma Make.X.is_pre_order,
+    type Make.X.t = PH.Make.X.t,
+    function Make.X.cmp = PH.Make.X.cmp,
+    val  Make.X.compare = PH.Make.X.compare,
+    type Make.heap = PH.Make.heap,
+    function Make.minimum = PH.Make.minimum,
+    lemma Make.min_def,
+    val Make.empty = PH.Make.empty,
+    val Make.is_empty = PH.Make.is_empty,
+    val Make.find_min = PH.Make.find_min,
+    val Make.delete_min = PH.Make.delete_min,
+    val Make.insert = PH.Make.insert,
+    val Make.merge = PH.Make.merge
 
-(* end *)
+end
 
 (* (\* A simple client that uses a heap to find the minimum of three integers *\) *)
 
