@@ -1,3 +1,13 @@
+(**************************************************************************)
+(*                                                                        *)
+(*  VOCaL -- A Verified OCaml Library                                     *)
+(*                                                                        *)
+(*  Copyright (c) 2018 The VOCaL Project                                  *)
+(*                                                                        *)
+(*  This software is free software, distributed under the MIT license     *)
+(*  (as described in file LICENSE enclosed).                              *)
+(**************************************************************************)
+
 (** A fast, tail-recursive implementation of List.map.
     Based on the "Faster map" project by Anton Bachin, https://github.com/aantron/faster-map/
     Coq port and proof by Xavier Leroy, Inria, based on a suggestion by François Pottier. *)
