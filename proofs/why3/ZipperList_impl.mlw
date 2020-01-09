@@ -1,3 +1,15 @@
+(**************************************************************************)
+(*                                                                        *)
+(*  VOCaL -- A Verified OCaml Library                                     *)
+(*                                                                        *)
+(*  Copyright (c) 2018 The VOCaL Project                                  *)
+(*                                                                        *)
+(*  This software is free software, distributed under the MIT license     *)
+(*  (as described in file LICENSE enclosed).                              *)
+(**************************************************************************)
+
+(* Author: Mário Pereira (LRI, Univ Paris-Saclay) *)
+
 (* module ZipperClient *)
 
 (*   clone import ZipperList.Sig as Z (\* functor arg *\) *)

@@ -1,3 +1,17 @@
+(**************************************************************************)
+(*                                                                        *)
+(*  VOCaL -- A Verified OCaml Library                                     *)
+(*                                                                        *)
+(*  Copyright (c) 2018 The VOCaL Project                                  *)
+(*                                                                        *)
+(*  This software is free software, distributed under the MIT license     *)
+(*  (as described in file LICENSE enclosed).                              *)
+(**************************************************************************)
+
+(* Authors:
+     Jean-Christophe Filliâtre (CNRS, LRI, Univ Paris-Saclay)
+     Simão Melo de Sousa (University of Beira Interior)
+     Mário Pereira (NOVA-LINCS, Universidade Nova de Lisboa) *)
 
 (* Union-Find
 

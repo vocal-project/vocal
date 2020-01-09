@@ -1,3 +1,16 @@
+(**************************************************************************)
+(*                                                                        *)
+(*  VOCaL -- A Verified OCaml Library                                     *)
+(*                                                                        *)
+(*  Copyright (c) 2018 The VOCaL Project                                  *)
+(*                                                                        *)
+(*  This software is free software, distributed under the MIT license     *)
+(*  (as described in file LICENSE enclosed).                              *)
+(**************************************************************************)
+
+(* Authors:
+     Mário Pereira (LRI, Univ Paris-Saclay)
+     Jean-Christophe Filliâtre (CNRS, LRI, Univ Paris-Saclay) *)
 
 (* Mutable queue implementation, following OCaml's queue implementation *)
 
