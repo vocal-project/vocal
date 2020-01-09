@@ -43,6 +43,12 @@ module Gospel
   use export ocaml.Sys
 
   use export bag.Bag
+  use export list.List
+  use seq.Seq, seq.OfList
+
+  function seq_of_list (l: list 'a) : seq 'a = of_list l
+
+  use export option.Option
 
 end
 

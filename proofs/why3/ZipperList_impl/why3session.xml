@@ -3,10 +3,14 @@
 "http://why3.lri.fr/why3session.dtd">
 <why3session shape_version="8">
 <prover id="0" name="Alt-Ergo" version="2.3.0" timelimit="5" steplimit="0" memlimit="1000"/>
-<prover id="3" name="Alt-Ergo" version="2.2.0" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="4" name="CVC4" version="1.5" timelimit="1" steplimit="0" memlimit="1000"/>
 <file format="whyml" proved="true">
 <path name=".."/><path name="ZipperList_impl.mlw"/>
+<theory name="ZipperClient" proved="true">
+ <goal name="list_length&#39;vc" expl="VC for list_length" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.03" steps="118"/></proof>
+ </goal>
+</theory>
 <theory name="ZipperType" proved="true">
  <goal name="t&#39;vc" expl="VC for t" proved="true">
  <proof prover="0"><result status="valid" time="0.01" steps="78"/></proof>
@@ -146,59 +150,51 @@
  <proof prover="0"><result status="valid" time="0.07" steps="540"/></proof>
  </goal>
 </theory>
-<theory name="ZipperClient">
- <goal name="VC list_length" expl="VC for list_length">
- <proof prover="3"><result status="valid" time="0.01" steps="134"/></proof>
+<theory name="ZipperCorrect" proved="true">
+ <goal name="Sig.t&#39;vc" expl="VC for t" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.02" steps="76"/></proof>
  </goal>
-</theory>
-<theory name="ZipperCorrect">
- <goal name="Sig.VC t" expl="VC for t">
- <proof prover="3"><result status="valid" time="0.04" steps="76"/></proof>
+ <goal name="Sig.empty&#39;vc" expl="VC for empty" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.01" steps="10"/></proof>
  </goal>
- <goal name="Sig.VC empty" expl="VC for empty">
- <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ <goal name="Sig.is_empty&#39;vc" expl="VC for is_empty" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.02" steps="48"/></proof>
  </goal>
- <goal name="Sig.VC is_empty" expl="VC for is_empty">
- <proof prover="3"><result status="valid" time="0.01" steps="50"/></proof>
+ <goal name="Sig.to_list&#39;vc" expl="VC for to_list" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.03" steps="42"/></proof>
  </goal>
- <goal name="Sig.VC length" expl="VC for length">
- <proof prover="3"><result status="valid" time="0.02" steps="46"/></proof>
+ <goal name="Sig.make&#39;vc" expl="VC for make" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.03" steps="44"/></proof>
  </goal>
- <goal name="Sig.VC to_list" expl="VC for to_list">
- <proof prover="3"><result status="valid" time="0.01" steps="42"/></proof>
+ <goal name="Sig.move_left&#39;vc" expl="VC for move_left" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.02" steps="10"/></proof>
  </goal>
- <goal name="Sig.VC make" expl="VC for make">
- <proof prover="3"><result status="valid" time="0.01" steps="44"/></proof>
+ <goal name="Sig.insert_left&#39;vc" expl="VC for insert_left" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.01" steps="10"/></proof>
  </goal>
- <goal name="Sig.VC move_left" expl="VC for move_left">
- <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ <goal name="Sig.remove_left&#39;vc" expl="VC for remove_left" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.01" steps="10"/></proof>
  </goal>
- <goal name="Sig.VC insert_left" expl="VC for insert_left">
- <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ <goal name="Sig.move_all_left&#39;vc" expl="VC for move_all_left" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.01" steps="10"/></proof>
  </goal>
- <goal name="Sig.VC remove_left" expl="VC for remove_left">
- <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ <goal name="Sig.move_right&#39;vc" expl="VC for move_right" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.02" steps="10"/></proof>
  </goal>
- <goal name="Sig.VC move_all_left" expl="VC for move_all_left">
- <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ <goal name="Sig.insert_right&#39;vc" expl="VC for insert_right" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.02" steps="10"/></proof>
  </goal>
- <goal name="Sig.VC move_right" expl="VC for move_right">
- <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ <goal name="Sig.remove_right&#39;vc" expl="VC for remove_right" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.03" steps="10"/></proof>
  </goal>
- <goal name="Sig.VC insert_right" expl="VC for insert_right">
- <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ <goal name="Sig.move_all_right&#39;vc" expl="VC for move_all_right" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.02" steps="10"/></proof>
  </goal>
- <goal name="Sig.VC remove_right" expl="VC for remove_right">
- <proof prover="3"><result status="valid" time="0.01" steps="10"/></proof>
+ <goal name="Sig.is_focused&#39;vc" expl="VC for is_focused" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.03" steps="10"/></proof>
  </goal>
- <goal name="Sig.VC move_all_right" expl="VC for move_all_right">
- <proof prover="3"><result status="valid" time="0.00" steps="10"/></proof>
- </goal>
- <goal name="Sig.VC is_focused" expl="VC for is_focused">
- <proof prover="3"><result status="valid" time="0.00" steps="10"/></proof>
- </goal>
- <goal name="Sig.VC focused" expl="VC for focused">
- <proof prover="3"><result status="valid" time="0.02" steps="86"/></proof>
+ <goal name="Sig.focused&#39;vc" expl="VC for focused" proved="true">
+ <proof prover="0" timelimit="1"><result status="valid" time="0.04" steps="85"/></proof>
  </goal>
 </theory>
 </file>
