@@ -120,15 +120,21 @@ let read_channel env path file c =
   (* List.iter use extra_uses; *)
   let rec add_decl = function
     | Gdecl d -> Typing.add_decl Loc.dummy_position d;
-    | Gmodule (id, dl) ->
+    | Gmodule (loc, id, dl) ->
        Typing.open_scope id.id_loc id;
        List.iter add_decl dl;
-       Typing.close_scope ~import:false id.id_loc in
+       Typing.close_scope ~import:true loc in
   let f = use_gospel @ List.flatten f in
   (* For debugging only: *)
-  (* List.iter (fun d -> match d with
-   *     | Gdecl d -> Format.eprintf "%a@." Mlw_printer.pp_decl d
-   *     | _ -> assert false) f; *)
+  (* let rec pp_list pp fmt l = match l with
+   *   | [] -> ()
+   *   | x :: r -> Format.eprintf "%a" pp x; pp_list pp fmt r in
+   * let rec pp_decl fmt d = match d with
+   *   | Gdecl d -> Format.eprintf "%a@." Mlw_printer.pp_decl d
+   *   | Gmodule (_loc, id, dl) ->
+   *       Format.eprintf "@[<hv 2>scope %s@\n%a@]@\nend@." id.id_str
+   *         (pp_list pp_decl) dl in
+   * pp_list pp_decl (Format.err_formatter) f; *)
   List.iter add_decl f;
   close_module Loc.dummy_position;
   let mm = close_file () in

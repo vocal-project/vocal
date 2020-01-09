@@ -16,7 +16,7 @@ open Why3gospel_driver
 
 type gdecl =
   | Gdecl of decl
-  | Gmodule of ident * gdecl list
+  | Gmodule of Loc.position * ident * gdecl list
 
 let location { Gospel.Location.loc_start = b; Gospel.Location.loc_end = e } =
   Loc.extract (b, e)
@@ -75,6 +75,12 @@ module Term = struct
   let rec ty Ty.{ty_node} = match ty_node with
     | Ty.Tyvar {tv_name} ->
         PTtyvar (mk_id tv_name.id_str (location tv_name.id_loc))
+    | Ty.Tyapp (ts, tyl) when Ty.is_ts_arrow ts ->
+        let rec arrow_of_pty_list = function
+          | [] -> assert false
+          | [pty] -> pty
+          | arg :: ptyl -> PTarrow (arg, arrow_of_pty_list ptyl) in
+        arrow_of_pty_list (List.map ty tyl)
     | Ty.Tyapp ({ts_ident}, tyl) -> let loc = location ts_ident.id_loc in
         let id_str = match query_syntax ts_ident.id_str with
             | None   -> ts_ident.id_str
@@ -131,12 +137,19 @@ module Term = struct
           Tbinop (term t1, binop op, term t2)
       | Tt.Tapp (ls, []) ->
           (* FIXME? is this the correct semantics for
-                    zero-arguments applications? *)
+               zero-arguments applications? *)
           Tident (Qident (ident_of_lsymbol ls))
+      | Tt.Tapp (ls, term_list) when Tt.ls_equal ls Tt.fs_apply ->
+          begin match term_list with
+          | [fs; arg] -> Tapply (term fs, term arg)
+          | _ -> assert false end
       | Tt.Tapp ({ls_name}, term_list) ->
           let loc = ls_name.I.id_loc in
           let term_list = List.map term term_list in
-          let id = mk_id ls_name.I.id_str (location loc) in
+          let id_str = match query_syntax ls_name.id_str with
+            | None   -> ls_name.id_str
+            | Some s -> s in
+          let id = mk_id id_str (location loc) in
           Tidapp (Qident id, term_list) in
     mk_term (t_node t.Tt.t_node)
 
@@ -149,31 +162,42 @@ let private_type = function
 let td_params (tvs, _) =
   Term.ident_of_tvsymbol tvs
 
-let td_def_of_ty_fields ty_field =
-  let field_of_lsymbol (ls, mut) =
-    let id  = Term.ident_of_lsymbol ls in
-    let pty = Term.ty Term.(Opt.get ls.Tt.ls_value) in
-    mk_field id.id_loc id pty ~mut ~ghost:true in
-  TDrecord (List.map field_of_lsymbol ty_field)
+(** Visibility of type declarations. An alias type cannot be private, so we
+    check whether or not the GOSPEL type manifest is [None]. *)
+let td_vis_from_manifest = function
+  | None -> Private
+  | Some _ -> Public
 
-let type_decl (T.{td_ts = {ts_ident}; td_spec} as td) = T.{
+(** Convert a GOSPEL type definition into a Why3's Ptree [type_def]. If the
+    GOSPEL type manifest is [None], then the type is defined via its
+    specification fields. Otherwise, it is an alias type. *)
+let td_def td_spec td_manifest =
+  let td_def_of_ty_fields ty_fields =
+    let field_of_lsymbol (ls, mut) =
+      let id  = Term.ident_of_lsymbol ls in
+      let pty = Term.ty Term.(Opt.get ls.Tt.ls_value) in
+      mk_field id.id_loc id pty ~mut ~ghost:true in
+    TDrecord (List.map field_of_lsymbol ty_fields) in
+  match td_manifest with
+  | None -> td_def_of_ty_fields td_spec.T.ty_fields
+  | Some ty -> TDalias (Term.ty ty)
+
+let type_decl (T.{td_ts = {ts_ident}; td_spec; td_manifest} as td) = T.{
   td_loc    = location td.td_loc;
   td_ident  = mk_id ts_ident.id_str (location td.td_loc);
   td_params = List.map td_params td.td_params;
-  td_vis    = Private; (* GOSPEL type declarations must always be interpreted
-                          as private types, from a Why3 point of view, in order
-                          for one to be able to perform type refinement. *)
+  td_vis    = td_vis_from_manifest td_manifest;
   td_mut    = td_spec.ty_ephemeral;
   td_inv    = List.map Term.term td_spec.ty_invariants;
   td_wit    = [];
-  td_def    = td_def_of_ty_fields td_spec.ty_fields
+  td_def    = td_def td_spec td_manifest
 }
 
 let mk_expr expr_desc expr_loc =
   { expr_desc; expr_loc }
 
 let mk_logic_decl ld_loc ld_ident ld_params ld_type ld_def =
-  { ld_loc; ld_ident; ld_params; ld_type = ld_type; ld_def }
+  { ld_loc; ld_ident; ld_params; ld_type; ld_def }
 
 let loc_of_vs vs = Term.(location vs.Tt.vs_name.I.id_loc)
 
@@ -328,38 +352,59 @@ let axiom T.{ax_name; ax_term} =
   let term = term ax_term in
   Dprop (Decl.Paxiom, id, term)
 
-let signature_item i = match i.T.sig_desc with
-  (* GOSPEL-modified decls *)
+let rec module_type mt = match mt.T.mt_desc with
+  | T.Mod_ident _ (* of string list *) ->
+      assert false
+  | T.Mod_signature s ->
+      List.flatten (signature s)
+  | T.Mod_functor (arg_name, arg, body) ->
+      let loc = location arg_name.I.id_loc in
+      let id = mk_id arg_name.I.id_str loc in
+      Gmodule (loc, id, module_type (Opt.get arg)) :: module_type body
+  | T.Mod_with _ (* of module_type * with_constraint list *) ->
+      assert false
+  | T.Mod_typeof _ (* of Oparsetree.module_expr *) ->
+      assert false
+  | T.Mod_extension _ (* of Oparsetree.extension *) ->
+      assert false
+  | T.Mod_alias _ (* of string list *) ->
+      assert false
+
+(** Convert a GOSPEL module declaration into a Why3 scope. *)
+and module_declaration T.{md_name; md_type; md_loc} =
+  let loc = location md_loc in
+  let id = mk_id md_name.I.id_str (location md_name.I.id_loc) in
+  Gmodule (loc, id, module_type md_type)
+
+and signature_item i = match i.T.sig_desc with
   | T.Sig_val (vd, g) ->
       [Gdecl (val_decl vd g)]
   | T.Sig_type (_rec_flag, tdl, _gh) ->
       [Gdecl (Dtype (List.map type_decl tdl))]
   | T.Sig_typext _ (*  of Oparsetree.type_extension *) ->
       assert false (*TODO*)
-  | T.Sig_module _ (*  of module_declaration *) ->
-      assert false (*TODO*)
+  | T.Sig_module md ->
+      [module_declaration md]
   | T.Sig_recmodule _ (* of module_declaration list *) ->
       assert false (*TODO*)
   | T.Sig_modtype _ (*  of module_type_declaration *) ->
       assert false (*TODO*)
-  (* OCaml decls *)
   | T.Sig_exception _ (* of type_exception *) ->
       assert false (*TODO*)
   | T.Sig_open _ (* of open_description * ghost *) ->
       (* The GOSPEL standard library is opened by default. For now, we chose to
          ignore it and will make a work-around with a custom Why3 file. *)
-      [] (*TODO*)
+      []
   | T.Sig_include _ (* of Oparsetree.include_description *) ->
       assert false (*TODO*)
   | T.Sig_class _ (* of Oparsetree.class_description list *) ->
       assert false (*TODO*)
   | T.Sig_class_type _ (* of Oparsetree.class_type_declaration list *) ->
       assert false (*TODO*)
-  | T.Sig_attribute _ (* of Oparsetree.attribute *) ->
-      assert false (*TODO*)
+  | T.Sig_attribute _ ->
+      []
   | T.Sig_extension _ (* of Oparsetree.extension * Oparsetree.attributes *) ->
       assert false (*TODO*)
-  (* GOSPEL-specific decls *)
   | T.Sig_use _ (* of string *) ->
       assert false (*TODO*)
   | T.Sig_function f ->
@@ -367,4 +412,4 @@ let signature_item i = match i.T.sig_desc with
   | T.Sig_axiom ax ->
       [Gdecl (axiom ax)] (*TODO*)
 
-let signature = List.map signature_item
+and signature s = List.map signature_item s
