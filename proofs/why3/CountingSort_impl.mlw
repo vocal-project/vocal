@@ -3,38 +3,32 @@ module Spec
   use int.Int, mach.int.Int63
   use int.NumOf as N
   use seq.Seq
+  use seq.Occ
 
   (* values of the array are in the range 0..k-1 *)
   (* val constant k: int63 *)
   (*   ensures { 0 < result } *)
 
-  predicate k_values (k: int63) (a: seq int63) =
+  predicate k_values (k: int) (a: seq int) =
     forall i: int. 0 <= i < length a -> 0 <= a[i] < k
 
-  (* we introduce two predicates:
-     - [numeq a v l u] is the number of values in a[l..u[ equal to v
+  (* we introduce a predicates:
      - [numlt a v l u] is the number of values in a[l..u[ less than v *)
-  function numeq (a: seq int63) (v i j : int) : int =
-    N.numof (fun k -> a[k] = v) i j
-
-  function numlt (a: seq int63) (v i j : int) : int =
+  function numlt (v: int) (a: seq int) (i j : int) : int =
     N.numof (fun k -> a[k] < v) i j
 
-  (* an ovious lemma relates numeq and numlt *)
-  let rec lemma eqlt (k: int63) (a: seq int63) (v: int) (l u: int)
+  (* an ovious lemma relates occ and numlt *)
+  let rec lemma eqlt (k: int) (a: seq int) (v: int) (l u: int)
     requires { 0 < k }
     requires { k_values k a }
     requires { 0 <= v < k }
     requires { 0 <= l < u <= length a }
-    ensures  { numlt a v l u + numeq a v l u = numlt a (v+1) l u }
+    ensures  { numlt v a l u + occ v a l u = numlt (v+1) a l u }
     variant  { u - l }
   = if l < u-1 then eqlt k a v (l+1) u
 
-  (* permutation of two arrays is here conveniently defined using [numeq]
-     i.e. as the equality of the two multi-sets *)
-  predicate permut (k: int63) (a b: seq int63) =
-    length a = length b /\
-    forall v: int. 0 <= v < k -> numeq a v 0 (length a) = numeq b v 0 (length b)
+  function toi (a: seq int63) : seq int =
+    create (length a) (fun x -> to_int (get a x))
 
 end
 
@@ -43,6 +37,8 @@ module CountingSortImpl
   use int.Int
   use mach.int.Int63
   use seq.Seq
+  use seq.Occ
+  use seq.Permut
   use import mach.array.Array63 as Array
   use Spec
 
@@ -58,34 +54,34 @@ module CountingSortImpl
   (* sorts array a into array b *)
   let counting_sort (k: int63) (a: array int63) (b: array int63)
     requires { 0 < k }
-    requires { k_values k a /\ length a = length b }
-    ensures  { sorted b /\ permut k a b }
+    requires { k_values k (toi a) /\ length a = length b }
+    ensures  { sorted b /\ permut_all a b }
   = let c = make k (0:int63) in
     for i = 0 to Array.length a - 1 do
-      invariant { forall v: int. 0 <= v < k -> c[v] = numeq a v 0 i }
+      invariant { forall v: int. 0 <= v < k -> c[v] = occ v (toi a) 0 i }
       let v = a[i] in
       c[v] <- c[v] + 1
     done;
     let ref j = 0 in
     for v = 0 to k-1 do
-      invariant { j = numlt a v 0 (length a) }
+      invariant { j = numlt v (toi a) 0 (length a) }
       invariant { sorted_sub b 0 j }
       invariant { forall e: int. 0 <= e < j -> 0 <= b[e] < v }
       invariant { forall f: int.
-        0 <= f < v -> numeq b f 0 j = numeq a f 0 (length a) }
+        0 <= f < v -> occ f (toi b) 0 j = occ f (toi a) 0 (length a) }
       for i = 1 to c[v] do
-        invariant { j -i+1 = numlt a v 0 (length a) }
+        invariant { j -i+1 = numlt v (toi a) 0 (length a) }
         invariant { sorted_sub b 0 j }
         invariant { forall e: int. 0 <= e < j -> 0 <= b[e] <= v }
         invariant { forall f: int.
-          0 <= f < v -> numeq b f 0 j = numeq a f 0 (length a) }
-        invariant { numeq b v 0 j = i-1 }
+          0 <= f < v -> occ f (toi b) 0 j = occ f (toi a) 0 (length a) }
+        invariant { occ v (toi b) 0 j = i-1 }
         b[j] <- v;
         j <- j + 1
       done
     done;
     assert { j = length b }
-
+(*
   (* sorts array a in place *)
   let in_place_counting_sort (k: int63) (a: array int63)
     requires { 0 < k }
@@ -117,9 +113,9 @@ module CountingSortImpl
       done
     done;
     assert { j = length a }
-
+*)
 end
-
+(*
 module Correct
 
   use CountingSortImpl
@@ -128,4 +124,4 @@ module Correct
     function numeq = Spec.numeq,
     val counting_sort, val in_place_counting_sort
 
-end
+end*)

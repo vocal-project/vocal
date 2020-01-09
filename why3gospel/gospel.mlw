@@ -68,4 +68,6 @@ module Gospel
   clone export seq.Sorted with
     type t = int63, predicate le = le
 
+  use export seq.Permut
+
 end
