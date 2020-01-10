@@ -355,7 +355,21 @@ let axiom T.{ax_name; ax_term} =
   let term = term ax_term in
   Dprop (Decl.Paxiom, id, term)
 
-let rec module_type mt = match mt.T.mt_desc with
+(** Convert GOSPEL exceptions into Why3's Ptree exceptions. *)
+let exn T.{exn_constructor = {ext_ident; ext_xs}; exn_loc} =
+  let _id = mk_id ext_ident.id_str (location ext_ident.id_loc) in
+  match ext_xs.Ty.xs_type with
+  | Exn_tuple [{ty_node = Ty.Tyapp (ts, tyl)}] when Ty.is_ts_tuple ts ->
+      assert false (* TODO *)
+  | _ -> assert false (* TODO *)
+
+(** Convert a GOSPEL module declaration into a Why3 scope. *)
+let rec module_declaration T.{md_name; md_type; md_loc} =
+  let loc = location md_loc in
+  let id = mk_id md_name.I.id_str (location md_name.I.id_loc) in
+  Gmodule (loc, id, module_type md_type)
+
+and module_type mt = match mt.T.mt_desc with
   | T.Mod_ident _ (* of string list *) ->
       assert false
   | T.Mod_signature s ->
@@ -373,12 +387,6 @@ let rec module_type mt = match mt.T.mt_desc with
   | T.Mod_alias _ (* of string list *) ->
       assert false
 
-(** Convert a GOSPEL module declaration into a Why3 scope. *)
-and module_declaration T.{md_name; md_type; md_loc} =
-  let loc = location md_loc in
-  let id = mk_id md_name.I.id_str (location md_name.I.id_loc) in
-  Gmodule (loc, id, module_type md_type)
-
 and signature_item i = match i.T.sig_desc with
   | T.Sig_val (vd, g) ->
       [Gdecl (val_decl vd g)]
@@ -392,8 +400,8 @@ and signature_item i = match i.T.sig_desc with
       assert false (*TODO*)
   | T.Sig_modtype _ (*  of module_type_declaration *) ->
       assert false (*TODO*)
-  | T.Sig_exception _ (* of type_exception *) ->
-      assert false (*TODO*)
+  | T.Sig_exception exn_cstr ->
+      [Gdecl (exn exn_cstr)]
   | T.Sig_open _ (* of open_description * ghost *) ->
       (* The GOSPEL standard library is opened by default. For now, we chose to
          ignore it and will make a work-around with a custom Why3 file. *)
