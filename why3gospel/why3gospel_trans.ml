@@ -293,13 +293,17 @@ let val_decl vd g =
     | _ -> assert false (* TODO *) in
   let mk_param lb_arg ct =
     let loc = Term.(location (T.vs_of_lb_arg lb_arg).vs_name.I.id_loc) in
-    let id, ghost = match lb_arg with
-      | Lnone _  -> Some (ident_of_lb_arg lb_arg), false
-      | Lghost _ -> Some (ident_of_lb_arg lb_arg), true
-      | _ -> assert false in
-    loc, id, ghost, core_type ct in
-  let mk_param_no_spec ct =
-    let loc = location ct.Ot.ptyp_loc in
+    let pty = core_type ct in
+    let id  = Some (ident_of_lb_arg lb_arg) in
+    let ghost, pty = match lb_arg with
+      | Lnone vs | Lnamed vs ->
+          false, pty
+      | Lquestion vs ->
+          false, PTtyapp (Qident (mk_id "option" loc), [pty])
+      | Lghost vs ->
+          true, pty in
+    loc, id, ghost, pty in
+  let mk_param_no_spec ct = let loc = location ct.Ot.ptyp_loc in
     loc, None, false, core_type ct in
   let param_list, ret, pat, mask, spec =
     let core_ty_list = flat_ptyp_arrow vd.T.vd_type in
@@ -314,9 +318,8 @@ let val_decl vd g =
         let mk_pat lb = let loc = loc_of_lb_arg lb in
           Term.mk_pattern (Pvar (ident_of_lb_arg lb)) loc in
         let mk_mask = function
-          | T.Lnone  _ -> Ity.MaskVisible
-          | T.Lghost _ -> Ity.MaskGhost
-          | _          -> assert false in
+          | T.Lnone  _ | T.Lquestion _ | T.Lnamed _ -> Ity.MaskVisible
+          | T.Lghost _ -> Ity.MaskGhost in
         let lb_list = s.T.sp_ret in
         let pat_list  = List.map mk_pat lb_list in
         let mask_list = List.map mk_mask lb_list in
