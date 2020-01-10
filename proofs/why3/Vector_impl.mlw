@@ -405,8 +405,8 @@ module Correct
   use Impl
 
   clone Vector.Sig with
-    type t = t
-(*     val create = create, *)
+    type t = t,
+    val create = create
 (*     val make = make, *)
 (*     val init = init, *)
 (*     val resize = resize, *)
