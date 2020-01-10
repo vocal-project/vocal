@@ -406,31 +406,31 @@ module Correct
 
   clone Vector.Sig with
     type t = t,
-    val create = create
-(*     val make = make, *)
-(*     val init = init, *)
-(*     val resize = resize, *)
-(*     val unsafe_resize = unsafe_resize, *)
-(*     val clear = clear, *)
-(*     val is_empty = is_empty, *)
-(*     val length = length, *)
-(*     val get = get, *)
-(*     val set = set, *)
-(*     val sub = sub, *)
-(*     val fill = fill, *)
-(*     val blit = blit, *)
-(*     val append = append, *)
-(*     val merge_right = merge_right, *)
+    val create = create,
+    val make = make,
+    (* val init = init, *)
+    val resize = resize,
+    (* val unsafe_resize = unsafe_resize *)
+    val clear = clear,
+    val is_empty = is_empty,
+    val length = length,
+    val get = get,
+    val set = set,
+    val sub = sub,
+    val fill = fill,
+    val blit = blit,
+    val append = append,
+    val merge_right = merge_right,
 (*     val map = map, *)
 (*     val mapi = mapi, *)
-(*     val copy = copy, *)
+    val copy = copy,
 (*     val fold_left = fold_left, *)
 (*     val fold_right = fold_right, *)
-(*     val push = push, *)
-(*     val pop = pop, *)
-(*     val pop_opt = pop_opt, *)
-(*     val top = top, *)
-(*     val top_opt = top_opt *)
+    val push = push,
+    val pop = pop,
+    val pop_opt = pop_opt,
+    val top = top,
+    val top_opt = top_opt
 
 end
 

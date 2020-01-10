@@ -141,6 +141,60 @@
  <goal name="Sig.create&#39;vc" expl="VC for create" proved="true">
  <proof prover="0"><result status="valid" time="0.02" steps="137"/></proof>
  </goal>
+ <goal name="Sig.make&#39;vc" expl="VC for make" proved="true">
+ <proof prover="0"><result status="valid" time="0.02" steps="76"/></proof>
+ </goal>
+ <goal name="Sig.resize&#39;vc" expl="VC for resize" proved="true">
+ <proof prover="0"><result status="valid" time="0.02" steps="106"/></proof>
+ </goal>
+ <goal name="Sig.clear&#39;vc" expl="VC for clear" proved="true">
+ <proof prover="0"><result status="valid" time="0.01" steps="28"/></proof>
+ </goal>
+ <goal name="Sig.is_empty&#39;vc" expl="VC for is_empty" proved="true">
+ <proof prover="0"><result status="valid" time="0.01" steps="34"/></proof>
+ </goal>
+ <goal name="Sig.length&#39;vc" expl="VC for length" proved="true">
+ <proof prover="0"><result status="valid" time="0.02" steps="16"/></proof>
+ </goal>
+ <goal name="Sig.get&#39;vc" expl="VC for get" proved="true">
+ <proof prover="0"><result status="valid" time="0.02" steps="20"/></proof>
+ </goal>
+ <goal name="Sig.set&#39;vc" expl="VC for set" proved="true">
+ <proof prover="0"><result status="valid" time="0.07" steps="176"/></proof>
+ </goal>
+ <goal name="Sig.sub&#39;vc" expl="VC for sub" proved="true">
+ <proof prover="0"><result status="valid" time="0.04" steps="140"/></proof>
+ </goal>
+ <goal name="Sig.fill&#39;vc" expl="VC for fill" proved="true">
+ <proof prover="0"><result status="valid" time="0.09" steps="179"/></proof>
+ </goal>
+ <goal name="Sig.blit&#39;vc" expl="VC for blit" proved="true">
+ <proof prover="0"><result status="valid" time="0.09" steps="234"/></proof>
+ </goal>
+ <goal name="Sig.append&#39;vc" expl="VC for append" proved="true">
+ <proof prover="0"><result status="valid" time="0.06" steps="209"/></proof>
+ </goal>
+ <goal name="Sig.merge_right&#39;vc" expl="VC for merge_right" proved="true">
+ <proof prover="0"><result status="valid" time="0.10" steps="272"/></proof>
+ </goal>
+ <goal name="Sig.copy&#39;vc" expl="VC for copy" proved="true">
+ <proof prover="0"><result status="valid" time="0.03" steps="83"/></proof>
+ </goal>
+ <goal name="Sig.push&#39;vc" expl="VC for push" proved="true">
+ <proof prover="0"><result status="valid" time="0.05" steps="188"/></proof>
+ </goal>
+ <goal name="Sig.pop&#39;vc" expl="VC for pop" proved="true">
+ <proof prover="0"><result status="valid" time="0.04" steps="116"/></proof>
+ </goal>
+ <goal name="Sig.pop_opt&#39;vc" expl="VC for pop_opt" proved="true">
+ <proof prover="0"><result status="valid" time="0.06" steps="224"/></proof>
+ </goal>
+ <goal name="Sig.top&#39;vc" expl="VC for top" proved="true">
+ <proof prover="0"><result status="valid" time="0.03" steps="35"/></proof>
+ </goal>
+ <goal name="Sig.top_opt&#39;vc" expl="VC for top_opt" proved="true">
+ <proof prover="0"><result status="valid" time="0.03" steps="119"/></proof>
+ </goal>
 </theory>
 </file>
 </why3session>
