@@ -63,9 +63,9 @@ module Comparable
   function cmp: t -> t -> int63
   axiom is_pre_order: is_pre_order cmp
 
-  val function compare (x y: t) : int63
+  val compare (x y: t) : int63
     ensures { result = cmp x y }
 
-  predicate le (x y: t) = compare x y <= 0
+  predicate le (x y: t) = cmp x y <= 0
 
 end

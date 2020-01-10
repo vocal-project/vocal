@@ -331,31 +331,32 @@ module Client
 
 end
 
-(* module PHint *)
+module PHint
 
-(*   use CompareInt *)
+  use CompareInt
 
-(*   clone Impl with (\* Make.X = CompareInt *\) *)
-(*     type Make.X.t = int, *)
-(*     val Make.X.compare = compare, *)
-(*     goal Make.X.is_pre_order, *)
-(*     axiom Make.minimum_heap_def *)
+  clone Impl with (* Make.X = CompareInt *)
+    type Make.X.t = int,
+    function Make.X.cmp = cmp,
+    val Make.X.compare = compare,
+    goal Make.X.is_pre_order,
+    axiom Make.minimum_heap_def
 
-(* end *)
+end
 
-(* module Main *)
+module Main
 
-(*   use PHint as PH *)
+  use PHint as PH
 
-(*   clone Client with (\* Sig = PH.Impl *\) *)
-(*     type Sig.Make.heap = PH.Impl.Make.heap, *)
-(*     function Sig.Make.minimum = PH.Impl.Make.minimum, *)
-(*     goal Sig.Make.min_def, *)
-(*     val Sig.Make.empty = PH.Impl.Make.empty, *)
-(*     val Sig.Make.is_empty = PH.Impl.Make.is_empty, *)
-(*     val Sig.Make.find_min = PH.Impl.Make.find_min, *)
-(*     val Sig.Make.delete_min = PH.Impl.Make.delete_min, *)
-(*     val Sig.Make.insert = PH.Impl.Make.insert, *)
-(*     val Sig.Make.merge = PH.Impl.Make.merge *)
+  clone Client with (* Sig = PH.Impl *)
+    type Sig.Make.heap = PH.Impl.Make.heap,
+    function Sig.Make.minimum = PH.Impl.Make.minimum,
+    goal Sig.Make.min_def,
+    val Sig.Make.empty = PH.Impl.Make.empty,
+    val Sig.Make.is_empty = PH.Impl.Make.is_empty,
+    val Sig.Make.find_min = PH.Impl.Make.find_min,
+    val Sig.Make.delete_min = PH.Impl.Make.delete_min,
+    val Sig.Make.insert = PH.Impl.Make.insert,
+    val Sig.Make.merge = PH.Impl.Make.merge
 
-(* end *)
+end
