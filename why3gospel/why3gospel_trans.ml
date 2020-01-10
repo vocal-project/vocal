@@ -75,6 +75,8 @@ module Term = struct
   let rec ty Ty.{ty_node} = match ty_node with
     | Ty.Tyvar {tv_name} ->
         PTtyvar (mk_id tv_name.id_str (location tv_name.id_loc))
+    | Ty.Tyapp (ts, tyl) when Ty.is_ts_tuple ts ->
+        PTtuple (List.map ty tyl)
     | Ty.Tyapp (ts, tyl) when Ty.is_ts_arrow ts ->
         let rec arrow_of_pty_list = function
           | [] -> assert false
@@ -357,11 +359,14 @@ let axiom T.{ax_name; ax_term} =
 
 (** Convert GOSPEL exceptions into Why3's Ptree exceptions. *)
 let exn T.{exn_constructor = {ext_ident; ext_xs}; exn_loc} =
-  let _id = mk_id ext_ident.id_str (location ext_ident.id_loc) in
+  let id = mk_id ext_ident.id_str (location ext_ident.id_loc) in
   match ext_xs.Ty.xs_type with
   | Exn_tuple [{ty_node = Ty.Tyapp (ts, tyl)}] when Ty.is_ts_tuple ts ->
-      assert false (* TODO *)
-  | _ -> assert false (* TODO *)
+      Dexn (id, PTtuple (List.map ty tyl), Ity.MaskVisible)
+  | Exn_tuple tyl ->
+      Dexn (id, PTtuple (List.map ty tyl), Ity.MaskVisible)
+  | Exn_record _ -> let loc = location exn_loc in
+      Loc.errorm ~loc "Exceptions with record arguments is not supported."
 
 (** Convert a GOSPEL module declaration into a Why3 scope. *)
 let rec module_declaration T.{md_name; md_type; md_loc} =
