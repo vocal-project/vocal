@@ -144,6 +144,9 @@
  <goal name="Sig.make&#39;vc" expl="VC for make" proved="true">
  <proof prover="0"><result status="valid" time="0.02" steps="76"/></proof>
  </goal>
+ <goal name="Sig.init&#39;vc" expl="VC for init" proved="true">
+ <proof prover="0"><result status="valid" time="0.02" steps="67"/></proof>
+ </goal>
  <goal name="Sig.resize&#39;vc" expl="VC for resize" proved="true">
  <proof prover="0"><result status="valid" time="0.02" steps="106"/></proof>
  </goal>
@@ -177,8 +180,20 @@
  <goal name="Sig.merge_right&#39;vc" expl="VC for merge_right" proved="true">
  <proof prover="0"><result status="valid" time="0.10" steps="272"/></proof>
  </goal>
+ <goal name="Sig.map&#39;vc" expl="VC for map" proved="true">
+ <proof prover="0"><result status="valid" time="0.03" steps="83"/></proof>
+ </goal>
+ <goal name="Sig.mapi&#39;vc" expl="VC for mapi" proved="true">
+ <proof prover="0"><result status="valid" time="0.02" steps="83"/></proof>
+ </goal>
  <goal name="Sig.copy&#39;vc" expl="VC for copy" proved="true">
  <proof prover="0"><result status="valid" time="0.03" steps="83"/></proof>
+ </goal>
+ <goal name="Sig.fold_left&#39;vc" expl="VC for fold_left" proved="true">
+ <proof prover="0"><result status="valid" time="0.01" steps="6"/></proof>
+ </goal>
+ <goal name="Sig.fold_right&#39;vc" expl="VC for fold_right" proved="true">
+ <proof prover="0"><result status="valid" time="0.01" steps="6"/></proof>
  </goal>
  <goal name="Sig.push&#39;vc" expl="VC for push" proved="true">
  <proof prover="0"><result status="valid" time="0.05" steps="188"/></proof>

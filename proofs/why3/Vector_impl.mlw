@@ -408,7 +408,7 @@ module Correct
     type t = t,
     val create = create,
     val make = make,
-    (* val init = init, *)
+    val init = init,
     val resize = resize,
     (* val unsafe_resize = unsafe_resize *)
     val clear = clear,
@@ -421,11 +421,11 @@ module Correct
     val blit = blit,
     val append = append,
     val merge_right = merge_right,
-(*     val map = map, *)
-(*     val mapi = mapi, *)
+    val map = map,
+    val mapi = mapi,
     val copy = copy,
-(*     val fold_left = fold_left, *)
-(*     val fold_right = fold_right, *)
+    val fold_left = fold_left,
+    val fold_right = fold_right,
     val push = push,
     val pop = pop,
     val pop_opt = pop_opt,
