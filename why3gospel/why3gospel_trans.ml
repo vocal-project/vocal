@@ -291,7 +291,12 @@ let rec core_type Ot.{ ptyp_desc; ptyp_loc } =
 let val_decl vd g =
   let rec flat_ptyp_arrow ct = match ct.Ot.ptyp_desc with
     | Ot.Ptyp_var _ | Ptyp_tuple _ | Ptyp_constr _ -> [ct]
-    | Ot.Ptyp_arrow (_, t1, t2) -> flat_ptyp_arrow t1 @ flat_ptyp_arrow t2
+    | Ot.Ptyp_arrow (_, t1, t2) ->
+        begin match t1.ptyp_desc with
+          | Ot.Ptyp_arrow (lbl, t11, t12) ->
+              t1 :: flat_ptyp_arrow t2
+          | _ -> flat_ptyp_arrow t1 @ flat_ptyp_arrow t2
+        end
     | _ -> assert false (* TODO *) in
   let mk_param lb_arg ct =
     let loc = Term.(location (T.vs_of_lb_arg lb_arg).vs_name.I.id_loc) in

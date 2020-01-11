@@ -50,6 +50,8 @@ module Gospel
   function seq_of_list (l: list 'a) : seq 'a = of_list l
 
   use export option.Option
+  use export seq.FoldLeft
+  use export seq.FoldRight
 
 end
 
