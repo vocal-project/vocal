@@ -40,25 +40,31 @@ let read_file file nm c =
   Gospel.Location.init lb file;
   Gospel.Parser_frontend.(parse_gospel (parse_ocaml_lb lb) nm)
 
-(* TODO
-(* extract additional uses and vals from file.mli.why3, if any *)
-let extract_use = function Use q -> Some q | _ -> None
+module T = Gospel.Uast
 
-let extract_vals m = function
-  | Val (_,_,id,pty) -> Mstr.add id.id_str pty m
+(* extract additional uses and vals from file.mli.why3, if any *)
+let extract_use sig_item = match sig_item.T.sdesc with
+  | T.Sig_ghost_open {popen_lid = {txt = Lident s}} -> Some s
+  | _ -> None
+
+let extract_vals m sig_item = match sig_item.T.sdesc with
+  | T.Sig_val T.{vname; vtype} ->
+      Mstr.add vname.txt vtype m
   | _ -> m
 
 let read_extra_file file =
   let why3_file = file ^ ".why3" in
   if Sys.file_exists why3_file then begin
     let c = open_in why3_file in
-    let f = read_file why3_file c in
+    let nm =
+      let f = Filename.basename file in
+      String.capitalize_ascii (Filename.chop_extension f) in
+    let f = read_file why3_file nm c in
     close_in c;
     Lists.map_filter extract_use f,
     List.fold_left extract_vals Mstr.empty f
   end else
     [], Mstr.empty
-*)
 
 (* TODO equivalent clauses
 let print_equiv file dl =

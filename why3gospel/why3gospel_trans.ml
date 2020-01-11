@@ -280,7 +280,8 @@ let rec core_type Ot.{ ptyp_desc; ptyp_loc } =
         | None   -> id_str
         | Some s -> s in
       let rec longident loc = function
-        | Gospel.Longident.Lident s    -> Qident (mk_id (mk_str s) loc)
+        | Gospel.Longident.Lident s ->
+            Qident (mk_id (mk_str s) loc)
         | Gospel.Longident.Ldot (t, s) ->
             Qdot (longident loc t, mk_id (mk_str s) loc)
         | _ -> assert false (* TODO? *) in
