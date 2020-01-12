@@ -249,7 +249,7 @@ module ZipperCorrect
     val empty = empty,
     val move_left = move_left,
     val move_right = move_right,
-    (* val length = length, *)
+    val length = length,
     val is_focused = is_focused,
     val focused = focused,
     val make = make,
