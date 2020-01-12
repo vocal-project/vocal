@@ -53,6 +53,9 @@ module Gospel
   use export seq.FoldLeft
   use export seq.FoldRight
 
+  use import mach.peano.Peano as P
+  function int_of_peano (t: P.t) : int = t
+
 end
 
 module Comparable

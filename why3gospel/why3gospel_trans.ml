@@ -388,7 +388,8 @@ and module_type mt = match mt.T.mt_desc with
   | T.Mod_functor (arg_name, arg, body) ->
       let loc = location arg_name.I.id_loc in
       let id = mk_id arg_name.I.id_str loc in
-      Gmodule (loc, id, module_type (Opt.get arg)) :: module_type body
+      let body = module_type body in
+      Gmodule (loc, id, module_type (Opt.get arg)) :: body
   | T.Mod_with _ (* of module_type * with_constraint list *) ->
       assert false
   | T.Mod_typeof _ (* of Oparsetree.module_expr *) ->
