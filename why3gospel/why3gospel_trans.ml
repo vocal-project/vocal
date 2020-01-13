@@ -64,10 +64,12 @@ module Term = struct
     let loc = map_opt_default location dummy_loc pat.Tt.p_loc in
     let mk_pattern pat_desc = mk_pattern pat_desc loc in
     let p_node = function
-      | Tt.Pwild        -> Pwild
-      | Tt.Pvar vs      -> Pvar (ident_of_vsymbol vs)
-      | Tt.Por (p1, p2) -> Por (pattern p1, pattern p2)
-      | Tt.Pas (p, vs)  -> Pas (pattern p, ident_of_vsymbol vs, false)
+      | Tt.Pwild         -> Pwild
+      | Tt.Pvar vs       -> Pvar (ident_of_vsymbol vs)
+      | Tt.Por  (p1, p2) -> Por (pattern p1, pattern p2)
+      | Tt.Pas  (p, vs)  -> Pas (pattern p, ident_of_vsymbol vs, false)
+      | Tt.Papp (ls, pat_list) when Tt.is_fs_tuple ls ->
+          Ptuple (List.map pattern pat_list)
       | Tt.Papp (ls, pat_list) ->
           Papp (Qident (ident_of_lsymbol ls), List.map pattern pat_list) in
     mk_pattern (p_node pat.Tt.p_node)
@@ -230,10 +232,10 @@ open Term
 let sp_xpost xpost =
   let mk_xpost_list xs pat_post_list acc =
     let loc = xs.Ty.xs_ident.I.id_loc in
-    let mk_xpost (_pat, post) =
+    let mk_xpost (pat, post) =
       let q = Qident (mk_id xs.Ty.xs_ident.I.id_str (location loc)) in
       let post = term post in
-      q, Some (mk_pattern (Ptuple []) dummy_loc, post) in
+      q, Some (Term.pattern pat, post) in
     (location loc, List.map mk_xpost pat_post_list) :: acc in
   Ty.Mxs.fold mk_xpost_list xpost []
 
@@ -294,8 +296,7 @@ let val_decl vd g =
     | Ot.Ptyp_var _ | Ptyp_tuple _ | Ptyp_constr _ -> [ct]
     | Ot.Ptyp_arrow (_, t1, t2) ->
         begin match t1.ptyp_desc with
-          | Ot.Ptyp_arrow (lbl, t11, t12) ->
-              t1 :: flat_ptyp_arrow t2
+          | Ot.Ptyp_arrow (lbl, t11, t12) -> t1 :: flat_ptyp_arrow t2
           | _ -> flat_ptyp_arrow t1 @ flat_ptyp_arrow t2
         end
     | _ -> assert false (* TODO *) in
