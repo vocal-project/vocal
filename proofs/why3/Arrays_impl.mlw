@@ -20,7 +20,7 @@ module Impl
   use seq.Occ
   use mach.array.Array63
   use ocaml.Pervasives
-  import Order
+  (* import Order *)
 
   let rec binary_search (cmp: 'a -> 'a -> int63)
                         (a: array 'a) (fromi toi: int63) (v: 'a) : int63
@@ -85,13 +85,14 @@ module Impl
   let binary_search_right (cmp: 'a -> 'a -> int63)
                           (a: array 'a) (fromi toi: int63) (v: 'a) : int63
     requires { is_pre_order cmp }
-    raises   { Invalid_argument -> not (0 <= fromi <= toi <= length a) }
+    raises   { Invalid_argument _ -> not (0 <= fromi <= toi <= length a) }
     requires { forall i j. fromi <= i <= j < toi -> cmp a[i] a[j] <= 0 }
     ensures  { fromi <= result <= toi }
     ensures  { forall i. fromi  <= i < result -> cmp a[i] v <= 0 }
     ensures  { forall i. result <= i < toi    -> cmp a[i] v >  0 }
   =
-    if not (zero <= fromi <= toi <= length a) then raise Invalid_argument;
+    if not (zero <= fromi <= toi <= length a) then
+      raise Invalid_argument "binary_search_right";
     unsafe_binary_search_right cmp a fromi toi v
 
   use mach.array.Array63Permut
@@ -157,19 +158,15 @@ module Impl
 
 end
 
-(* module Correct *)
+module Correct
 
-(*   use Impl *)
-(*   clone Arrays.Sig with *)
-(*     val binary_search              = binary_search, *)
-(*     val binary_search_left         = binary_search_left, *)
-(*     val binary_search_right        = binary_search_right, *)
-(*     val unsafe_binary_search_right = unsafe_binary_search_right, *)
-(*     val binary_sort                = binary_sort, *)
-(*     val swap                       = swap *)
-(*     val knuth_shuffle              = knuth_shuffle *)
+  use Impl
+  clone Arrays.Sig with
+    val binary_search,       val binary_search_left,
+    val binary_search_right, val unsafe_binary_search_right,
+    val binary_sort,         val swap, val knuth_shuffle
 
-(* end *)
+end
 
 (*
 Local Variables:
