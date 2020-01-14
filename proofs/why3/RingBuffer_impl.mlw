@@ -20,13 +20,13 @@ module Impl
   (* We need this axiom since the buffer must contain at least one element. *)
   axiom positive_max_array_length : 1 <= max_array_length
 
-  (* We need this constant for the type invariant witness, in order to able to
-     assign the [dummy] field the same value used to populate the initialy
+  (* We need this constant for the type invariant witness, in to assign the
+     [dummy] field the same value used to populate the initialy
      created [data] array. If, instead, we use [any 'a] twice, we are not able
-     to assert that these two values are equal.
+     to assert that such values are equal.
 
-     The use of [constant] does not result in a contradiction, since the logic
-     of Why3 assumes every type to be inhabited. *)
+     The introduction of this constant does not result in a contradiction, since
+     the logic of Why3 assumes every type to be inhabited. *)
   constant d: 'a
 
   type buffer 'a = {

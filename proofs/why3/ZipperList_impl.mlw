@@ -245,21 +245,11 @@ module ZipperCorrect
 
   clone ZipperList.Sig with
     type t = t,
-    val is_empty = is_empty,
-    val empty = empty,
-    val move_left = move_left,
-    val move_right = move_right,
-    val length = length,
-    val is_focused = is_focused,
-    val focused = focused,
-    val make = make,
-    val to_list = to_list,
-    val remove_right = remove_right,
-    val remove_left = remove_left,
-    val insert_right = insert_right,
-    val insert_left = insert_left,
-    val move_all_left = move_all_left,
-    val move_all_right = move_all_right
+    val  empty,         val is_empty,     val to_list,
+    val  make,          val length,       val move_right,
+    val  insert_right,  val remove_right, val move_all_right,
+    val  move_left,     val insert_left,  val remove_left,
+    val  move_all_left, val  is_focused,  val focused
 end
 
 (*

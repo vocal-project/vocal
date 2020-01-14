@@ -57,6 +57,8 @@ module Gospel
   use import mach.peano.Peano as P
   function int_of_peano (t: P.t) : int = t
 
+  use export mach.array.Array63Permut
+
 end
 
 module Comparable
