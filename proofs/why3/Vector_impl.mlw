@@ -141,8 +141,8 @@ module Impl
     ensures  { n = a.size }
     ensures  { forall i. 0 <= i < MinMax.min ((old a).size) n ->
                  Seq.([]) a.view i = Seq.([]) (old a).view i }
-    raises   { Invalid_argument -> not (0 <= n <= max_array_length) }
-  = if not (zero <= n <= max_array_length) then raise Invalid_argument;
+    raises   { Invalid_argument _ -> not (0 <= n <= max_array_length) }
+  = if not (zero <= n <= max_array_length) then raise Invalid_argument "resize";
     unsafe_resize a n
 
   (** Array interface *)
@@ -410,7 +410,7 @@ module Correct
     val make = make,
     val init = init,
     val resize = resize,
-    (* val unsafe_resize = unsafe_resize *)
+    val unsafe_resize = unsafe_resize,
     val clear = clear,
     val is_empty = is_empty,
     val length = length,
