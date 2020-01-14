@@ -226,9 +226,8 @@ let sp_post sp_ret post =
 open Term
 
 (** Convert a GOSPEL exception postcondition of the form
-    [(pattern * post) list Mxs.t] into a Why3's Ptree exceptional
-    postcondition of the form
-    [Loc.position * (qualid * (pattern * term) option) list]. *)
+    [(pattern * post) list Mxs.t] into a Why3's Ptree [xpost]
+    of the form [Loc.position * (qualid * (pattern * term) option) list]. *)
 let sp_xpost xpost =
   let mk_xpost_list xs pat_post_list acc =
     let loc = xs.Ty.xs_ident.I.id_loc in
@@ -239,11 +238,38 @@ let sp_xpost xpost =
     (location loc, List.map mk_xpost pat_post_list) :: acc in
   Ty.Mxs.fold mk_xpost_list xpost []
 
-let sp_writes writes =
-  List.map term writes
+let sp_writes =
+  List.map term
+
+let rec term_or_of_term_list = function
+  | []     -> assert false
+  | [t]    -> t
+  | t :: r -> let term_or = Tbinop (t, Dterm.DTor, term_or_of_term_list r) in
+      mk_term term_or t.term_loc
+
+(** Convert a Why3's precondition into a Why3's Ptree [xpost]. *)
+let xpost_of_checks pre =
+  let loc = pre.term_loc in
+  let qid = Qident (mk_id "Invalid_argument" loc) in
+  let pat = mk_pattern Pwild loc in
+  let txs = mk_term (Tnot pre) loc in
+  loc, [qid, Some (pat, txs)]
+
+let spec_with_checks val_spec pre checks =
+  let xpost_checks = xpost_of_checks (term_or_of_term_list checks) in {
+  sp_pre     = List.map term pre;
+  sp_post    = sp_post val_spec.T.sp_ret val_spec.sp_post;
+  sp_xpost   = xpost_checks :: sp_xpost val_spec.sp_xpost;
+  sp_reads   = [];
+  sp_writes  = sp_writes val_spec.sp_wr;
+  sp_alias   = [];
+  sp_variant = [];
+  sp_checkrw = false;
+  sp_diverge = false;
+  sp_partial = false;
+}
 
 let spec val_spec = {
-  (* TODO: for now, we ignore the [checks] preconditions *)
   sp_pre     = List.map (fun (t, _) -> term t) val_spec.T.sp_pre;
   sp_post    = sp_post val_spec.sp_ret val_spec.sp_post;
   sp_xpost   = sp_xpost val_spec.sp_xpost;
@@ -255,6 +281,12 @@ let spec val_spec = {
   sp_diverge = false;
   sp_partial = false;
 }
+
+let split_on_checks sp_pre =
+  let mk_split (pre, checks) (t, is_checks) =
+    if is_checks then pre, t :: checks else t :: pre, checks in
+  let pre, checks = List.fold_left mk_split ([], []) sp_pre in
+  List.rev pre, List.rev checks
 
 let empty_spec = {
   sp_pre     = [];
@@ -296,34 +328,46 @@ let val_decl vd g =
     | Ot.Ptyp_var _ | Ptyp_tuple _ | Ptyp_constr _ -> [ct]
     | Ot.Ptyp_arrow (_, t1, t2) ->
         begin match t1.ptyp_desc with
-          | Ot.Ptyp_arrow (lbl, t11, t12) -> t1 :: flat_ptyp_arrow t2
-          | _ -> flat_ptyp_arrow t1 @ flat_ptyp_arrow t2
-        end
+        | Ot.Ptyp_arrow (lbl, t11, t12) -> t1 :: flat_ptyp_arrow t2
+        | _ -> flat_ptyp_arrow t1 @ flat_ptyp_arrow t2 end
     | _ -> assert false (* TODO *) in
   let mk_param lb_arg ct =
     let loc = Term.(location (T.vs_of_lb_arg lb_arg).vs_name.I.id_loc) in
     let pty = core_type ct in
     let id  = Some (ident_of_lb_arg lb_arg) in
     let ghost, pty = match lb_arg with
-      | Lnone vs | Lnamed vs ->
-          false, pty
-      | Lquestion vs ->
-          false, PTtyapp (Qident (mk_id "option" loc), [pty])
-      | Lghost vs ->
-          true, pty in
+      | Lnone vs | Lnamed vs -> false, pty
+      | Lquestion vs -> false, PTtyapp (Qident (mk_id "option" loc), [pty])
+      | Lghost vs    -> true,  pty in
     loc, id, ghost, pty in
   let mk_param_no_spec ct = let loc = location ct.Ot.ptyp_loc in
     loc, None, false, core_type ct in
-  let param_list, ret, pat, mask, spec =
-    let core_ty_list = flat_ptyp_arrow vd.T.vd_type in
-    let core_ty_list, last = Lists.chop_last core_ty_list in
-    let param_list, pat, mask, spec = match vd.T.vd_spec with
-    | None -> let param_list = List.map mk_param_no_spec core_ty_list in
+  let mk_vals params ret pat mask =
+    let vd_str = vd.T.vd_name.I.id_str in
+    let mk_id id_str = mk_id id_str (location vd.T.vd_loc) in
+    let mk_val id params ret pat mask spec =
+      let e_any = Eany (params, Expr.RKnone, ret, pat, mask, spec) in
+      let e_any = mk_expr e_any (location vd.T.vd_loc) in
+      Dlet (id, g, Expr.RKnone, e_any) in
+    match vd.T.vd_spec with
+    | None   -> [mk_val (mk_id vd_str) params ret pat mask empty_spec]
+    | Some s -> (* creative indentation *)
+    begin match split_on_checks s.sp_pre with
+    | pre, []     -> [mk_val (mk_id vd_str) params ret pat mask (spec s)]
+    | pre, checks -> let id_unsafe = mk_id ("unsafe_" ^ vd_str) in
+        let spec_checks = spec_with_checks s pre (List.map term checks) in
+        [mk_val id_unsafe params ret pat mask (spec s);
+         mk_val (mk_id vd_str) params ret pat mask spec_checks] end in
+  let params, ret, pat, mask =
+    let core_tys = flat_ptyp_arrow vd.T.vd_type in
+    let core_tys, last = Lists.chop_last core_tys in
+    let params, pat, mask = match vd.T.vd_spec with
+    | None -> let param_list = List.map mk_param_no_spec core_tys in
         (* when there is no specification, there is no pattern
            in the return tuple *)
         let pat = Term.mk_pattern Pwild (location last.Ot.ptyp_loc) in
-        param_list, pat, Ity.MaskVisible, empty_spec
-    | Some s -> let param_list = List.map2 mk_param s.T.sp_args core_ty_list in
+        param_list, pat, Ity.MaskVisible
+    | Some s -> let params = List.map2 mk_param s.T.sp_args core_tys in
         let mk_pat lb = let loc = loc_of_lb_arg lb in
           Term.mk_pattern (Pvar (ident_of_lb_arg lb)) loc in
         let mk_mask = function
@@ -339,12 +383,9 @@ let val_decl vd g =
           | pl, ml   -> assert (List.length pl = List.length ml);
               let loc = location vd.T.vd_loc in (* TODO: better location? *)
               Term.mk_pattern (Ptuple pl) loc, Ity.MaskTuple ml in
-        param_list, pat, mask, spec s in
-    param_list, Some (core_type last), pat, mask, spec in
-  let e_any  = Eany (param_list, Expr.RKnone, ret, pat, mask, spec) in
-  let e_any  = mk_expr e_any (location vd.T.vd_loc) in
-  let id_loc = location vd.vd_name.id_loc in
-  Dlet (mk_id vd.vd_name.id_str id_loc, g, Expr.RKnone, e_any)
+        params, pat, mask in
+    params, Some (core_type last), pat, mask in
+  mk_vals params ret pat mask
 
 (** Convert GOSPEL logical declaration (function or predicate) into
      Why3's Ptree logical declaration. *)
@@ -402,7 +443,7 @@ and module_type mt = match mt.T.mt_desc with
 
 and signature_item i = match i.T.sig_desc with
   | T.Sig_val (vd, g) ->
-      [Gdecl (val_decl vd g)]
+      List.map (fun d -> Gdecl d) (val_decl vd g)
   | T.Sig_type (_rec_flag, tdl, _gh) ->
       [Gdecl (Dtype (List.map type_decl tdl))]
   | T.Sig_typext _ (*  of Oparsetree.type_extension *) ->

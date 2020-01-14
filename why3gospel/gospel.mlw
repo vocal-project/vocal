@@ -42,6 +42,7 @@ module Gospel
       (cmp x y < 0 -> cmp y z < 0 -> cmp x z < 0))
 
   use export ocaml.Sys
+  use export ocaml.Pervasives
 
   use export bag.Bag
   use export list.List
