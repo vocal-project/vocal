@@ -2,40 +2,42 @@
 <!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
 "http://why3.lri.fr/why3session.dtd">
 <why3session shape_version="8">
-<prover id="1" name="CVC4" version="1.5" timelimit="1" steplimit="0" memlimit="1000"/>
-<prover id="2" name="Z3" version="4.8.6" timelimit="5" steplimit="0" memlimit="1000"/>
-<prover id="3" name="Z3" version="4.5.0" timelimit="1" steplimit="0" memlimit="1000"/>
-<prover id="5" name="CVC4" version="1.7" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="1" name="CVC4" version="1.5" timelimit="5" steplimit="0" memlimit="4000"/>
+<prover id="2" name="Z3" version="4.8.6" timelimit="1" steplimit="0" memlimit="1000"/>
 <prover id="6" name="Alt-Ergo" version="2.3.0" timelimit="1" steplimit="0" memlimit="1000"/>
 <file format="whyml" proved="true">
 <path name=".."/><path name="PriorityQueueVector_impl.mlw"/>
 <theory name="Impl" proved="true">
  <goal name="Make.t&#39;vc" expl="VC for t" proved="true">
- <proof prover="1"><result status="valid" time="0.37" steps="63277"/></proof>
+ <proof prover="6"><result status="valid" time="0.05" steps="86"/></proof>
  </goal>
  <goal name="Make.num_exist" proved="true">
- <proof prover="2" timelimit="1"><result status="valid" time="0.11" steps="307763"/></proof>
+ <proof prover="2"><result status="valid" time="0.11" steps="307763"/></proof>
  </goal>
  <goal name="Make.min_coherent&#39;vc" expl="VC for min_coherent" proved="true">
  <transf name="split_vc" proved="true" >
   <goal name="min_coherent&#39;vc.0" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.06" steps="29407"/></proof>
+  <proof prover="6"><result status="valid" time="0.02" steps="24"/></proof>
   </goal>
   <goal name="min_coherent&#39;vc.1" expl="variant decrease" proved="true">
-  <proof prover="1"><result status="valid" time="0.12" steps="32634"/></proof>
+  <proof prover="6"><result status="valid" time="0.02" steps="26"/></proof>
   </goal>
   <goal name="min_coherent&#39;vc.2" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.25" steps="41238"/></proof>
+  <proof prover="6"><result status="valid" time="0.05" steps="27"/></proof>
   </goal>
   <goal name="min_coherent&#39;vc.3" expl="postcondition" proved="true">
   <transf name="case" proved="true" arg1="(i=0)">
    <goal name="min_coherent&#39;vc.3.0" expl="true case (postcondition)" proved="true">
-   <proof prover="1"><result status="valid" time="0.25" steps="40100"/></proof>
+   <proof prover="6"><result status="valid" time="0.03" steps="68"/></proof>
    </goal>
    <goal name="min_coherent&#39;vc.3.1" expl="false case (postcondition)" proved="true">
    <transf name="split_all_full" proved="true" >
     <goal name="min_coherent&#39;vc.3.1.0" expl="false case (postcondition)" proved="true">
-    <proof prover="1" timelimit="10" memlimit="4000"><result status="valid" time="4.26" steps="512768"/></proof>
+    <transf name="remove" proved="true" arg1="real,string,tuple0,unit,zero1,one1,min,max,int63&#39;maxInt,int63&#39;minInt,to_int,in_bounds,mem2,eq_bag,empty_bag,add,diff,choose,([&lt;-]&#39;&#39;),get1,([]&#39;&#39;),(/),integer_of_int,one,minimum,is_minimum,h,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Numof_left_no_add,Numof_left_add,Empty,numof_increasing,numof_strictly_increasing,numof_change_some,to_int_in_bounds,extensionality,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton_neq,occ_union,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,Append_assoc,Append_l_nil,Append_length,mem_decomp,length_nonnegative,set&#39;def,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,to_list_empty,to_list_length,is_of_list,of_list_app,of_list_snoc,append_num_occ,permut_sym,permut_trans,permut_exists,exchange_permut_all,permut_sub_weakening,exchange_permut_sub1,exchange_permut_all1,one&#39;def,min_def">
+     <goal name="min_coherent&#39;vc.3.1.0.0" expl="false case (postcondition)" proved="true">
+     <proof prover="1" memlimit="1000"><result status="valid" time="1.64" steps="398310"/></proof>
+     </goal>
+    </transf>
     </goal>
    </transf>
    </goal>
@@ -49,7 +51,11 @@
  <goal name="Make.sub_occ_1" proved="true">
  <transf name="split_all_full" proved="true" >
   <goal name="sub_occ_1.0" proved="true">
-  <proof prover="1"><result status="valid" time="1.39" steps="130863"/></proof>
+  <transf name="remove" proved="true" arg1="real,string,tuple0,unit,ref,map,integer,elt,zero1,one1,min,max,int63&#39;maxInt,int63&#39;minInt,min_int63,max_int63,to_int,in_bounds,max_int,min_int,(!),eq_bag,empty_bag,union,add,diff,choose,([&lt;-]&#39;&#39;),nth,get1,([]&#39;&#39;),to_list,point_wise,(/),integer_of_int,is_pre_order,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_pos,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,max_int&#39;def,min_int&#39;def,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,array&#39;invariant1,Length_nonnegative,Append_assoc,Append_l_nil,Append_length,mem_decomp,length_nonnegative,empty&#39;def,set&#39;def,([&lt;-])&#39;def,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,occ_cons,occ_snoc,exchange_permut_sub,Permut_sub_weakening,fold_left_cons,non_neg_max_array_length,is_pre_order,min_def,num_exist,min_coherent">
+   <goal name="sub_occ_1.0.0" proved="true">
+   <proof prover="2"><result status="valid" time="0.50" steps="704619"/></proof>
+   </goal>
+  </transf>
   </goal>
  </transf>
  </goal>
@@ -58,21 +64,33 @@
   <goal name="sub_occ_2.0" proved="true">
   <transf name="assert" proved="true" arg1="(numocc a1 (view a1)[int63&#39;int i] 0 i   = numocc a2 (view a1)[int63&#39;int i] 0 i)">
    <goal name="sub_occ_2.0.0" expl="asserted formula" proved="true">
-   <proof prover="1"><result status="valid" time="1.08" steps="108833"/></proof>
+   <transf name="remove" proved="true" arg1="real,string,tuple0,unit,ref,map,option,integer,zero1,one1,(-_),(-),abs,min,max,div,mod,set,([&lt;-]&#39;),int63&#39;maxInt,int63&#39;minInt,min_int63,max_int63,to_int,in_bounds,max_int,min_int,(!),eq_bag,empty_bag,singleton1,union,add,diff,choose,elts1,([]&#39;),([&lt;-]&#39;&#39;),make,is_nil,length,is_none,nth,(++),get1,([]&#39;&#39;),(==),create,empty,singleton,cons,snoc,([..]),([.._]),(++&#39;),to_list,of_list,point_wise,occ_all,exchange,permut,permut_sub,permut_all,fold_left,fold_right,(/),integer_of_int,is_pre_order,seq_of_list,int_of_peano,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_le,Abs_pos,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_bound,Mod_bound,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,numof&#39;def,Numof_bounds,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,max_int&#39;def,min_int&#39;def,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,array&#39;invariant1,([&lt;-])&#39;spec,make&#39;spec,is_nil&#39;spec,Length_nonnegative,Length_nil,is_none&#39;spec,Append_assoc,Append_l_nil,Append_length,mem_append,mem_decomp,length_nonnegative,(==)&#39;spec,create&#39;spec,empty&#39;def,set&#39;spec,set&#39;def,([&lt;-])&#39;def,singleton&#39;spec,cons&#39;spec,snoc&#39;spec,([..])&#39;spec,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,(++)&#39;spec,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,mem_append1,occ_cons,occ_snoc,occ_tail,append_num_occ,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,permut_all_mem,exchange_permut_all,fold_left&#39;def,fold_left_ext,fold_left_cons,fold_left_app,fold_right&#39;def,fold_right_ext,fold_right_snoc,non_neg_max_array_length,array&#39;invariant,permut_sub_weakening,t&#39;invariant,is_pre_order,min_def,num_exist,sub_occ_1">
+    <goal name="sub_occ_2.0.0.0" expl="asserted formula" proved="true">
+    <proof prover="2" timelimit="5"><result status="valid" time="0.03" steps="66068"/></proof>
+    </goal>
+   </transf>
    </goal>
    <goal name="sub_occ_2.0.1" proved="true">
    <transf name="assert" proved="true" arg1="(numocc a1 (view a1)[int63&#39;int i] (i+1) (length2 (view a1))  = numocc a2 (view a1)[int63&#39;int i] (i+1) (length2 (view a2)))">
     <goal name="sub_occ_2.0.1.0" expl="asserted formula" proved="true">
     <transf name="split_all_full" proved="true" >
      <goal name="sub_occ_2.0.1.0.0" expl="asserted formula" proved="true">
-     <proof prover="1" timelimit="10" memlimit="4000"><result status="valid" time="2.63" steps="175456"/></proof>
+     <transf name="remove" proved="true" arg1="real,string,tuple0,unit,zero1,one1,nth,get1,([]&#39;&#39;),point_wise,seq_of_list,one,int_of_peano,is_minimum,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_pos,div2,Div_mod,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_any,Length_nonnegative,Append_assoc,Append_l_nil,Append_length,mem_decomp,length_nonnegative,empty&#39;def,set&#39;def,([&lt;-])&#39;def,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,occ_tail,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,one&#39;def,t&#39;invariant,min_def,num_exist,min_coherent,sub_occ_1">
+      <goal name="sub_occ_2.0.1.0.0.0" expl="asserted formula" proved="true">
+      <proof prover="6" timelimit="5"><result status="valid" time="0.96" steps="777"/></proof>
+      </goal>
+     </transf>
      </goal>
     </transf>
     </goal>
     <goal name="sub_occ_2.0.1.1" proved="true">
     <transf name="split_all_full" proved="true" >
      <goal name="sub_occ_2.0.1.1.0" proved="true">
-     <proof prover="1" timelimit="10" memlimit="4000"><result status="valid" time="5.61" steps="283489"/></proof>
+     <transf name="remove" proved="true" arg1="real,string,tuple0,unit,ref,map,integer,elt,zero1,one1,min,max,int63&#39;maxInt,int63&#39;minInt,min_int63,max_int63,to_int,in_bounds,max_int,min_int,(!),add,diff,choose,([&lt;-]&#39;&#39;),nth,get1,([]&#39;&#39;),point_wise,(/),integer_of_int,is_pre_order,seq_of_list,int_of_peano,minimum,is_minimum,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_pos,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_sign_pos,Div_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Empty,Full,numof_increasing,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,max_int&#39;def,min_int&#39;def,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,array&#39;invariant1,Length_nonnegative,Append_assoc,Append_l_nil,Append_length,mem_decomp,empty&#39;def,set&#39;def,([&lt;-])&#39;def,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,to_list_empty,to_list_length,to_list_nth,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,permut_trans,non_neg_max_array_length,min_def,num_exist,min_coherent,sub_occ_1">
+      <goal name="sub_occ_2.0.1.1.0.0" proved="true">
+      <proof prover="1" timelimit="1"><result status="valid" time="0.87" steps="142210"/></proof>
+      </goal>
+     </transf>
      </goal>
     </transf>
     </goal>
@@ -87,7 +105,11 @@
   <goal name="sub_occ_3.0" proved="true">
   <transf name="split_all_full" proved="true" >
    <goal name="sub_occ_3.0.0" proved="true">
-   <proof prover="1"><result status="valid" time="1.34" steps="123090"/></proof>
+   <transf name="remove" proved="true" arg1="real,string,tuple0,unit,ref,map,integer,zero1,one1,min,max,int63&#39;maxInt,int63&#39;minInt,min_int63,max_int63,to_int,in_bounds,max_int,min_int,(!),mem2,eq_bag,empty_bag,union,add,diff,choose,([]&#39;),([&lt;-]&#39;&#39;),nth,get1,([]&#39;&#39;),empty,([&lt;-]),to_list,of_list,point_wise,occ_all,exchange,permut,permut_sub,permut_all,array_eq,(/),integer_of_int,is_pre_order,seq_of_list,one,int_of_peano,minimum,is_minimum,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_pos,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,max_int&#39;def,min_int&#39;def,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,array&#39;invariant1,Length_nonnegative,Append_assoc,Append_l_nil,Append_length,mem_decomp,length_nonnegative,empty&#39;def,set&#39;def,([&lt;-])&#39;def,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,occ_cons,occ_snoc,occ_tail,append_num_occ,exchange_set,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,permut_exists,exchange_permut_all,fold_left_ext,fold_left_cons,fold_left_app,fold_right_ext,fold_right_snoc,non_neg_max_array_length,permut_sub_weakening,exchange_permut_sub1,one&#39;def,t&#39;invariant,is_pre_order,min_def,num_exist,min_coherent,sub_occ_2,Abs_le1,Abs_le2,Div_bound1,Mod_bound1,numof&#39;def1,numof&#39;def2,Numof_bounds1,occ_singleton1,occ_singleton2,occ_singleton3,([&lt;-])&#39;spec1,make&#39;spec1,is_nil&#39;spec1">
+    <goal name="sub_occ_3.0.0.0" proved="true">
+    <proof prover="2" timelimit="5"><result status="valid" time="1.27" steps="2984456"/></proof>
+    </goal>
+   </transf>
    </goal>
   </transf>
   </goal>
@@ -104,7 +126,7 @@
      <goal name="sub_order&#39;vc.0.0.0.0" expl="true case" proved="true">
      <transf name="split_vc" proved="true" >
       <goal name="sub_order&#39;vc.0.0.0.0.0" expl="VC for sub_order" proved="true">
-      <proof prover="1"><result status="valid" time="0.47" steps="81718"/></proof>
+      <proof prover="6"><result status="valid" time="0.21" steps="224"/></proof>
       </goal>
       <goal name="sub_order&#39;vc.0.0.0.0.1" expl="VC for sub_order" proved="true">
       <proof prover="6"><result status="valid" time="0.20" steps="245"/></proof>
@@ -114,10 +136,10 @@
      <goal name="sub_order&#39;vc.0.0.0.1" expl="false case" proved="true">
      <transf name="case" proved="true" arg1="(i = div (i1 - 1) 2)">
       <goal name="sub_order&#39;vc.0.0.0.1.0" expl="false case (true case)" proved="true">
-      <proof prover="1"><result status="valid" time="0.39" steps="55045"/></proof>
+      <proof prover="6"><result status="valid" time="0.86" steps="2620"/></proof>
       </goal>
       <goal name="sub_order&#39;vc.0.0.0.1.1" expl="false case" proved="true">
-      <proof prover="1"><result status="valid" time="0.79" steps="97362"/></proof>
+      <proof prover="6"><result status="valid" time="0.83" steps="1595"/></proof>
       </goal>
      </transf>
      </goal>
@@ -134,7 +156,7 @@
   <goal name="pop_occ_1.0" proved="true">
   <transf name="assert" proved="true" arg1="(numocc a1 x 0 (length2 (view a2)) = numocc a2 x 0 (length2 (view a2)))">
    <goal name="pop_occ_1.0.0" expl="asserted formula" proved="true">
-   <proof prover="1"><result status="valid" time="1.75" steps="185859"/></proof>
+   <proof prover="6" timelimit="5"><result status="valid" time="3.65" steps="1600"/></proof>
    </goal>
    <goal name="pop_occ_1.0.1" proved="true">
    <proof prover="6"><result status="valid" time="0.08" steps="99"/></proof>
@@ -150,7 +172,11 @@
    <goal name="pop_occ_2.0.0" proved="true">
    <transf name="split_all_full" proved="true" >
     <goal name="pop_occ_2.0.0.0" proved="true">
-    <proof prover="1" timelimit="10" memlimit="4000"><result status="valid" time="4.40" steps="443352"/></proof>
+    <transf name="remove" proved="true" arg1="real,string,tuple0,unit,ref,map,integer,zero1,one1,min,max,int63&#39;maxInt,int63&#39;minInt,min_int63,max_int63,to_int,in_bounds,max_int,min_int,(!),mem2,eq_bag,empty_bag,union,add,diff,choose,([&lt;-]&#39;&#39;),nth,(++),get1,([]&#39;&#39;),empty,([&lt;-]),to_list,of_list,point_wise,occ_all,exchange,permut_all,array_eq,(/),integer_of_int,is_pre_order,seq_of_list,is_minimum,pop,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_pos,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,max_int&#39;def,min_int&#39;def,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,array&#39;invariant1,Length_nonnegative,Append_assoc,Append_l_nil,Append_length,mem_decomp,empty&#39;def,set&#39;def,([&lt;-])&#39;def,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,occ_cons,occ_snoc,occ_tail,append_num_occ,exchange_set,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,exchange_permut_all,fold_left_ext,fold_left_cons,fold_left_app,fold_right_ext,fold_right_snoc,non_neg_max_array_length,exchange_permut_sub1,exchange_permut_all1,is_pre_order,num_exist,min_coherent,sub_occ_1,sub_occ_2,sub_occ_3,pop_occ_1,(==)&#39;spec1,(==)&#39;spec2,(==)&#39;spec3,create&#39;spec1,set&#39;spec1,set&#39;spec2,singleton&#39;spec1,cons&#39;spec1,cons&#39;spec2,snoc&#39;spec1,snoc&#39;spec2,([..])&#39;spec1,(++)&#39;spec1,(++)&#39;spec2,is_none&#39;spec1,Length_nil1,mem_append2,mem_append3,mem_append4,fold_left&#39;def1,array&#39;invariant2,mem_append5,mem_tail2,sub_order1,sub_order2,sub_order3,sub_order4,sub_order5,sub_order6,sub_order7">
+     <goal name="pop_occ_2.0.0.0.0" proved="true">
+     <proof prover="2"><result status="valid" time="0.07" steps="174946"/></proof>
+     </goal>
+    </transf>
     </goal>
    </transf>
    </goal>
@@ -166,10 +192,9 @@
   <goal name="push_occ&#39;vc.0" expl="postcondition" proved="true">
   <transf name="assert" proved="true" arg1="(numocc a1 x 0 (length2 (view a1)) = numocc a2 x 0 (length2 (view a2) - 1))">
    <goal name="push_occ&#39;vc.0.0" expl="asserted formula" proved="true">
-   <proof prover="6" timelimit="5"><result status="valid" time="2.35" steps="1539"/></proof>
    <transf name="remove" proved="true" arg1="ref,map,option,integer,min,max,mod,([&lt;-]&#39;),int63&#39;maxInt,int63&#39;minInt,min_int63,max_int63,in_bounds,max_int,min_int,(!),mem1,eq_bag,empty_bag,singleton,diff,choose,([]&#39;&#39;),([&lt;-]&#39;&#39;),is_nil,is_none,nth,(++),length,get1,(==),empty,([&lt;-]),cons,snoc,([..]),([_..]),([.._]),(++&#39;),to_list,of_list,point_wise,occ_all,exchange,permut,permut_sub,permut_all,max_array_length,elts,array_eq,integer_of_int,is_pre_order,seq_of_list,v,zero,one,int_of_peano,substitution,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_bound,Mod_bound,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,numof&#39;def,Numof_bounds,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_any,numof_change_some,to_int_in_bounds,extensionality,max_int&#39;def,min_int&#39;def,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,array&#39;invariant1,([&lt;-])&#39;spec,is_nil&#39;spec,Length_nonnegative,Length_nil,is_none&#39;spec,Append_assoc,Append_l_nil,Append_length,mem_append,mem_decomp,length_nonnegative,(==)&#39;spec,create&#39;spec,empty&#39;def,set&#39;spec,set&#39;def,([&lt;-])&#39;def,singleton&#39;spec,cons&#39;spec,snoc&#39;spec,([..])&#39;spec,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,(++)&#39;spec,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,mem_append1,mem_tail,occ_cons,occ_snoc,occ_tail,append_num_occ,exchange_set,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,permut_exists,permut_all_mem,exchange_permut_all,fold_left&#39;def,fold_left_ext,fold_left_cons,fold_left_app,fold_right&#39;def,fold_right_ext,fold_right_snoc,non_neg_max_array_length,array&#39;invariant,permut_sub_weakening,exchange_permut_sub1,exchange_permut_all1,zero&#39;def,one&#39;def,t&#39;invariant,t&#39;invariant1,num_exist,min_coherent,sub_occ_1,sub_occ_2,sub_occ_3,sub_order,pop_occ_1,pop_occ_2,pop_order,H">
     <goal name="push_occ&#39;vc.0.0.0" expl="asserted formula" proved="true">
-    <proof prover="2"><result status="valid" time="0.04" steps="62270"/></proof>
+    <proof prover="2" timelimit="5"><result status="valid" time="0.04" steps="62270"/></proof>
     </goal>
    </transf>
    </goal>
@@ -187,7 +212,7 @@
  <proof prover="6"><result status="valid" time="0.22" steps="350"/></proof>
  </goal>
  <goal name="Make.same_occ" proved="true">
- <proof prover="1"><result status="valid" time="0.24" steps="37786"/></proof>
+ <proof prover="6"><result status="valid" time="0.05" steps="71"/></proof>
  </goal>
  <goal name="Make.ancestor&#39;vc" expl="VC for ancestor" proved="true">
  <transf name="inline_goal" proved="true" >
@@ -224,77 +249,86 @@
  <goal name="Make.move_down&#39;vc" expl="VC for move_down" proved="true">
  <transf name="split_vc" proved="true" >
   <goal name="move_down&#39;vc.0" expl="integer overflow" proved="true">
-  <proof prover="1"><result status="valid" time="0.22" steps="35579"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="29"/></proof>
   </goal>
   <goal name="move_down&#39;vc.1" expl="division by zero" proved="true">
-  <proof prover="1"><result status="valid" time="0.05" steps="31680"/></proof>
+  <proof prover="6"><result status="valid" time="0.03" steps="28"/></proof>
   </goal>
   <goal name="move_down&#39;vc.2" expl="integer overflow" proved="true">
-  <proof prover="1"><result status="valid" time="0.26" steps="35910"/></proof>
+  <proof prover="6"><result status="valid" time="0.08" steps="142"/></proof>
   </goal>
   <goal name="move_down&#39;vc.3" expl="integer overflow" proved="true">
-  <proof prover="1"><result status="valid" time="0.27" steps="39142"/></proof>
+  <proof prover="6"><result status="valid" time="0.06" steps="37"/></proof>
   </goal>
   <goal name="move_down&#39;vc.4" expl="integer overflow" proved="true">
-  <proof prover="1"><result status="valid" time="0.26" steps="36546"/></proof>
+  <proof prover="6"><result status="valid" time="0.07" steps="39"/></proof>
   </goal>
   <goal name="move_down&#39;vc.5" expl="integer overflow" proved="true">
-  <proof prover="1"><result status="valid" time="0.20" steps="39485"/></proof>
+  <proof prover="6"><result status="valid" time="0.05" steps="41"/></proof>
   </goal>
   <goal name="move_down&#39;vc.6" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.29" steps="40992"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="34"/></proof>
   </goal>
   <goal name="move_down&#39;vc.7" expl="integer overflow" proved="true">
-  <proof prover="1"><result status="valid" time="0.24" steps="36497"/></proof>
+  <proof prover="6"><result status="valid" time="0.06" steps="45"/></proof>
   </goal>
   <goal name="move_down&#39;vc.8" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.12" steps="41025"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="36"/></proof>
   </goal>
   <goal name="move_down&#39;vc.9" expl="integer overflow" proved="true">
   <transf name="split_all_full" proved="true" >
    <goal name="move_down&#39;vc.9.0" expl="integer overflow" proved="true">
-   <proof prover="1"><result status="valid" time="0.20" steps="42380"/></proof>
+   <proof prover="6"><result status="valid" time="0.07" steps="49"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="move_down&#39;vc.10" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.06" steps="31994"/></proof>
+  <proof prover="6"><result status="valid" time="0.03" steps="32"/></proof>
   </goal>
   <goal name="move_down&#39;vc.11" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.11" steps="39719"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="32"/></proof>
   </goal>
   <goal name="move_down&#39;vc.12" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.10" steps="32028"/></proof>
+  <proof prover="6"><result status="valid" time="0.03" steps="32"/></proof>
   </goal>
   <goal name="move_down&#39;vc.13" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.11" steps="39753"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="32"/></proof>
   </goal>
   <goal name="move_down&#39;vc.14" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.41" steps="55891"/></proof>
+  <proof prover="6"><result status="valid" time="0.09" steps="60"/></proof>
   </goal>
   <goal name="move_down&#39;vc.15" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.43" steps="58823"/></proof>
+  <proof prover="6"><result status="valid" time="0.07" steps="62"/></proof>
   </goal>
   <goal name="move_down&#39;vc.16" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.10" steps="39907"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="34"/></proof>
   </goal>
   <goal name="move_down&#39;vc.17" expl="assertion" proved="true">
-  <proof prover="1"><result status="valid" time="0.31" steps="49640"/></proof>
+  <proof prover="2"><result status="valid" time="0.10" steps="186184"/></proof>
   </goal>
   <goal name="move_down&#39;vc.18" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.09" steps="32393"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="40"/></proof>
   </goal>
   <goal name="move_down&#39;vc.19" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.06" steps="32396"/></proof>
+  <proof prover="6"><result status="valid" time="0.05" steps="40"/></proof>
   </goal>
   <goal name="move_down&#39;vc.20" expl="precondition" proved="true">
-  <proof prover="6" timelimit="5"><result status="valid" time="4.29" steps="2760"/></proof>
+  <proof prover="6" timelimit="5"><result status="valid" time="2.74" steps="2760"/></proof>
+  <transf name="remove" proved="true" arg1="integer,elt,min,max,int63&#39;maxInt,int63&#39;minInt,in_bounds,(!),eq_bag,empty_bag,singleton1,union,add,diff,choose,nth,([]&#39;&#39;),snoc,to_list,of_list,point_wise,exchange,permut,permut_sub,permut_all,fold_right,seq_of_list,v,zero,one,int_of_peano,pop,push,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_bound,Mod_bound,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,numof&#39;def,Numof_bounds,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_any,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,is_nil&#39;spec,Length_nil,Append_assoc,Append_length,mem_append,mem_decomp,length_nonnegative,create&#39;spec,empty&#39;def,set&#39;spec,set&#39;def,snoc&#39;spec,([..])&#39;spec,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,occ_snoc,append_num_occ,exchange_set,exchange_permut_sub,Permut_sub_weakening,permut_sym,permut_trans,permut_all_mem,exchange_permut_all,fold_left&#39;def,fold_left_ext,fold_left_cons,fold_left_app,fold_right&#39;def,fold_right_ext,fold_right_snoc,permut_sub_weakening,exchange_permut_all1,zero&#39;def,one&#39;def,t&#39;invariant,sub_occ_1,sub_occ_2,sub_occ_3,sub_order,pop_occ_1,pop_occ_2,pop_order,same_occ">
+   <goal name="move_down&#39;vc.20.0" expl="precondition" proved="true">
+   <proof prover="6"><result status="valid" time="0.25" steps="396"/></proof>
+   </goal>
+  </transf>
   </goal>
   <goal name="move_down&#39;vc.21" expl="precondition" proved="true">
-  <proof prover="6" timelimit="5"><result status="valid" time="2.60" steps="2495"/></proof>
+  <transf name="remove" proved="true" arg1="map,integer,elt,min,max,int63&#39;maxInt,int63&#39;minInt,min_int63,in_bounds,(!),eq_bag,empty_bag,singleton1,union,add,diff,choose,get1,([]&#39;&#39;),permut_sub,permut_all,fold_left,fold_right,array_eq,(/),seq_of_list,int_of_peano,minimum,pop,push,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_bound,Mod_bound,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,numof&#39;def,Numof_bounds,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_any,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,min_int&#39;def,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,snoc&#39;spec,mem_append1,mem_tail,exchange_permut_sub,Permut_sub_weakening,permut_sym,permut_exists,permut_all_mem,exchange_permut_all,fold_left&#39;def,fold_left_ext,fold_left_cons,fold_left_app,fold_right&#39;def,fold_right_ext,fold_right_snoc,non_neg_max_array_length,permut_sub_weakening,exchange_permut_sub1,exchange_permut_all1,t&#39;invariant1,min_def,num_exist,min_coherent,sub_occ_1,sub_occ_2,sub_occ_3,sub_order,pop_occ_1,pop_occ_2,pop_order,same_occ">
+   <goal name="move_down&#39;vc.21.0" expl="precondition" proved="true">
+   <proof prover="6"><result status="valid" time="0.47" steps="834"/></proof>
+   </goal>
+  </transf>
   </goal>
   <goal name="move_down&#39;vc.22" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.41" steps="56229"/></proof>
+  <proof prover="6"><result status="valid" time="0.44" steps="619"/></proof>
   </goal>
   <goal name="move_down&#39;vc.23" expl="assertion" proved="true">
   <transf name="split_all_full" proved="true" >
@@ -304,44 +338,44 @@
   </transf>
   </goal>
   <goal name="move_down&#39;vc.24" expl="variant decrease" proved="true">
-  <proof prover="1"><result status="valid" time="0.24" steps="41839"/></proof>
+  <proof prover="6"><result status="valid" time="0.05" steps="49"/></proof>
   </goal>
   <goal name="move_down&#39;vc.25" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.05" steps="32404"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="42"/></proof>
   </goal>
   <goal name="move_down&#39;vc.26" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.35" steps="64471"/></proof>
+  <proof prover="6"><result status="valid" time="0.10" steps="70"/></proof>
   </goal>
   <goal name="move_down&#39;vc.27" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="1.32" steps="102161"/></proof>
+  <proof prover="6"><result status="valid" time="0.13" steps="153"/></proof>
   </goal>
   <goal name="move_down&#39;vc.28" expl="postcondition" proved="true">
   <transf name="instantiate" proved="true" arg1="sub_order" arg2="a1,a,i">
    <goal name="move_down&#39;vc.28.0" expl="postcondition" proved="true">
-   <proof prover="1" obsolete="true"><result status="valid" time="0.13" steps="32928"/></proof>
    <proof prover="6"><result status="valid" time="0.02" steps="48"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="move_down&#39;vc.29" expl="postcondition" proved="true">
-  <proof prover="6" timelimit="60"><result status="valid" time="49.85" steps="15718"/></proof>
+  <transf name="remove" proved="true" arg1="real,string,tuple0,unit,ref,map,option,integer,zero1,one1,min,max,([&lt;-]&#39;),(!),empty_bag,diff,choose,elts1,([]&#39;),([&lt;-]&#39;&#39;),make,length,is_none,nth,get1,([]&#39;&#39;),singleton,([.._]),to_list,of_list,point_wise,fold_left,fold_right,(/),seq_of_list,one,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,Abs_le,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_sign_pos,Div_1,Mod_1,Div_mult,Mod_mult,Numof_bounds,Numof_append,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_some,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,array&#39;invariant1,([&lt;-])&#39;spec,make&#39;spec,Length_nonnegative,Length_nil,is_none&#39;spec,Append_assoc,Append_l_nil,Append_length,mem_append,mem_decomp,(==)&#39;spec,empty&#39;def,set&#39;spec,([&lt;-])&#39;def,singleton&#39;spec,cons&#39;spec,snoc&#39;spec,([..])&#39;spec,([_..])&#39;def,([.._])&#39;def,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,Permut_sub_weakening,permut_refl,permut_sym,fold_left&#39;def,fold_left_ext,fold_left_cons,fold_left_app,fold_right&#39;def,fold_right_ext,fold_right_snoc,array&#39;invariant,one&#39;def,min_def,sub_occ_3,sub_order,pop_occ_1,pop_occ_2,same_occ">
+   <goal name="move_down&#39;vc.29.0" expl="postcondition" proved="true">
+   <proof prover="2"><result status="valid" time="0.47" steps="845575"/></proof>
+   </goal>
+  </transf>
   </goal>
   <goal name="move_down&#39;vc.30" expl="postcondition" proved="true">
   <transf name="split_vc" proved="true" >
    <goal name="move_down&#39;vc.30.0" expl="postcondition" proved="true">
-   <proof prover="1" obsolete="true"><result status="valid" time="0.45" steps="53849"/></proof>
    <proof prover="6"><result status="valid" time="0.51" steps="1164"/></proof>
    </goal>
    <goal name="move_down&#39;vc.30.1" expl="postcondition" proved="true">
    <transf name="split_all_full" proved="true" >
     <goal name="move_down&#39;vc.30.1.0" expl="postcondition" proved="true">
-    <proof prover="1" obsolete="true"><result status="valid" time="0.53" steps="57829"/></proof>
     <proof prover="6"><result status="valid" time="0.56" steps="1181"/></proof>
     </goal>
    </transf>
    </goal>
    <goal name="move_down&#39;vc.30.2" expl="postcondition" proved="true">
-   <proof prover="1" obsolete="true"><result status="valid" time="0.47" steps="58233"/></proof>
    <proof prover="6"><result status="valid" time="0.56" steps="1450"/></proof>
    </goal>
   </transf>
@@ -353,7 +387,7 @@
   <proof prover="6"><result status="valid" time="0.03" steps="34"/></proof>
   </goal>
   <goal name="move_down&#39;vc.33" expl="assertion" proved="true">
-  <proof prover="6"><result status="valid" time="0.80" steps="1124"/></proof>
+  <proof prover="6"><result status="valid" time="1.29" steps="1124"/></proof>
   </goal>
   <goal name="move_down&#39;vc.34" expl="precondition" proved="true">
   <proof prover="6"><result status="valid" time="0.04" steps="40"/></proof>
@@ -364,17 +398,17 @@
   <goal name="move_down&#39;vc.36" expl="precondition" proved="true">
   <transf name="assert" proved="true" arg1="(cmp (view a1)[i] (view a1)[j] &lt;= 0)">
    <goal name="move_down&#39;vc.36.0" expl="asserted formula" proved="true">
-   <proof prover="1"><result status="valid" time="0.38" steps="55599"/></proof>
+   <proof prover="6"><result status="valid" time="0.17" steps="293"/></proof>
    </goal>
    <goal name="move_down&#39;vc.36.1" expl="precondition" proved="true">
-   <proof prover="3"><result status="valid" time="0.08" steps="100378"/></proof>
+   <proof prover="6"><result status="valid" time="0.09" steps="59"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="move_down&#39;vc.37" expl="precondition" proved="true">
   <transf name="split_all_full" proved="true" >
    <goal name="move_down&#39;vc.37.0" expl="precondition" proved="true">
-   <proof prover="6" timelimit="16"><result status="valid" time="0.38" steps="609"/></proof>
+   <proof prover="6"><result status="valid" time="0.38" steps="609"/></proof>
    </goal>
   </transf>
   </goal>
@@ -384,71 +418,59 @@
   <goal name="move_down&#39;vc.39" expl="postcondition" proved="true">
   <transf name="instantiate" proved="true" arg1="sub_order" arg2="a1,a,i">
    <goal name="move_down&#39;vc.39.0" expl="postcondition" proved="true">
-   <proof prover="1"><result status="valid" time="0.06" steps="32631"/></proof>
+   <proof prover="6"><result status="valid" time="0.04" steps="42"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="move_down&#39;vc.40" expl="postcondition" proved="true">
-  <proof prover="1" obsolete="true"><result status="valid" time="0.22" steps="34056"/></proof>
   <proof prover="6"><result status="valid" time="0.09" steps="66"/></proof>
   </goal>
   <goal name="move_down&#39;vc.41" expl="postcondition" proved="true">
   <transf name="split_vc" proved="true" >
    <goal name="move_down&#39;vc.41.0" expl="postcondition" proved="true">
-   <proof prover="1" obsolete="true"><result status="valid" time="0.25" steps="34168"/></proof>
    <proof prover="6"><result status="valid" time="0.10" steps="64"/></proof>
    </goal>
    <goal name="move_down&#39;vc.41.1" expl="postcondition" proved="true">
    <transf name="split_all_full" proved="true" >
     <goal name="move_down&#39;vc.41.1.0" expl="postcondition" proved="true">
-    <proof prover="1" obsolete="true"><result status="valid" time="0.42" steps="53068"/></proof>
-    <proof prover="2" timelimit="1"><result status="valid" time="0.08" steps="227221"/></proof>
-    <proof prover="5" timelimit="1"><result status="timeout" time="1.00" steps="86835"/></proof>
-    <proof prover="6"><result status="timeout" time="1.00"/></proof>
+    <proof prover="2"><result status="valid" time="0.08" steps="227221"/></proof>
     </goal>
    </transf>
    </goal>
    <goal name="move_down&#39;vc.41.2" expl="postcondition" proved="true">
-   <proof prover="1" obsolete="true"><result status="valid" time="0.31" steps="44101"/></proof>
    <proof prover="6"><result status="valid" time="0.09" steps="64"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="move_down&#39;vc.42" expl="postcondition" proved="true">
-  <proof prover="1" obsolete="true"><result status="valid" time="0.07" steps="40293"/></proof>
   <proof prover="6"><result status="valid" time="0.05" steps="44"/></proof>
   </goal>
   <goal name="move_down&#39;vc.43" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.20" steps="39478"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="26"/></proof>
   </goal>
   <goal name="move_down&#39;vc.44" expl="assertion" proved="true">
-  <proof prover="1"><result status="valid" time="0.31" steps="41680"/></proof>
+  <proof prover="6"><result status="valid" time="0.29" steps="306"/></proof>
   </goal>
   <goal name="move_down&#39;vc.45" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.51" steps="61027"/></proof>
+  <proof prover="6"><result status="valid" time="0.26" steps="307"/></proof>
   </goal>
   <goal name="move_down&#39;vc.46" expl="postcondition" proved="true">
-  <proof prover="1" obsolete="true"><result status="valid" time="0.21" steps="33453"/></proof>
   <proof prover="6"><result status="valid" time="0.05" steps="43"/></proof>
   </goal>
   <goal name="move_down&#39;vc.47" expl="postcondition" proved="true">
   <transf name="split_vc" proved="true" >
    <goal name="move_down&#39;vc.47.0" expl="postcondition" proved="true">
-   <proof prover="1" obsolete="true"><result status="valid" time="0.23" steps="33570"/></proof>
    <proof prover="6"><result status="valid" time="0.03" steps="41"/></proof>
    </goal>
    <goal name="move_down&#39;vc.47.1" expl="postcondition" proved="true">
-   <proof prover="1" obsolete="true"><result status="valid" time="0.33" steps="42150"/></proof>
    <proof prover="6"><result status="valid" time="0.66" steps="506"/></proof>
    </goal>
    <goal name="move_down&#39;vc.47.2" expl="postcondition" proved="true">
-   <proof prover="1" obsolete="true"><result status="valid" time="0.33" steps="42541"/></proof>
    <proof prover="6"><result status="valid" time="0.05" steps="41"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="move_down&#39;vc.48" expl="postcondition" proved="true">
-  <proof prover="1" obsolete="true"><result status="valid" time="0.12" steps="39867"/></proof>
   <proof prover="6"><result status="valid" time="0.04" steps="36"/></proof>
   </goal>
  </transf>
@@ -456,25 +478,25 @@
  <goal name="Make.extract_min_exn&#39;vc" expl="VC for extract_min_exn" proved="true">
  <transf name="split_vc" proved="true" >
   <goal name="extract_min_exn&#39;vc.0" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.21" steps="43688"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="30"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.1" expl="assertion" proved="true">
-  <proof prover="1"><result status="valid" time="0.28" steps="40951"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="85"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.2" expl="assertion" proved="true">
-  <proof prover="1"><result status="valid" time="0.25" steps="45415"/></proof>
+  <proof prover="6"><result status="valid" time="0.05" steps="116"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.3" expl="precondition" proved="true">
   <proof prover="6"><result status="valid" time="0.20" steps="295"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.4" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.30" steps="44316"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="36"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.5" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.10" steps="36997"/></proof>
+  <proof prover="6"><result status="valid" time="0.03" steps="37"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.6" expl="type invariant" proved="true">
-  <proof prover="1"><result status="valid" time="0.34" steps="46805"/></proof>
+  <proof prover="6"><result status="valid" time="0.05" steps="43"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.7" expl="type invariant" proved="true">
   <transf name="case" proved="true" arg1="(x = min)">
@@ -484,7 +506,7 @@
     <proof prover="6"><result status="valid" time="0.90" steps="967"/></proof>
     </goal>
     <goal name="extract_min_exn&#39;vc.7.0.1" expl="false case (true case. type invariant)" proved="true">
-    <proof prover="6" timelimit="5"><result status="valid" time="1.11" steps="802"/></proof>
+    <proof prover="6"><result status="valid" time="1.11" steps="802"/></proof>
     </goal>
    </transf>
    </goal>
@@ -493,7 +515,7 @@
     <goal name="extract_min_exn&#39;vc.7.1.0" expl="false case (true case. type invariant)" proved="true">
     <transf name="split_all_full" proved="true" >
      <goal name="extract_min_exn&#39;vc.7.1.0.0" expl="false case (true case. type invariant)" proved="true">
-     <proof prover="6"><result status="valid" time="0.98" steps="826"/></proof>
+     <proof prover="6"><result status="valid" time="1.22" steps="826"/></proof>
      </goal>
     </transf>
     </goal>
@@ -505,40 +527,40 @@
   </transf>
   </goal>
   <goal name="extract_min_exn&#39;vc.8" expl="type invariant" proved="true">
-  <proof prover="1"><result status="valid" time="0.15" steps="32121"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="40"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.9" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.08" steps="37169"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="42"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.10" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.27" steps="50086"/></proof>
+  <proof prover="6"><result status="valid" time="0.11" steps="154"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.11" expl="type invariant" proved="true">
-  <proof prover="1"><result status="valid" time="0.15" steps="41281"/></proof>
+  <proof prover="6"><result status="valid" time="0.05" steps="30"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.12" expl="type invariant" proved="true">
-  <proof prover="1"><result status="valid" time="0.28" steps="52073"/></proof>
+  <proof prover="6"><result status="valid" time="0.07" steps="118"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.13" expl="type invariant" proved="true">
-  <proof prover="1"><result status="valid" time="0.27" steps="35634"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="80"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.14" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.15" steps="35605"/></proof>
+  <proof prover="6"><result status="valid" time="0.05" steps="34"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.15" expl="postcondition" proved="true">
-  <proof prover="2" timelimit="1"><result status="valid" time="0.34" steps="476187"/></proof>
+  <proof prover="2"><result status="valid" time="0.34" steps="476187"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.16" expl="type invariant" proved="true">
-  <proof prover="1"><result status="valid" time="0.31" steps="43750"/></proof>
+  <proof prover="6"><result status="valid" time="0.05" steps="22"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.17" expl="type invariant" proved="true">
-  <proof prover="1"><result status="valid" time="0.42" steps="49773"/></proof>
+  <proof prover="6"><result status="valid" time="0.06" steps="76"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.18" expl="type invariant" proved="true">
-  <proof prover="1"><result status="valid" time="0.25" steps="35368"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="60"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.19" expl="exceptional postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.25" steps="35517"/></proof>
+  <proof prover="6"><result status="valid" time="0.04" steps="26"/></proof>
   </goal>
  </transf>
  </goal>
@@ -694,43 +716,9 @@
   <proof prover="6"><result status="valid" time="0.03" steps="44"/></proof>
   </goal>
   <goal name="move_up&#39;vc.34" expl="postcondition" proved="true">
-  <proof prover="6" timelimit="60"><result status="valid" time="31.46" steps="3900"/></proof>
-  <transf name="instantiate" arg1="sub_occ_1" arg2="a,a2,i,e">
-   <goal name="move_up&#39;vc.34.0" expl="postcondition">
-   <proof prover="2"><result status="timeout" time="5.00" steps="3871004"/></proof>
-   <proof prover="5"><result status="timeout" time="5.00" steps="367195"/></proof>
-   <proof prover="6" timelimit="5"><result status="timeout" time="5.00"/></proof>
-   <transf name="destruct" arg1="Hinst">
-    <goal name="move_up&#39;vc.34.0.0" expl="destruct premise">
-    <proof prover="2"><result status="timeout" time="5.00" steps="4194094"/></proof>
-    <proof prover="5"><result status="timeout" time="5.00" steps="248682"/></proof>
-    <proof prover="6" timelimit="5"><result status="timeout" time="5.00"/></proof>
-    </goal>
-    <goal name="move_up&#39;vc.34.0.1" expl="postcondition">
-    <proof prover="5"><result status="timeout" time="5.00" steps="307946"/></proof>
-    <proof prover="6" timelimit="5"><result status="timeout" time="5.00"/></proof>
-    <transf name="destruct" arg1="Hinst">
-     <goal name="move_up&#39;vc.34.0.1.0" expl="destruct premise">
-     <proof prover="2"><result status="timeout" time="5.00" steps="4033536"/></proof>
-     <proof prover="5"><result status="timeout" time="5.00" steps="276921"/></proof>
-     <proof prover="6" timelimit="5"><result status="timeout" time="5.00"/></proof>
-     <transf name="split_vc" >
-      <goal name="move_up&#39;vc.34.0.1.0.0" expl="destruct premise">
-      <proof prover="2"><result status="timeout" time="5.00" steps="4028794"/></proof>
-      <proof prover="5"><result status="timeout" time="5.00" steps="293913"/></proof>
-      <proof prover="6" timelimit="5"><result status="timeout" time="5.00"/></proof>
-      </goal>
-      <goal name="move_up&#39;vc.34.0.1.0.1" expl="destruct premise" proved="true">
-      <proof prover="6" timelimit="5"><result status="valid" time="0.06" steps="48"/></proof>
-      </goal>
-     </transf>
-     </goal>
-     <goal name="move_up&#39;vc.34.0.1.1" expl="postcondition" proved="true">
-     <proof prover="6" timelimit="5"><result status="valid" time="0.05" steps="50"/></proof>
-     </goal>
-    </transf>
-    </goal>
-   </transf>
+  <transf name="remove" proved="true" arg1="map,integer,elt,(!),([&lt;-]&#39;&#39;),get1,([]&#39;&#39;),to_list,of_list,point_wise,occ_all,exchange,permut,permut_sub,permut_all,fold_left,fold_right,array_eq,(/),is_pre_order,seq_of_list,one,int_of_peano,div2,Div_mod,Mod_bound,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,numof&#39;def,Numof_bounds,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_any,numof_change_some,numof_change_equiv,occ_singleton,bag_simpl_left,Append_l_nil,Append_length,mem_append,mem_decomp,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,mem_tail,occ_cons,occ_snoc,occ_tail,append_num_occ,exchange_set,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,permut_exists,exchange_permut_all,fold_left&#39;def,fold_left_ext,fold_left_cons,fold_left_app,fold_right&#39;def,fold_right_ext,fold_right_snoc,permut_sub_weakening,exchange_permut_sub1,exchange_permut_all1,one&#39;def,t&#39;invariant,is_pre_order,t&#39;invariant1,sub_occ_3,same_occ,Requires,Requires1,Ensures,Ensures1,Ensures9,Ensures10,Ensures11,Ensures14,Ensures15,H7,H8">
+   <goal name="move_up&#39;vc.34.0" expl="postcondition" proved="true">
+   <proof prover="6"><result status="valid" time="0.91" steps="1650"/></proof>
    </goal>
   </transf>
   </goal>
