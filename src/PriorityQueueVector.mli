@@ -29,34 +29,33 @@ end) : sig
 
   type elt = X.t
 
-  type t
-  (*@ ephemeral *)
-  (*@ mutable model bag : X.t bag *)
+  type heap
+  (*@ mutable model bag : elt bag *)
   (*@ invariant card bag <= Sys.max_array_length *)
 
-  (*@ predicate mem (x: elt) (h: t) = nb_occ x h.bag > 0 *)
+  (*@ predicate mem (x: elt) (h: heap) = nb_occ x h.bag > 0 *)
 
-  val create : unit -> t
+  val create : unit -> heap
   (*@ h = create ()
       ensures h.bag = empty_bag  *)
 
-  val is_empty : t -> bool
+  val is_empty : heap -> bool
   (*@ b = is_empty h
       ensures b <-> h.bag = empty_bag *)
 
-  val size : t -> int
+  val size : heap -> int
   (* x = size h
       ensures x = card h.bag *)
 
-  (*@ function minimum: t -> elt *)
+  (*@ function minimum (h: heap) : elt *)
 
-  (*@ predicate is_minimum (x: elt) (h: t) =
+  (*@ predicate is_minimum (x: elt) (h: heap) =
         mem x h && forall e. mem e h -> X.cmp x e <= 0 *)
 
   (*@ axiom min_def:
         forall h. 0 < card h.bag -> is_minimum (minimum h) h *)
 
-  val find_min : t -> elt option
+  val find_min : heap -> elt option
   (*@ r = find_min h
       ensures match r with
       | None   -> card h.bag = 0
@@ -64,25 +63,25 @@ end) : sig
 
   exception Empty
 
-  val find_min_exn : t -> elt
+  val find_min_exn : heap -> elt
   (*@ x = find_min_exn h
       raises  Empty -> card h.bag = 0
       ensures card h.bag > 0 && x = minimum h *)
 
-  val delete_min_exn : t -> unit
+  val delete_min_exn : heap -> unit
   (*@ delete_min_exn h
       modifies h
       raises  Empty -> card h.bag = 0 && h.bag = old h.bag
       ensures (old h).bag = add (minimum (old h)) h.bag *)
 
-  val extract_min_exn : t -> elt
+  val extract_min_exn : heap -> elt
   (*@ x = extract_min_exn h
       modifies h
       raises  Empty -> card h.bag = 0 && h.bag = old h.bag
       ensures x = minimum (old h)
       ensures (old h).bag = add x h.bag *)
 
-  val insert : elt -> t -> unit
+  val insert : elt -> heap -> unit
    (*@ insert x h
        checks   card h.bag < Sys.max_array_length
        modifies h

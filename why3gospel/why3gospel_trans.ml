@@ -159,10 +159,6 @@ module Term = struct
 
 end
 
-let private_type = function
-  | T.Private -> Private
-  | T.Public  -> Public
-
 let td_params (tvs, _) =
   Term.ident_of_tvsymbol tvs
 

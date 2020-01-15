@@ -21,9 +21,9 @@ module Impl
   use import Vector.Sig as V (* Module mli de vocal traduit en mlw *)
   use seq.Seq
   use option.Option
-  use vocal.Order
   use option.Option
   use ocaml.Pervasives
+  use gospel.Gospel
 
   use ocaml.Sys
 
@@ -31,8 +31,8 @@ module Impl
     scope X
       type t
       val dummy : t
-      function cmp (x y: t) : int63
-      axiom is_pre_order: Order.is_pre_order cmp
+      function cmp : t -> t -> int63
+      axiom is_pre_order: is_pre_order cmp
       val compare (x : t) (y : t) : int63
         ensures { result = cmp x y }
     end
@@ -316,9 +316,9 @@ module Impl
       end
 
     let insert (x : elt) (h : t) : unit
-      raises  { Invalid_argument -> card h.bag >= Sys.max_array_length }
+      raises  { Invalid_argument _ -> card h.bag >= Sys.max_array_length }
       ensures { h.bag = add x (old h).bag }
-    = if size h = Sys.max_array_length then raise Invalid_argument;
+    = if size h = Sys.max_array_length then raise Invalid_argument "insert";
       let n = V.length h.a in
       let ghost olda = pure { h.a } in
       if n = 0 then
@@ -355,7 +355,7 @@ module Correct
     function Make.X.cmp = Make.X.cmp,
     goal Make.X.is_pre_order,
     val  Make.X.compare = Make.X.compare,
-    type Make.t = Make.t,
+    type Make.heap = Make.t,
     val Make.create = Make.create,
     val Make.is_empty = Make.is_empty,
     val Make.size = Make.size,
