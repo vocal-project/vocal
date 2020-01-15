@@ -214,10 +214,10 @@ module Impl
       requires { 0 <= i < length a.view }
       requires { i > 0 -> le a.view[div (i - 1) 2] x }
       ensures  { heap_order a }
-      ensures  { forall e. e <> x -> e <> (old a).view[i] -> numocc' a e = numocc' (old a) e }
+      ensures  { forall e. e <> (old a).view[i] -> e <> x ->
+                   numocc' a e = numocc' (old a) e }
       ensures  { let o = (old a).view[i] in
-                 if x = o then
-                   numocc' a x = numocc' (old a) x
+                 if x = o then numocc' a x = numocc' (old a) x
                  else
                    numocc' a x = numocc' (old a) x + 1 /\
                    numocc' a o = numocc' (old a) o - 1 }
