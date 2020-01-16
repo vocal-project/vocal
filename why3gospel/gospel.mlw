@@ -11,11 +11,16 @@
 (** This module mirrors the GOSPEL standard library.
     It is used in the Why3 modules builts by the GOSPEL plug-in for Why3. *)
 
-module Gospel
+module Stdlib
 
   use export int.Int
   use export int.MinMax
+  use export option.Option
   use export ocaml.Exceptions
+  use export ocaml.Sys
+  use export ocaml.Pervasives
+  use export list.List
+  use export mach.array.Array63Permut
 
   type integer = int
 
@@ -41,23 +46,33 @@ module Gospel
       (cmp x y < 0 -> cmp y z = 0 -> cmp x z < 0) /\
       (cmp x y < 0 -> cmp y z < 0 -> cmp x z < 0))
 
-  use export ocaml.Sys
-  use export ocaml.Pervasives
+  use import seq.Seq as S
+  type seq 'a = S.seq 'a
+  function length (s: seq 'a): integer = S.length s
 
-  use export bag.Bag
-  use export list.List
-  use seq.Seq, seq.OfList
+  function ([]) (s: seq 'a) (i:integer): 'a = S.([]) s i
+
+  predicate (==) (s1 s2: seq 'a) =
+    length s1 = length s2 &&
+    forall i. 0 <= i < length s1 -> s1[i] = s2[i]
+
+(*@ function ([_.._]) (s: 'a seq) (i1: integer) (i2: integer): 'a seq *)
+(*@ function ([_..]) (s: 'a seq) (i: integer): 'a seq *)
+(*@ function ([.._]) (s: 'a seq) (i: integer): 'a seq *)
+
+  constant empty: seq 'a = S.empty
+
+(*@ function (++) (s1: 'a seq) (s2: 'a seq): 'a seq *)
+
+  use seq.OfList
 
   function seq_of_list (l: list 'a) : seq 'a = of_list l
-
-  use export option.Option
-  use export seq.FoldLeft
-  use export seq.FoldRight
 
   use import mach.peano.Peano as P
   function int_of_peano (t: P.t) : int = t
 
-  use export mach.array.Array63Permut
+  use import set.Fset as FS
+  type set 'a = fset 'a
 
 end
 
@@ -65,7 +80,7 @@ module Comparable
 
   use int.Int
   use mach.int.Int63
-  use Gospel
+  use Stdlib
 
   type t
 
@@ -76,5 +91,37 @@ module Comparable
     ensures { result = cmp x y }
 
   predicate le (x y: t) = cmp x y <= 0
+
+end
+
+module Seq
+
+  use export seq.Seq
+  use export seq.FoldLeft
+  use export seq.FoldRight
+
+end
+
+module Bag
+
+  use export bag.Bag
+
+end
+
+module Set
+
+  use export set.Fset
+
+end
+
+module Map
+
+  use export map.Map
+
+end
+
+module Peano
+
+  use export mach.peano.Peano
 
 end
