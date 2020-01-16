@@ -25,7 +25,7 @@ let dummy_loc = Loc.dummy_position
 
 let map_opt_default f d = function None -> d | Some x -> f x
 
-let mk_id id_str id_loc =
+let mk_id ?(id_loc=Loc.dummy_position) id_str =
   let id_str = match id_str with
     | "mixfix [_]" -> "mixfix []"
     (* FIXME: many other cases; see src/core/ident.ml in Why3 sources *)
@@ -47,13 +47,13 @@ module Term = struct
     { pat_desc; pat_loc }
 
   let ident_of_vsymbol Tt.{vs_name = name} =
-    mk_id name.I.id_str (location name.I.id_loc)
+    mk_id name.I.id_str ~id_loc:(location name.I.id_loc)
 
   let ident_of_tvsymbol Ty.{tv_name = name} =
-    mk_id name.I.id_str (location name.I.id_loc)
+    mk_id name.I.id_str ~id_loc:(location name.I.id_loc)
 
   let ident_of_lsymbol Tt.{ls_name = name} =
-    mk_id name.I.id_str (location name.I.id_loc)
+    mk_id name.I.id_str ~id_loc:(location name.I.id_loc)
 
   let quant = function
     | Tt.Tforall -> Dterm.DTforall
@@ -76,7 +76,7 @@ module Term = struct
 
   let rec ty Ty.{ty_node} = match ty_node with
     | Ty.Tyvar {tv_name} ->
-        PTtyvar (mk_id tv_name.id_str (location tv_name.id_loc))
+        PTtyvar (mk_id tv_name.id_str ~id_loc:(location tv_name.id_loc))
     | Ty.Tyapp (ts, tyl) when Ty.is_ts_tuple ts ->
         PTtuple (List.map ty tyl)
     | Ty.Tyapp (ts, tyl) when Ty.is_ts_arrow ts ->
@@ -85,11 +85,11 @@ module Term = struct
           | [pty] -> pty
           | arg :: ptyl -> PTarrow (arg, arrow_of_pty_list ptyl) in
         arrow_of_pty_list (List.map ty tyl)
-    | Ty.Tyapp ({ts_ident}, tyl) -> let loc = location ts_ident.id_loc in
+    | Ty.Tyapp ({ts_ident}, tyl) -> let id_loc = location ts_ident.id_loc in
         let id_str = match query_syntax ts_ident.id_str with
             | None   -> ts_ident.id_str
             | Some s -> s in
-        let qualid = mk_id id_str loc in
+        let qualid = mk_id id_str ~id_loc in
         PTtyapp (Qident qualid, List.map ty tyl)
 
   let binder_of_vsymbol vs =
@@ -99,10 +99,10 @@ module Term = struct
     location loc, Some id, false, Some pty
 
   let param_of_vsymbol Tt.{vs_name; vs_ty} =
-    let loc = location vs_name.I.id_loc in
-    let id  = mk_id vs_name.I.id_str loc in
+    let id_loc = location vs_name.I.id_loc in
+    let id = mk_id vs_name.I.id_str ~id_loc in
     let pty = ty vs_ty in
-    loc, Some id, false, pty
+    id_loc, Some id, false, pty
 
   let binop = function
     | Tt.Tand      -> Dterm.DTand
@@ -113,14 +113,14 @@ module Term = struct
     | Tt.Tiff      -> Dterm.DTiff
 
   let rec term t =
-    let loc = map_opt_default location dummy_loc t.Tt.t_loc in
-    let mk_term term_desc = mk_term term_desc loc in
+    let id_loc = map_opt_default location dummy_loc t.Tt.t_loc in
+    let mk_term term_desc = mk_term term_desc id_loc in
     let t_node = function
       | Tt.Ttrue    -> Ttrue
       | Tt.Tfalse   -> Tfalse
       | Tt.Tvar vs  -> Tident (Qident (ident_of_vsymbol vs))
       | Tt.Tnot t   -> Tnot (term t)
-      | Tt.Told t   -> Tat (term t, mk_id Dexpr.old_label loc)
+      | Tt.Told t   -> Tat (term t, mk_id Dexpr.old_label ~id_loc)
       | Tt.Tconst c -> begin match c with
           | Pconst_integer (s, None) -> (* FIXME: check that [neg] parameter *)
               let n = Number.(int_literal ILitDec ~neg:false s) in
@@ -148,12 +148,12 @@ module Term = struct
           | [fs; arg] -> Tapply (term fs, term arg)
           | _ -> assert false end
       | Tt.Tapp ({ls_name}, term_list) ->
-          let loc = ls_name.I.id_loc in
+          let id_loc = location ls_name.I.id_loc in
           let term_list = List.map term term_list in
           let id_str = match query_syntax ls_name.id_str with
             | None   -> ls_name.id_str
             | Some s -> s in
-          let id = mk_id id_str (location loc) in
+          let id = mk_id id_str ~id_loc in
           Tidapp (Qident id, term_list) in
     mk_term (t_node t.Tt.t_node)
 
@@ -184,7 +184,7 @@ let td_def td_spec td_manifest =
 
 let type_decl (T.{td_ts = {ts_ident}; td_spec; td_manifest} as td) = T.{
   td_loc    = location td.td_loc;
-  td_ident  = mk_id ts_ident.id_str (location td.td_loc);
+  td_ident  = mk_id ts_ident.id_str ~id_loc:(location td.td_loc);
   td_params = List.map td_params td.td_params;
   td_vis    = td_vis_from_manifest td_manifest;
   td_mut    = td_spec.ty_ephemeral;
@@ -226,12 +226,12 @@ open Term
     of the form [Loc.position * (qualid * (pattern * term) option) list]. *)
 let sp_xpost xpost =
   let mk_xpost_list xs pat_post_list acc =
-    let loc = xs.Ty.xs_ident.I.id_loc in
+    let id_loc = location xs.Ty.xs_ident.I.id_loc in
     let mk_xpost (pat, post) =
-      let q = Qident (mk_id xs.Ty.xs_ident.I.id_str (location loc)) in
+      let q = Qident (mk_id xs.Ty.xs_ident.I.id_str ~id_loc) in
       let post = term post in
       q, Some (Term.pattern pat, post) in
-    (location loc, List.map mk_xpost pat_post_list) :: acc in
+    (id_loc, List.map mk_xpost pat_post_list) :: acc in
   Ty.Mxs.fold mk_xpost_list xpost []
 
 let sp_writes =
@@ -245,11 +245,11 @@ let rec term_or_of_term_list = function
 
 (** Convert a Why3's precondition into a Why3's Ptree [xpost]. *)
 let xpost_of_checks pre =
-  let loc = pre.term_loc in
-  let qid = Qident (mk_id "Invalid_argument" loc) in
-  let pat = mk_pattern Pwild loc in
-  let txs = mk_term (Tnot pre) loc in
-  loc, [qid, Some (pat, txs)]
+  let id_loc = pre.term_loc in
+  let qid = Qident (mk_id "Invalid_argument" ~id_loc) in
+  let pat = mk_pattern Pwild id_loc in
+  let txs = mk_term (Tnot pre) id_loc in
+  id_loc, [qid, Some (pat, txs)]
 
 let spec_with_checks val_spec pre checks =
   let xpost_checks = xpost_of_checks (term_or_of_term_list checks) in {
@@ -300,7 +300,7 @@ let empty_spec = {
 let rec core_type Ot.{ ptyp_desc; ptyp_loc } =
   match ptyp_desc with
   | Ptyp_var x ->
-      PTtyvar (mk_id x (location ptyp_loc))
+      PTtyvar (mk_id x ~id_loc:(location ptyp_loc))
   | Ptyp_arrow (_, ty1, ty2) ->
       PTarrow (core_type ty1, core_type ty2)
   | Ptyp_tuple ctl ->
@@ -309,11 +309,11 @@ let rec core_type Ot.{ ptyp_desc; ptyp_loc } =
       let mk_str id_str = match query_syntax id_str with
         | None   -> id_str
         | Some s -> s in
-      let rec longident loc = function
+      let rec longident id_loc = function
         | Gospel.Longident.Lident s ->
-            Qident (mk_id (mk_str s) loc)
+            Qident (mk_id (mk_str s) ~id_loc)
         | Gospel.Longident.Ldot (t, s) ->
-            Qdot (longident loc t, mk_id (mk_str s) loc)
+            Qdot (longident id_loc t, mk_id (mk_str s) ~id_loc)
         | _ -> assert false (* TODO? *) in
       PTtyapp (longident (location loc) txt, List.map core_type ctl)
   | _ -> assert false (* TODO *)
@@ -327,20 +327,37 @@ let val_decl vd g =
         | Ot.Ptyp_arrow (lbl, t11, t12) -> t1 :: flat_ptyp_arrow t2
         | _ -> flat_ptyp_arrow t1 @ flat_ptyp_arrow t2 end
     | _ -> assert false (* TODO *) in
-  let mk_param lb_arg ct =
-    let loc = Term.(location (T.vs_of_lb_arg lb_arg).vs_name.I.id_loc) in
+  let mk_single_param lb_arg ct =
+    let id_loc = (location (T.vs_of_lb_arg lb_arg).vs_name.I.id_loc) in
     let pty = core_type ct in
-    let id  = Some (ident_of_lb_arg lb_arg) in
+    let id = Some (ident_of_lb_arg lb_arg) in
     let ghost, pty = match lb_arg with
       | Lnone vs | Lnamed vs -> false, pty
-      | Lquestion vs -> false, PTtyapp (Qident (mk_id "option" loc), [pty])
+      | Lquestion vs -> false, PTtyapp (Qident (mk_id "option" ~id_loc), [pty])
       | Lghost vs    -> true,  pty in
-    loc, id, ghost, pty in
+    id_loc, id, ghost, pty in
+  let mk_ghost_param lb =
+    match lb with
+    | T.Lnone _ | Lnamed _ | Lquestion _ -> assert false
+    | T.Lghost vs ->
+        let id_loc = location vs.Tt.vs_name.I.id_loc in
+        let id = Some (mk_id vs.Tt.vs_name.I.id_str ~id_loc) in
+        let pty = Term.ty vs.vs_ty in
+        id_loc, id, true, pty in
+  let rec mk_param lb_args core_tys = match lb_args, core_tys with
+    | [], [] -> []
+    | [], _  -> assert false (* there cannot be more core types than lb_args *)
+    | lb_args, [] ->         (* all the remaining arguments must be ghost    *)
+        List.map mk_ghost_param lb_args
+    | (T.Lghost vs) as lb :: lb_args, core_tys ->
+        mk_ghost_param lb :: mk_param lb_args core_tys
+    | lb :: lb_args, ct :: core_tys ->
+        (mk_single_param lb ct) :: mk_param lb_args core_tys in
   let mk_param_no_spec ct = let loc = location ct.Ot.ptyp_loc in
     loc, None, false, core_type ct in
   let mk_vals params ret pat mask =
     let vd_str = vd.T.vd_name.I.id_str in
-    let mk_id id_str = mk_id id_str (location vd.T.vd_loc) in
+    let mk_id id_str = mk_id id_str ~id_loc:(location vd.T.vd_loc) in
     let mk_val id params ret pat mask spec =
       let e_any = Eany (params, Expr.RKnone, ret, pat, mask, spec) in
       let e_any = mk_expr e_any (location vd.T.vd_loc) in
@@ -363,7 +380,7 @@ let val_decl vd g =
            in the return tuple *)
         let pat = Term.mk_pattern Pwild (location last.Ot.ptyp_loc) in
         param_list, pat, Ity.MaskVisible
-    | Some s -> let params = List.map2 mk_param s.T.sp_args core_tys in
+    | Some s -> let params = mk_param s.T.sp_args core_tys in
         let mk_pat lb = let loc = loc_of_lb_arg lb in
           Term.mk_pattern (Pvar (ident_of_lb_arg lb)) loc in
         let mk_mask = function
@@ -388,7 +405,7 @@ let val_decl vd g =
 let function_ (T.{fun_ls = Tt.{ls_name; ls_value}} as f) =
   let loc = location f.T.fun_loc in
   let id_loc = location ls_name.I.id_loc in
-  let id = mk_id ls_name.I.id_str id_loc in
+  let id = mk_id ls_name.I.id_str ~id_loc in
   let params = List.map param_of_vsymbol f.fun_params in
   let pty = Opt.map ty ls_value in
   let term = Opt.map term f.T.fun_def in
@@ -397,13 +414,13 @@ let function_ (T.{fun_ls = Tt.{ls_name; ls_value}} as f) =
 (** Convert GOSPEL axioms into Why3's Ptree axioms. *)
 let axiom T.{ax_name; ax_term} =
   let id_loc = location ax_name.I.id_loc in
-  let id = mk_id ax_name.I.id_str id_loc in
+  let id = mk_id ax_name.I.id_str ~id_loc in
   let term = term ax_term in
   Dprop (Decl.Paxiom, id, term)
 
 (** Convert GOSPEL exceptions into Why3's Ptree exceptions. *)
 let exn T.{exn_constructor = {ext_ident; ext_xs}; exn_loc} =
-  let id = mk_id ext_ident.id_str (location ext_ident.id_loc) in
+  let id = mk_id ext_ident.id_str ~id_loc:(location ext_ident.id_loc) in
   match ext_xs.Ty.xs_type with
   | Exn_tuple [{ty_node = Ty.Tyapp (ts, tyl)}] when Ty.is_ts_tuple ts ->
       Dexn (id, PTtuple (List.map ty tyl), Ity.MaskVisible)
@@ -412,10 +429,14 @@ let exn T.{exn_constructor = {ext_ident; ext_xs}; exn_loc} =
   | Exn_record _ -> let loc = location exn_loc in
       Loc.errorm ~loc "Exceptions with record arguments is not supported."
 
+let sig_open file mm loc =
+  let dot_name = Qdot (Qident (mk_id file), mk_id mm) in
+  Duseimport (loc, false, [dot_name, None])
+
 (** Convert a GOSPEL module declaration into a Why3 scope. *)
 let rec module_declaration T.{md_name; md_type; md_loc} =
   let loc = location md_loc in
-  let id = mk_id md_name.I.id_str (location md_name.I.id_loc) in
+  let id = mk_id md_name.I.id_str ~id_loc:(location md_name.I.id_loc) in
   Gmodule (loc, id, module_type md_type)
 
 and module_type mt = match mt.T.mt_desc with
@@ -424,10 +445,10 @@ and module_type mt = match mt.T.mt_desc with
   | T.Mod_signature s ->
       List.flatten (signature s)
   | T.Mod_functor (arg_name, arg, body) ->
-      let loc = location arg_name.I.id_loc in
-      let id = mk_id arg_name.I.id_str loc in
+      let id_loc = location arg_name.I.id_loc in
+      let id = mk_id arg_name.I.id_str ~id_loc in
       let body = module_type body in
-      Gmodule (loc, id, module_type (Opt.get arg)) :: body
+      Gmodule (id_loc, id, module_type (Opt.get arg)) :: body
   | T.Mod_with _ (* of module_type * with_constraint list *) ->
       assert false
   | T.Mod_typeof _ (* of Oparsetree.module_expr *) ->
@@ -452,10 +473,15 @@ and signature_item i = match i.T.sig_desc with
       assert false (*TODO*)
   | T.Sig_exception exn_cstr ->
       [Gdecl (exn exn_cstr)]
-  | T.Sig_open _ (* of open_description * ghost *) ->
-      (* The GOSPEL standard library is opened by default. For now, we chose to
-         ignore it and will make a work-around with a custom Why3 file. *)
+  | T.Sig_open (_, false) ->
       []
+  | T.Sig_open ({opn_id = ["Gospelstdlib"]; opn_loc}, true) ->
+      (* The GOSPEL standard library is opened by default. We map it into a
+         custom Why3 file. *)
+      [Gdecl (sig_open "gospel" "Stdlib" (location opn_loc))]
+  | T.Sig_open ({opn_id; opn_loc}, true) ->
+      let loc = location opn_loc in
+      List.map (fun mm -> Gdecl (sig_open "gospel" mm loc)) opn_id
   | T.Sig_include _ (* of Oparsetree.include_description *) ->
       assert false (*TODO*)
   | T.Sig_class _ (* of Oparsetree.class_description list *) ->
