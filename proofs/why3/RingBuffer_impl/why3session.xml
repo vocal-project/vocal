@@ -194,31 +194,31 @@
  <proof prover="0"><result status="valid" time="0.02" steps="82"/></proof>
  </goal>
  <goal name="Sig.buffer&#39;vc" expl="VC for buffer" proved="true">
- <proof prover="0"><result status="valid" time="0.02" steps="27"/></proof>
+ <proof prover="0"><result status="valid" time="0.02" steps="31"/></proof>
  </goal>
  <goal name="Sig.create&#39;vc" expl="VC for create" proved="true">
- <proof prover="0"><result status="valid" time="0.01" steps="12"/></proof>
+ <proof prover="0"><result status="valid" time="0.01" steps="16"/></proof>
  </goal>
  <goal name="Sig.length&#39;vc" expl="VC for length" proved="true">
- <proof prover="0"><result status="valid" time="0.02" steps="22"/></proof>
+ <proof prover="0"><result status="valid" time="0.02" steps="26"/></proof>
  </goal>
  <goal name="Sig.clear&#39;vc" expl="VC for clear" proved="true">
- <proof prover="0"><result status="valid" time="0.01" steps="44"/></proof>
+ <proof prover="0"><result status="valid" time="0.01" steps="48"/></proof>
  </goal>
  <goal name="Sig.push&#39;vc" expl="VC for push" proved="true">
- <proof prover="0"><result status="valid" time="0.06" steps="175"/></proof>
+ <proof prover="0"><result status="valid" time="0.06" steps="179"/></proof>
  </goal>
  <goal name="Sig.peek&#39;vc" expl="VC for peek" proved="true">
- <proof prover="0"><result status="valid" time="0.02" steps="24"/></proof>
+ <proof prover="0"><result status="valid" time="0.02" steps="28"/></proof>
  </goal>
  <goal name="Sig.pop&#39;vc" expl="VC for pop" proved="true">
- <proof prover="0"><result status="valid" time="0.08" steps="231"/></proof>
+ <proof prover="0"><result status="valid" time="0.08" steps="235"/></proof>
  </goal>
  <goal name="Sig.get&#39;vc" expl="VC for get" proved="true">
- <proof prover="0"><result status="valid" time="0.01" steps="26"/></proof>
+ <proof prover="0"><result status="valid" time="0.01" steps="30"/></proof>
  </goal>
  <goal name="Sig.copy&#39;vc" expl="VC for copy" proved="true">
- <proof prover="0"><result status="valid" time="0.03" steps="113"/></proof>
+ <proof prover="0"><result status="valid" time="0.03" steps="117"/></proof>
  </goal>
 </theory>
 </file>

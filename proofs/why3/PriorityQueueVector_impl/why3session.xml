@@ -2,7 +2,7 @@
 <!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
 "http://why3.lri.fr/why3session.dtd">
 <why3session shape_version="8">
-<prover id="1" name="CVC4" version="1.5" timelimit="5" steplimit="0" memlimit="4000"/>
+<prover id="1" name="CVC4" version="1.5" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="2" name="Z3" version="4.8.6" timelimit="1" steplimit="0" memlimit="1000"/>
 <prover id="6" name="Alt-Ergo" version="2.3.0" timelimit="1" steplimit="0" memlimit="1000"/>
 <file format="whyml" proved="true">
@@ -12,7 +12,7 @@
  <proof prover="6"><result status="valid" time="0.05" steps="86"/></proof>
  </goal>
  <goal name="Make.num_exist" proved="true">
- <proof prover="2"><result status="valid" time="0.11" steps="307763"/></proof>
+ <proof prover="2"><result status="valid" time="0.11" steps="332688"/></proof>
  </goal>
  <goal name="Make.min_coherent&#39;vc" expl="VC for min_coherent" proved="true">
  <transf name="split_vc" proved="true" >
@@ -33,11 +33,7 @@
    <goal name="min_coherent&#39;vc.3.1" expl="false case (postcondition)" proved="true">
    <transf name="split_all_full" proved="true" >
     <goal name="min_coherent&#39;vc.3.1.0" expl="false case (postcondition)" proved="true">
-    <transf name="remove" proved="true" arg1="real,string,tuple0,unit,zero1,one1,min,max,int63&#39;maxInt,int63&#39;minInt,to_int,in_bounds,mem2,eq_bag,empty_bag,add,diff,choose,([&lt;-]&#39;&#39;),get1,([]&#39;&#39;),(/),integer_of_int,one,minimum,is_minimum,h,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Numof_left_no_add,Numof_left_add,Empty,numof_increasing,numof_strictly_increasing,numof_change_some,to_int_in_bounds,extensionality,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton_neq,occ_union,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,Append_assoc,Append_l_nil,Append_length,mem_decomp,length_nonnegative,set&#39;def,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,to_list_empty,to_list_length,is_of_list,of_list_app,of_list_snoc,append_num_occ,permut_sym,permut_trans,permut_exists,exchange_permut_all,permut_sub_weakening,exchange_permut_sub1,exchange_permut_all1,one&#39;def,min_def">
-     <goal name="min_coherent&#39;vc.3.1.0.0" expl="false case (postcondition)" proved="true">
-     <proof prover="1" memlimit="1000"><result status="valid" time="1.64" steps="398310"/></proof>
-     </goal>
-    </transf>
+    <proof prover="1" timelimit="50"><result status="valid" time="2.48" steps="524717"/></proof>
     </goal>
    </transf>
    </goal>
@@ -51,11 +47,7 @@
  <goal name="Make.sub_occ_1" proved="true">
  <transf name="split_all_full" proved="true" >
   <goal name="sub_occ_1.0" proved="true">
-  <transf name="remove" proved="true" arg1="real,string,tuple0,unit,ref,map,integer,elt,zero1,one1,min,max,int63&#39;maxInt,int63&#39;minInt,min_int63,max_int63,to_int,in_bounds,max_int,min_int,(!),eq_bag,empty_bag,union,add,diff,choose,([&lt;-]&#39;&#39;),nth,get1,([]&#39;&#39;),to_list,point_wise,(/),integer_of_int,is_pre_order,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_pos,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,max_int&#39;def,min_int&#39;def,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,array&#39;invariant1,Length_nonnegative,Append_assoc,Append_l_nil,Append_length,mem_decomp,length_nonnegative,empty&#39;def,set&#39;def,([&lt;-])&#39;def,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,occ_cons,occ_snoc,exchange_permut_sub,Permut_sub_weakening,fold_left_cons,non_neg_max_array_length,is_pre_order,min_def,num_exist,min_coherent">
-   <goal name="sub_occ_1.0.0" proved="true">
-   <proof prover="2"><result status="valid" time="0.50" steps="704619"/></proof>
-   </goal>
-  </transf>
+  <proof prover="1"><result status="valid" time="0.98" steps="138764"/></proof>
   </goal>
  </transf>
  </goal>
@@ -64,33 +56,21 @@
   <goal name="sub_occ_2.0" proved="true">
   <transf name="assert" proved="true" arg1="(numocc a1 (view a1)[int63&#39;int i] 0 i   = numocc a2 (view a1)[int63&#39;int i] 0 i)">
    <goal name="sub_occ_2.0.0" expl="asserted formula" proved="true">
-   <transf name="remove" proved="true" arg1="real,string,tuple0,unit,ref,map,option,integer,zero1,one1,(-_),(-),abs,min,max,div,mod,set,([&lt;-]&#39;),int63&#39;maxInt,int63&#39;minInt,min_int63,max_int63,to_int,in_bounds,max_int,min_int,(!),eq_bag,empty_bag,singleton1,union,add,diff,choose,elts1,([]&#39;),([&lt;-]&#39;&#39;),make,is_nil,length,is_none,nth,(++),get1,([]&#39;&#39;),(==),create,empty,singleton,cons,snoc,([..]),([.._]),(++&#39;),to_list,of_list,point_wise,occ_all,exchange,permut,permut_sub,permut_all,fold_left,fold_right,(/),integer_of_int,is_pre_order,seq_of_list,int_of_peano,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_le,Abs_pos,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_bound,Mod_bound,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,numof&#39;def,Numof_bounds,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,max_int&#39;def,min_int&#39;def,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,array&#39;invariant1,([&lt;-])&#39;spec,make&#39;spec,is_nil&#39;spec,Length_nonnegative,Length_nil,is_none&#39;spec,Append_assoc,Append_l_nil,Append_length,mem_append,mem_decomp,length_nonnegative,(==)&#39;spec,create&#39;spec,empty&#39;def,set&#39;spec,set&#39;def,([&lt;-])&#39;def,singleton&#39;spec,cons&#39;spec,snoc&#39;spec,([..])&#39;spec,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,(++)&#39;spec,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,mem_append1,occ_cons,occ_snoc,occ_tail,append_num_occ,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,permut_all_mem,exchange_permut_all,fold_left&#39;def,fold_left_ext,fold_left_cons,fold_left_app,fold_right&#39;def,fold_right_ext,fold_right_snoc,non_neg_max_array_length,array&#39;invariant,permut_sub_weakening,t&#39;invariant,is_pre_order,min_def,num_exist,sub_occ_1">
-    <goal name="sub_occ_2.0.0.0" expl="asserted formula" proved="true">
-    <proof prover="2" timelimit="5"><result status="valid" time="0.03" steps="66068"/></proof>
-    </goal>
-   </transf>
+   <proof prover="1" timelimit="50"><result status="valid" time="0.81" steps="114222"/></proof>
    </goal>
    <goal name="sub_occ_2.0.1" proved="true">
-   <transf name="assert" proved="true" arg1="(numocc a1 (view a1)[int63&#39;int i] (i+1) (length2 (view a1))  = numocc a2 (view a1)[int63&#39;int i] (i+1) (length2 (view a2)))">
+   <transf name="assert" proved="true" arg1="(numocc a1 (view a1)[int63&#39;int i] (i+1) (length1 (view a1))  = numocc a2 (view a1)[int63&#39;int i] (i+1) (length1 (view a2)))">
     <goal name="sub_occ_2.0.1.0" expl="asserted formula" proved="true">
     <transf name="split_all_full" proved="true" >
      <goal name="sub_occ_2.0.1.0.0" expl="asserted formula" proved="true">
-     <transf name="remove" proved="true" arg1="real,string,tuple0,unit,zero1,one1,nth,get1,([]&#39;&#39;),point_wise,seq_of_list,one,int_of_peano,is_minimum,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_pos,div2,Div_mod,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_any,Length_nonnegative,Append_assoc,Append_l_nil,Append_length,mem_decomp,length_nonnegative,empty&#39;def,set&#39;def,([&lt;-])&#39;def,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,occ_tail,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,one&#39;def,t&#39;invariant,min_def,num_exist,min_coherent,sub_occ_1">
-      <goal name="sub_occ_2.0.1.0.0.0" expl="asserted formula" proved="true">
-      <proof prover="6" timelimit="5"><result status="valid" time="0.96" steps="777"/></proof>
-      </goal>
-     </transf>
+     <proof prover="1"><result status="valid" time="2.64" steps="183018"/></proof>
      </goal>
     </transf>
     </goal>
     <goal name="sub_occ_2.0.1.1" proved="true">
     <transf name="split_all_full" proved="true" >
      <goal name="sub_occ_2.0.1.1.0" proved="true">
-     <transf name="remove" proved="true" arg1="real,string,tuple0,unit,ref,map,integer,elt,zero1,one1,min,max,int63&#39;maxInt,int63&#39;minInt,min_int63,max_int63,to_int,in_bounds,max_int,min_int,(!),add,diff,choose,([&lt;-]&#39;&#39;),nth,get1,([]&#39;&#39;),point_wise,(/),integer_of_int,is_pre_order,seq_of_list,int_of_peano,minimum,is_minimum,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_pos,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_sign_pos,Div_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Empty,Full,numof_increasing,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,max_int&#39;def,min_int&#39;def,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,array&#39;invariant1,Length_nonnegative,Append_assoc,Append_l_nil,Append_length,mem_decomp,empty&#39;def,set&#39;def,([&lt;-])&#39;def,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,to_list_empty,to_list_length,to_list_nth,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,permut_trans,non_neg_max_array_length,min_def,num_exist,min_coherent,sub_occ_1">
-      <goal name="sub_occ_2.0.1.1.0.0" proved="true">
-      <proof prover="1" timelimit="1"><result status="valid" time="0.87" steps="142210"/></proof>
-      </goal>
-     </transf>
+     <proof prover="1"><result status="valid" time="3.02" steps="290293"/></proof>
      </goal>
     </transf>
     </goal>
@@ -105,11 +85,7 @@
   <goal name="sub_occ_3.0" proved="true">
   <transf name="split_all_full" proved="true" >
    <goal name="sub_occ_3.0.0" proved="true">
-   <transf name="remove" proved="true" arg1="real,string,tuple0,unit,ref,map,integer,zero1,one1,min,max,int63&#39;maxInt,int63&#39;minInt,min_int63,max_int63,to_int,in_bounds,max_int,min_int,(!),mem2,eq_bag,empty_bag,union,add,diff,choose,([]&#39;),([&lt;-]&#39;&#39;),nth,get1,([]&#39;&#39;),empty,([&lt;-]),to_list,of_list,point_wise,occ_all,exchange,permut,permut_sub,permut_all,array_eq,(/),integer_of_int,is_pre_order,seq_of_list,one,int_of_peano,minimum,is_minimum,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_pos,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,max_int&#39;def,min_int&#39;def,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,array&#39;invariant1,Length_nonnegative,Append_assoc,Append_l_nil,Append_length,mem_decomp,length_nonnegative,empty&#39;def,set&#39;def,([&lt;-])&#39;def,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,occ_cons,occ_snoc,occ_tail,append_num_occ,exchange_set,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,permut_exists,exchange_permut_all,fold_left_ext,fold_left_cons,fold_left_app,fold_right_ext,fold_right_snoc,non_neg_max_array_length,permut_sub_weakening,exchange_permut_sub1,one&#39;def,t&#39;invariant,is_pre_order,min_def,num_exist,min_coherent,sub_occ_2,Abs_le1,Abs_le2,Div_bound1,Mod_bound1,numof&#39;def1,numof&#39;def2,Numof_bounds1,occ_singleton1,occ_singleton2,occ_singleton3,([&lt;-])&#39;spec1,make&#39;spec1,is_nil&#39;spec1">
-    <goal name="sub_occ_3.0.0.0" proved="true">
-    <proof prover="2" timelimit="5"><result status="valid" time="1.27" steps="2984456"/></proof>
-    </goal>
-   </transf>
+   <proof prover="1" timelimit="40"><result status="valid" time="0.71" steps="113342"/></proof>
    </goal>
   </transf>
   </goal>
@@ -136,10 +112,10 @@
      <goal name="sub_order&#39;vc.0.0.0.1" expl="false case" proved="true">
      <transf name="case" proved="true" arg1="(i = div (i1 - 1) 2)">
       <goal name="sub_order&#39;vc.0.0.0.1.0" expl="false case (true case)" proved="true">
-      <proof prover="6"><result status="valid" time="0.86" steps="2620"/></proof>
+      <proof prover="6"><result status="valid" time="0.86" steps="1661"/></proof>
       </goal>
       <goal name="sub_order&#39;vc.0.0.0.1.1" expl="false case" proved="true">
-      <proof prover="6"><result status="valid" time="0.83" steps="1595"/></proof>
+      <proof prover="6"><result status="valid" time="0.83" steps="1601"/></proof>
       </goal>
      </transf>
      </goal>
@@ -154,12 +130,12 @@
  <goal name="Make.pop_occ_1" proved="true">
  <transf name="introduce_premises" proved="true" >
   <goal name="pop_occ_1.0" proved="true">
-  <transf name="assert" proved="true" arg1="(numocc a1 x 0 (length2 (view a2)) = numocc a2 x 0 (length2 (view a2)))">
+  <transf name="assert" proved="true" arg1="(numocc a1 x 0 (length1 (view a2)) = numocc a2 x 0 (length1 (view a2)))">
    <goal name="pop_occ_1.0.0" expl="asserted formula" proved="true">
-   <proof prover="6" timelimit="5"><result status="valid" time="3.65" steps="1600"/></proof>
+   <proof prover="6" timelimit="5"><result status="valid" time="2.26" steps="1600"/></proof>
    </goal>
    <goal name="pop_occ_1.0.1" proved="true">
-   <proof prover="6"><result status="valid" time="0.08" steps="99"/></proof>
+   <proof prover="6"><result status="valid" time="0.13" steps="99"/></proof>
    </goal>
   </transf>
   </goal>
@@ -172,11 +148,7 @@
    <goal name="pop_occ_2.0.0" proved="true">
    <transf name="split_all_full" proved="true" >
     <goal name="pop_occ_2.0.0.0" proved="true">
-    <transf name="remove" proved="true" arg1="real,string,tuple0,unit,ref,map,integer,zero1,one1,min,max,int63&#39;maxInt,int63&#39;minInt,min_int63,max_int63,to_int,in_bounds,max_int,min_int,(!),mem2,eq_bag,empty_bag,union,add,diff,choose,([&lt;-]&#39;&#39;),nth,(++),get1,([]&#39;&#39;),empty,([&lt;-]),to_list,of_list,point_wise,occ_all,exchange,permut_all,array_eq,(/),integer_of_int,is_pre_order,seq_of_list,is_minimum,pop,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_pos,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,max_int&#39;def,min_int&#39;def,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,array&#39;invariant1,Length_nonnegative,Append_assoc,Append_l_nil,Append_length,mem_decomp,empty&#39;def,set&#39;def,([&lt;-])&#39;def,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,occ_cons,occ_snoc,occ_tail,append_num_occ,exchange_set,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,exchange_permut_all,fold_left_ext,fold_left_cons,fold_left_app,fold_right_ext,fold_right_snoc,non_neg_max_array_length,exchange_permut_sub1,exchange_permut_all1,is_pre_order,num_exist,min_coherent,sub_occ_1,sub_occ_2,sub_occ_3,pop_occ_1,(==)&#39;spec1,(==)&#39;spec2,(==)&#39;spec3,create&#39;spec1,set&#39;spec1,set&#39;spec2,singleton&#39;spec1,cons&#39;spec1,cons&#39;spec2,snoc&#39;spec1,snoc&#39;spec2,([..])&#39;spec1,(++)&#39;spec1,(++)&#39;spec2,is_none&#39;spec1,Length_nil1,mem_append2,mem_append3,mem_append4,fold_left&#39;def1,array&#39;invariant2,mem_append5,mem_tail2,sub_order1,sub_order2,sub_order3,sub_order4,sub_order5,sub_order6,sub_order7">
-     <goal name="pop_occ_2.0.0.0.0" proved="true">
-     <proof prover="2"><result status="valid" time="0.07" steps="174946"/></proof>
-     </goal>
-    </transf>
+    <proof prover="1"><result status="valid" time="2.24" steps="449450"/></proof>
     </goal>
    </transf>
    </goal>
@@ -190,16 +162,12 @@
  <goal name="Make.push_occ&#39;vc" expl="VC for push_occ" proved="true">
  <transf name="split_vc" proved="true" >
   <goal name="push_occ&#39;vc.0" expl="postcondition" proved="true">
-  <transf name="assert" proved="true" arg1="(numocc a1 x 0 (length2 (view a1)) = numocc a2 x 0 (length2 (view a2) - 1))">
+  <transf name="assert" proved="true" arg1="(numocc a1 x 0 (length1 (view a1)) = numocc a2 x 0 (length1 (view a2) - 1))">
    <goal name="push_occ&#39;vc.0.0" expl="asserted formula" proved="true">
-   <transf name="remove" proved="true" arg1="ref,map,option,integer,min,max,mod,([&lt;-]&#39;),int63&#39;maxInt,int63&#39;minInt,min_int63,max_int63,in_bounds,max_int,min_int,(!),mem1,eq_bag,empty_bag,singleton,diff,choose,([]&#39;&#39;),([&lt;-]&#39;&#39;),is_nil,is_none,nth,(++),length,get1,(==),empty,([&lt;-]),cons,snoc,([..]),([_..]),([.._]),(++&#39;),to_list,of_list,point_wise,occ_all,exchange,permut,permut_sub,permut_all,max_array_length,elts,array_eq,integer_of_int,is_pre_order,seq_of_list,v,zero,one,int_of_peano,substitution,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_bound,Mod_bound,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,numof&#39;def,Numof_bounds,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_any,numof_change_some,to_int_in_bounds,extensionality,max_int&#39;def,min_int&#39;def,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,array&#39;invariant1,([&lt;-])&#39;spec,is_nil&#39;spec,Length_nonnegative,Length_nil,is_none&#39;spec,Append_assoc,Append_l_nil,Append_length,mem_append,mem_decomp,length_nonnegative,(==)&#39;spec,create&#39;spec,empty&#39;def,set&#39;spec,set&#39;def,([&lt;-])&#39;def,singleton&#39;spec,cons&#39;spec,snoc&#39;spec,([..])&#39;spec,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,(++)&#39;spec,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,mem_append1,mem_tail,occ_cons,occ_snoc,occ_tail,append_num_occ,exchange_set,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,permut_exists,permut_all_mem,exchange_permut_all,fold_left&#39;def,fold_left_ext,fold_left_cons,fold_left_app,fold_right&#39;def,fold_right_ext,fold_right_snoc,non_neg_max_array_length,array&#39;invariant,permut_sub_weakening,exchange_permut_sub1,exchange_permut_all1,zero&#39;def,one&#39;def,t&#39;invariant,t&#39;invariant1,num_exist,min_coherent,sub_occ_1,sub_occ_2,sub_occ_3,sub_order,pop_occ_1,pop_occ_2,pop_order,H">
-    <goal name="push_occ&#39;vc.0.0.0" expl="asserted formula" proved="true">
-    <proof prover="2" timelimit="5"><result status="valid" time="0.04" steps="62270"/></proof>
-    </goal>
-   </transf>
+   <proof prover="6" timelimit="5"><result status="valid" time="2.43" steps="1539"/></proof>
    </goal>
    <goal name="push_occ&#39;vc.0.1" expl="postcondition" proved="true">
-   <proof prover="6"><result status="valid" time="0.11" steps="100"/></proof>
+   <proof prover="6"><result status="valid" time="0.18" steps="100"/></proof>
    </goal>
   </transf>
   </goal>
@@ -219,7 +187,7 @@
   <goal name="ancestor&#39;vc.0" expl="VC for ancestor" proved="true">
   <transf name="split_vc" proved="true" >
    <goal name="ancestor&#39;vc.0.0" expl="postcondition" proved="true">
-   <proof prover="6"><result status="valid" time="0.21" steps="551"/></proof>
+   <proof prover="6"><result status="valid" time="0.38" steps="551"/></proof>
    </goal>
   </transf>
   </goal>
@@ -304,7 +272,7 @@
   <proof prover="6"><result status="valid" time="0.04" steps="34"/></proof>
   </goal>
   <goal name="move_down&#39;vc.17" expl="assertion" proved="true">
-  <proof prover="2"><result status="valid" time="0.10" steps="186184"/></proof>
+  <proof prover="2"><result status="valid" time="0.10" steps="209793"/></proof>
   </goal>
   <goal name="move_down&#39;vc.18" expl="precondition" proved="true">
   <proof prover="6"><result status="valid" time="0.04" steps="40"/></proof>
@@ -313,22 +281,13 @@
   <proof prover="6"><result status="valid" time="0.05" steps="40"/></proof>
   </goal>
   <goal name="move_down&#39;vc.20" expl="precondition" proved="true">
-  <proof prover="6" timelimit="5"><result status="valid" time="2.74" steps="2760"/></proof>
-  <transf name="remove" proved="true" arg1="integer,elt,min,max,int63&#39;maxInt,int63&#39;minInt,in_bounds,(!),eq_bag,empty_bag,singleton1,union,add,diff,choose,nth,([]&#39;&#39;),snoc,to_list,of_list,point_wise,exchange,permut,permut_sub,permut_all,fold_right,seq_of_list,v,zero,one,int_of_peano,pop,push,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_bound,Mod_bound,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,numof&#39;def,Numof_bounds,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_any,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,is_nil&#39;spec,Length_nil,Append_assoc,Append_length,mem_append,mem_decomp,length_nonnegative,create&#39;spec,empty&#39;def,set&#39;spec,set&#39;def,snoc&#39;spec,([..])&#39;spec,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,occ_snoc,append_num_occ,exchange_set,exchange_permut_sub,Permut_sub_weakening,permut_sym,permut_trans,permut_all_mem,exchange_permut_all,fold_left&#39;def,fold_left_ext,fold_left_cons,fold_left_app,fold_right&#39;def,fold_right_ext,fold_right_snoc,permut_sub_weakening,exchange_permut_all1,zero&#39;def,one&#39;def,t&#39;invariant,sub_occ_1,sub_occ_2,sub_occ_3,sub_order,pop_occ_1,pop_occ_2,pop_order,same_occ">
-   <goal name="move_down&#39;vc.20.0" expl="precondition" proved="true">
-   <proof prover="6"><result status="valid" time="0.25" steps="396"/></proof>
-   </goal>
-  </transf>
+  <proof prover="6" timelimit="5"><result status="valid" time="3.50" steps="2261"/></proof>
   </goal>
   <goal name="move_down&#39;vc.21" expl="precondition" proved="true">
-  <transf name="remove" proved="true" arg1="map,integer,elt,min,max,int63&#39;maxInt,int63&#39;minInt,min_int63,in_bounds,(!),eq_bag,empty_bag,singleton1,union,add,diff,choose,get1,([]&#39;&#39;),permut_sub,permut_all,fold_left,fold_right,array_eq,(/),seq_of_list,int_of_peano,minimum,pop,push,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_mod,Div_bound,Mod_bound,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,numof&#39;def,Numof_bounds,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_any,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,min_int&#39;def,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,snoc&#39;spec,mem_append1,mem_tail,exchange_permut_sub,Permut_sub_weakening,permut_sym,permut_exists,permut_all_mem,exchange_permut_all,fold_left&#39;def,fold_left_ext,fold_left_cons,fold_left_app,fold_right&#39;def,fold_right_ext,fold_right_snoc,non_neg_max_array_length,permut_sub_weakening,exchange_permut_sub1,exchange_permut_all1,t&#39;invariant1,min_def,num_exist,min_coherent,sub_occ_1,sub_occ_2,sub_occ_3,sub_order,pop_occ_1,pop_occ_2,pop_order,same_occ">
-   <goal name="move_down&#39;vc.21.0" expl="precondition" proved="true">
-   <proof prover="6"><result status="valid" time="0.47" steps="834"/></proof>
-   </goal>
-  </transf>
+  <proof prover="6" timelimit="40"><result status="valid" time="1.30" steps="2023"/></proof>
   </goal>
   <goal name="move_down&#39;vc.22" expl="precondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.44" steps="619"/></proof>
+  <proof prover="6"><result status="valid" time="0.44" steps="621"/></proof>
   </goal>
   <goal name="move_down&#39;vc.23" expl="assertion" proved="true">
   <transf name="split_all_full" proved="true" >
@@ -357,11 +316,7 @@
   </transf>
   </goal>
   <goal name="move_down&#39;vc.29" expl="postcondition" proved="true">
-  <transf name="remove" proved="true" arg1="real,string,tuple0,unit,ref,map,option,integer,zero1,one1,min,max,([&lt;-]&#39;),(!),empty_bag,diff,choose,elts1,([]&#39;),([&lt;-]&#39;&#39;),make,length,is_none,nth,get1,([]&#39;&#39;),singleton,([.._]),to_list,of_list,point_wise,fold_left,fold_right,(/),seq_of_list,one,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,Abs_le,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,div2,Div_sign_pos,Div_1,Mod_1,Div_mult,Mod_mult,Numof_bounds,Numof_append,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_some,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,array&#39;invariant1,([&lt;-])&#39;spec,make&#39;spec,Length_nonnegative,Length_nil,is_none&#39;spec,Append_assoc,Append_l_nil,Append_length,mem_append,mem_decomp,(==)&#39;spec,empty&#39;def,set&#39;spec,([&lt;-])&#39;def,singleton&#39;spec,cons&#39;spec,snoc&#39;spec,([..])&#39;spec,([_..])&#39;def,([.._])&#39;def,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,Permut_sub_weakening,permut_refl,permut_sym,fold_left&#39;def,fold_left_ext,fold_left_cons,fold_left_app,fold_right&#39;def,fold_right_ext,fold_right_snoc,array&#39;invariant,one&#39;def,min_def,sub_occ_3,sub_order,pop_occ_1,pop_occ_2,same_occ">
-   <goal name="move_down&#39;vc.29.0" expl="postcondition" proved="true">
-   <proof prover="2"><result status="valid" time="0.47" steps="845575"/></proof>
-   </goal>
-  </transf>
+  <proof prover="1" timelimit="50"><result status="valid" time="1.48" steps="102503"/></proof>
   </goal>
   <goal name="move_down&#39;vc.30" expl="postcondition" proved="true">
   <transf name="split_vc" proved="true" >
@@ -408,12 +363,12 @@
   <goal name="move_down&#39;vc.37" expl="precondition" proved="true">
   <transf name="split_all_full" proved="true" >
    <goal name="move_down&#39;vc.37.0" expl="precondition" proved="true">
-   <proof prover="6"><result status="valid" time="0.38" steps="609"/></proof>
+   <proof prover="6"><result status="valid" time="1.15" steps="1294"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="move_down&#39;vc.38" expl="precondition" proved="true">
-  <proof prover="6"><result status="valid" time="1.28" steps="1148"/></proof>
+  <proof prover="6"><result status="valid" time="1.28" steps="1043"/></proof>
   </goal>
   <goal name="move_down&#39;vc.39" expl="postcondition" proved="true">
   <transf name="instantiate" proved="true" arg1="sub_order" arg2="a1,a,i">
@@ -423,22 +378,22 @@
   </transf>
   </goal>
   <goal name="move_down&#39;vc.40" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.09" steps="66"/></proof>
+  <proof prover="6"><result status="valid" time="0.09" steps="62"/></proof>
   </goal>
   <goal name="move_down&#39;vc.41" expl="postcondition" proved="true">
   <transf name="split_vc" proved="true" >
    <goal name="move_down&#39;vc.41.0" expl="postcondition" proved="true">
-   <proof prover="6"><result status="valid" time="0.10" steps="64"/></proof>
+   <proof prover="6"><result status="valid" time="0.10" steps="60"/></proof>
    </goal>
    <goal name="move_down&#39;vc.41.1" expl="postcondition" proved="true">
    <transf name="split_all_full" proved="true" >
     <goal name="move_down&#39;vc.41.1.0" expl="postcondition" proved="true">
-    <proof prover="2"><result status="valid" time="0.08" steps="227221"/></proof>
+    <proof prover="2"><result status="valid" time="0.08" steps="259546"/></proof>
     </goal>
    </transf>
    </goal>
    <goal name="move_down&#39;vc.41.2" expl="postcondition" proved="true">
-   <proof prover="6"><result status="valid" time="0.09" steps="64"/></proof>
+   <proof prover="6"><result status="valid" time="0.09" steps="60"/></proof>
    </goal>
   </transf>
   </goal>
@@ -548,7 +503,7 @@
   <proof prover="6"><result status="valid" time="0.05" steps="34"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.15" expl="postcondition" proved="true">
-  <proof prover="2"><result status="valid" time="0.34" steps="476187"/></proof>
+  <proof prover="2"><result status="valid" time="0.34" steps="504956"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.16" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.05" steps="22"/></proof>
@@ -716,11 +671,8 @@
   <proof prover="6"><result status="valid" time="0.03" steps="44"/></proof>
   </goal>
   <goal name="move_up&#39;vc.34" expl="postcondition" proved="true">
-  <transf name="remove" proved="true" arg1="map,integer,elt,(!),([&lt;-]&#39;&#39;),get1,([]&#39;&#39;),to_list,of_list,point_wise,occ_all,exchange,permut,permut_sub,permut_all,fold_left,fold_right,array_eq,(/),is_pre_order,seq_of_list,one,int_of_peano,div2,Div_mod,Mod_bound,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,numof&#39;def,Numof_bounds,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_any,numof_change_some,numof_change_equiv,occ_singleton,bag_simpl_left,Append_l_nil,Append_length,mem_append,mem_decomp,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,mem_tail,occ_cons,occ_snoc,occ_tail,append_num_occ,exchange_set,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,permut_exists,exchange_permut_all,fold_left&#39;def,fold_left_ext,fold_left_cons,fold_left_app,fold_right&#39;def,fold_right_ext,fold_right_snoc,permut_sub_weakening,exchange_permut_sub1,exchange_permut_all1,one&#39;def,t&#39;invariant,is_pre_order,t&#39;invariant1,sub_occ_3,same_occ,Requires,Requires1,Ensures,Ensures1,Ensures9,Ensures10,Ensures11,Ensures14,Ensures15,H7,H8">
-   <goal name="move_up&#39;vc.34.0" expl="postcondition" proved="true">
-   <proof prover="6"><result status="valid" time="0.91" steps="1650"/></proof>
-   </goal>
-  </transf>
+  <proof prover="1"><result status="valid" time="0.73" steps="115064"/></proof>
+  <proof prover="6" timelimit="50"><result status="valid" time="32.84" steps="3900"/></proof>
   </goal>
   <goal name="move_up&#39;vc.35" expl="postcondition" proved="true">
   <proof prover="6"><result status="valid" time="0.29" steps="601"/></proof>
@@ -747,7 +699,7 @@
   <proof prover="6"><result status="valid" time="0.11" steps="251"/></proof>
   </goal>
   <goal name="move_up&#39;vc.43" expl="precondition" proved="true">
-  <proof prover="6" timelimit="16"><result status="valid" time="0.10" steps="251"/></proof>
+  <proof prover="6" timelimit="16"><result status="valid" time="0.21" steps="251"/></proof>
   </goal>
   <goal name="move_up&#39;vc.44" expl="postcondition" proved="true">
   <proof prover="6"><result status="valid" time="0.02" steps="38"/></proof>
@@ -756,7 +708,7 @@
   <proof prover="6"><result status="valid" time="0.05" steps="48"/></proof>
   </goal>
   <goal name="move_up&#39;vc.46" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.70" steps="1021"/></proof>
+  <proof prover="6"><result status="valid" time="0.91" steps="1021"/></proof>
   </goal>
   <goal name="move_up&#39;vc.47" expl="postcondition" proved="true">
   <proof prover="6"><result status="valid" time="0.03" steps="40"/></proof>

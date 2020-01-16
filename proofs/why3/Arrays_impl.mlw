@@ -12,7 +12,7 @@
 
 module Impl
 
-  use gospel.Gospel
+  use gospel.Stdlib
   use int.Int
   use mach.int.Refint63
   use mach.int.Int63
@@ -20,7 +20,6 @@ module Impl
   use seq.Occ
   use mach.array.Array63
   use ocaml.Pervasives
-  (* import Order *)
 
   let rec binary_search (cmp: 'a -> 'a -> int63)
                         (a: array 'a) (fromi toi: int63) (v: 'a) : int63

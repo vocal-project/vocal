@@ -23,7 +23,7 @@ module Impl
   use option.Option
   use option.Option
   use ocaml.Pervasives
-  use gospel.Gospel
+  use gospel.Stdlib
 
   use ocaml.Sys
 
@@ -221,14 +221,17 @@ module Impl
                  else
                    numocc' a x = numocc' (old a) x + 1 /\
                    numocc' a o = numocc' (old a) o - 1 }
-      ensures  { length a.view = length (old a).view } (* Needed for delete min *)
+      ensures  { length a.view = length (old a).view }
+      (* Needed for delete_min *)
       variant  { length a.view - i }
     = let n = V.length a in
       let q = if n=1 then -1 else (n-2)/2 in
       if i <= q then begin (* 2i+1 exists *)
         let j =
           let j = 2 * i + 1 in
-          if j + 1 < n && X.compare (V.get a (j+1)) (V.get a j) < 0 then j+1 else j in
+          if j + 1 < n && X.compare (V.get a (j+1)) (V.get a j) < 0 then
+            j+1
+          else j in
         ancestor a (to_int i);
         children a (to_int i);
         let olda = pure {a} in

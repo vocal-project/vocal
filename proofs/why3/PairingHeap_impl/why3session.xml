@@ -16,73 +16,73 @@
  </transf>
  </goal>
  <goal name="Make.size_heap_nonneg&#39;vc" expl="VC for size_heap_nonneg" proved="true">
- <proof prover="3"><result status="valid" time="0.14" steps="23441"/></proof>
+ <proof prover="3"><result status="valid" time="0.14" steps="36256"/></proof>
  </goal>
  <goal name="Make.size_heap_list_nonneg&#39;vc" expl="VC for size_heap_list_nonneg" proved="true">
- <proof prover="3"><result status="valid" time="0.21" steps="39477"/></proof>
+ <proof prover="3"><result status="valid" time="0.41" steps="52797"/></proof>
  </goal>
  <goal name="Make.size_empty&#39;vc" expl="VC for size_empty" proved="true">
- <proof prover="3"><result status="valid" time="0.14" steps="22286"/></proof>
+ <proof prover="3"><result status="valid" time="0.14" steps="35099"/></proof>
  </goal>
  <goal name="Make.occ_heap_nonneg&#39;vc" expl="VC for occ_heap_nonneg" proved="true">
- <proof prover="3"><result status="valid" time="0.13" steps="24156"/></proof>
+ <proof prover="3"><result status="valid" time="0.27" steps="36973"/></proof>
  </goal>
  <goal name="Make.occ_heap_list_nonneg&#39;vc" expl="VC for occ_heap_list_nonneg" proved="true">
- <proof prover="3"><result status="valid" time="0.25" steps="40032"/></proof>
+ <proof prover="3"><result status="valid" time="0.41" steps="53352"/></proof>
  </goal>
  <goal name="Make.mem_heap&#39;vc" expl="VC for mem_heap" proved="true">
- <proof prover="3"><result status="valid" time="0.54" steps="57672"/></proof>
+ <proof prover="3"><result status="valid" time="0.77" steps="72909"/></proof>
  </goal>
  <goal name="Make.mem_heap_list&#39;vc" expl="VC for mem_heap_list" proved="true">
- <proof prover="3"><result status="valid" time="0.56" steps="64836"/></proof>
+ <proof prover="3"><result status="valid" time="0.78" steps="81692"/></proof>
  </goal>
  <goal name="Make.root_is_minimum_heap&#39;vc" expl="VC for root_is_minimum_heap" proved="true">
  <proof prover="0"><result status="valid" time="0.06" steps="308"/></proof>
  </goal>
  <goal name="Make.heap&#39;vc" expl="VC for heap" proved="true">
- <proof prover="3"><result status="valid" time="0.19" steps="25740"/></proof>
+ <proof prover="3"><result status="valid" time="0.19" steps="38635"/></proof>
  </goal>
  <goal name="Make.size_nonneg" proved="true">
- <proof prover="3"><result status="valid" time="0.16" steps="24159"/></proof>
+ <proof prover="3"><result status="valid" time="0.16" steps="36974"/></proof>
  </goal>
  <goal name="Make.le_root_heap_trans" proved="true">
  <proof prover="0"><result status="valid" time="0.12" steps="182"/></proof>
  </goal>
  <goal name="Make.le_root_trans" proved="true">
- <proof prover="3"><result status="valid" time="0.17" steps="23773"/></proof>
+ <proof prover="3"><result status="valid" time="0.17" steps="36586"/></proof>
  </goal>
  <goal name="Make.occ_nonneg" proved="true">
- <proof prover="3"><result status="valid" time="0.17" steps="24429"/></proof>
+ <proof prover="3"><result status="valid" time="0.17" steps="37244"/></proof>
  </goal>
  <goal name="Make.mem_t" proved="true">
- <proof prover="3"><result status="valid" time="0.16" steps="28229"/></proof>
+ <proof prover="3"><result status="valid" time="0.30" steps="41107"/></proof>
  </goal>
  <goal name="Make.root_is_minimum" proved="true">
- <proof prover="3"><result status="valid" time="0.16" steps="24350"/></proof>
+ <proof prover="3"><result status="valid" time="0.16" steps="37163"/></proof>
  </goal>
  <goal name="Make.empty&#39;vc" expl="VC for empty" proved="true">
- <proof prover="3"><result status="valid" time="0.20" steps="27271"/></proof>
+ <proof prover="3"><result status="valid" time="0.20" steps="40149"/></proof>
  </goal>
  <goal name="Make.is_empty&#39;vc" expl="VC for is_empty" proved="true">
- <proof prover="3"><result status="valid" time="0.15" steps="23377"/></proof>
+ <proof prover="3"><result status="valid" time="0.15" steps="35424"/></proof>
  </goal>
  <goal name="Make.find_min&#39;vc" expl="VC for find_min" proved="true">
- <proof prover="3"><result status="valid" time="0.17" steps="24856"/></proof>
+ <proof prover="3"><result status="valid" time="0.17" steps="37671"/></proof>
  </goal>
  <goal name="Make.merge_heap&#39;vc" expl="VC for merge_heap" proved="true">
- <proof prover="3"><result status="valid" time="0.62" steps="71923"/></proof>
+ <proof prover="3"><result status="valid" time="0.85" steps="89722"/></proof>
  </goal>
  <goal name="Make.merge&#39;vc" expl="VC for merge" proved="true">
- <proof prover="3"><result status="valid" time="0.27" steps="31388"/></proof>
+ <proof prover="3"><result status="valid" time="0.27" steps="44209"/></proof>
  </goal>
  <goal name="Make.insert&#39;vc" expl="VC for insert" proved="true">
  <proof prover="0"><result status="valid" time="0.29" steps="1260"/></proof>
  </goal>
  <goal name="Make.merge_pairs_heap&#39;vc" expl="VC for merge_pairs_heap" proved="true">
- <proof prover="3"><result status="valid" time="0.81" steps="95554"/></proof>
+ <proof prover="3"><result status="valid" time="1.07" steps="117393"/></proof>
  </goal>
  <goal name="Make.delete_min&#39;vc" expl="VC for delete_min" proved="true">
- <proof prover="3"><result status="valid" time="0.87" steps="74691"/></proof>
+ <proof prover="3"><result status="valid" time="1.06" steps="89584"/></proof>
  </goal>
 </theory>
 <theory name="Correct" proved="true">
@@ -112,7 +112,7 @@
    <proof prover="0"><result status="valid" time="0.04" steps="112"/></proof>
    </goal>
    <goal name="min_def.0.1" proved="true">
-   <proof prover="1"><result status="valid" time="0.08" steps="152407"/></proof>
+   <proof prover="1"><result status="valid" time="0.08" steps="209912"/></proof>
    </goal>
   </transf>
   </goal>
@@ -252,7 +252,7 @@
    </transf>
    </goal>
    <goal name="min3&#39;vc.2.2" expl="postcondition" proved="true">
-   <proof prover="1"><result status="valid" time="0.09" steps="137664"/></proof>
+   <proof prover="1"><result status="valid" time="0.09" steps="195424"/></proof>
    </goal>
   </transf>
   </goal>
@@ -294,7 +294,7 @@
     <proof prover="0"><result status="valid" time="0.05" steps="121"/></proof>
     </goal>
     <goal name="min_def.0.0.1" proved="true">
-    <proof prover="1"><result status="valid" time="0.08" steps="160783"/></proof>
+    <proof prover="1"><result status="valid" time="0.08" steps="218071"/></proof>
     </goal>
    </transf>
    </goal>

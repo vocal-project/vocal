@@ -293,15 +293,15 @@ end
    The implementation above (Impl) refines the interface contained in
    file ../../src/UnionFind.mli (and loaded below as UnionFind.Sig)
 *)
-(* module Correct *)
+module Correct
 
-(*   use set.Fset, Mem, Impl *)
+  use set.Fset, Mem, Impl
 
-(*   lemma union_singleton_add: forall s: fset 'a, x: 'a. *)
-(*     union s (singleton x) == add x s *)
+  lemma union_singleton_add: forall s: fset 'a, x: 'a.
+    union s (singleton x) == add x s
 
-(*   clone UnionFind.Sig with *)
-(*     type elem, type uf, *)
-(*     val  make, val  find, val eq, val get, val set, val union *)
+  clone UnionFind.Sig with
+    type elem, type uf,
+    val  make, val  find, val eq, val get, val set, val union
 
-(* end *)
+end

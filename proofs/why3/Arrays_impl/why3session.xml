@@ -3,7 +3,6 @@
 "http://why3.lri.fr/why3session.dtd">
 <why3session shape_version="8">
 <prover id="0" name="Alt-Ergo" version="2.3.0" timelimit="5" steplimit="0" memlimit="1000"/>
-<prover id="1" name="Z3" version="4.8.6" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="5" name="CVC4" version="1.5" timelimit="60" steplimit="0" memlimit="1000"/>
 <file format="whyml" proved="true">
 <path name=".."/><path name="Arrays_impl.mlw"/>
@@ -126,7 +125,7 @@
   <proof prover="0"><result status="valid" time="0.04" steps="23"/></proof>
   </goal>
   <goal name="binary_search_left&#39;vc.16" expl="postcondition" proved="true">
-  <proof prover="0" timelimit="1"><result status="valid" time="0.94" steps="1011"/></proof>
+  <proof prover="0" timelimit="1"><result status="valid" time="1.88" steps="1011"/></proof>
   </goal>
   <goal name="binary_search_left&#39;vc.17" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.32" steps="298"/></proof>
@@ -202,7 +201,7 @@
   <goal name="permut_rot&#39;vc.1" expl="loop invariant preservation" proved="true">
   <transf name="split_all_full" proved="true" >
    <goal name="permut_rot&#39;vc.1.0" expl="loop invariant preservation" proved="true">
-   <proof prover="5" timelimit="5"><result status="valid" time="3.33" steps="309801"/></proof>
+   <proof prover="5" timelimit="5"><result status="valid" time="3.33" steps="303476"/></proof>
    </goal>
   </transf>
   </goal>
@@ -278,25 +277,21 @@
     <proof prover="0"><result status="valid" time="0.13" steps="60"/></proof>
     </goal>
     <goal name="binary_sort&#39;vc.17.0.1" expl="precondition" proved="true">
-    <proof prover="0"><result status="valid" time="0.10" steps="319"/></proof>
+    <proof prover="0"><result status="valid" time="0.10" steps="318"/></proof>
     </goal>
    </transf>
    </goal>
   </transf>
   </goal>
   <goal name="binary_sort&#39;vc.18" expl="precondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.24" steps="673"/></proof>
+  <proof prover="0"><result status="valid" time="0.24" steps="672"/></proof>
   </goal>
   <goal name="binary_sort&#39;vc.19" expl="loop invariant preservation" proved="true">
   <transf name="split_vc" proved="true" >
    <goal name="binary_sort&#39;vc.19.0" expl="loop invariant preservation" proved="true">
    <transf name="case" proved="true" arg1="(j = k)">
     <goal name="binary_sort&#39;vc.19.0.0" expl="true case (loop invariant preservation)" proved="true">
-    <transf name="remove" proved="true" arg1="real,string,tuple0,unit,ref,option,integer,bag,zero1,( * ),(&gt;=),abs,min,max,div,mod,int63&#39;maxInt,int63&#39;minInt,min_int63,max_int63,to_int,in_bounds,max_int,min_int,(!),max_array_length,is_none,(==),empty,singleton,cons,snoc,([..]),([_..]),([.._]),(++),is_nil,mem,nth,to_list,of_list,point_wise,occ_all,exchange,permut_all,fold_left,fold_right,array_eq,(/),integer_of_int,nb_occ,mem2,eq_bag,empty_bag,singleton1,union,add,card,diff,choose,seq_of_list,zero,one,int_of_peano,o2,o4,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_pos,Min_r,Max_l,Min_comm,Max_comm,Min_assoc,Max_assoc,Div_mod,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_any,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,max_int&#39;def,min_int&#39;def,non_neg_max_array_length,length_nonnegative,empty&#39;def,set&#39;def,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,Length_nonnegative,Append_assoc,Append_l_nil,Append_length,mem_decomp,to_list_empty,to_list_cons,to_list_length,to_list_nth,to_list_def_cons,length_of_list,elts_seq_of_list,is_of_list,of_list_app,of_list_app_length,of_list_snoc,convolution_to_of_list,occ_cons,occ_snoc,occ_tail,append_num_occ,exchange_set,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,permut_exists,exchange_permut_all,fold_left_ext,fold_left_cons,fold_left_app,fold_right_ext,fold_right_snoc,permut_sub_weakening,exchange_permut_sub1,exchange_permut_all1,occ_non_negative,bag_extensionality,occ_empty,is_empty,occ_singleton_eq,occ_singleton_neq,occ_union,Union_comm,Union_identity,Union_assoc,bag_simpl_right,bag_simpl_left,occ_add_eq,occ_add_neq,Card_nonneg,Card_empty,Card_zero_empty,Card_singleton,Card_union,Card_add,Diff_occ,Diff_empty_right,Diff_empty_left,Diff_add,Diff_comm,Add_diff,choose_mem,zero&#39;def,one&#39;def,permut_rot,Abs_le,Abs_le1,Abs_le2,Div_bound,Div_bound1,Mod_bound,Mod_bound1,occ_singleton,occ_singleton1,occ_singleton2,occ_singleton3,is_nil&#39;spec,is_nil&#39;spec1,(==)&#39;spec,(==)&#39;spec1,(==)&#39;spec2,(==)&#39;spec3,create&#39;spec,create&#39;spec1,set&#39;spec2,singleton&#39;spec,singleton&#39;spec1,cons&#39;spec,cons&#39;spec1,cons&#39;spec2,snoc&#39;spec,snoc&#39;spec1,snoc&#39;spec2,([..])&#39;spec,([..])&#39;spec1,(++)&#39;spec,(++)&#39;spec1,(++)&#39;spec2,is_none&#39;spec,is_none&#39;spec1,Length_nil,Length_nil1,mem_append,mem_append1,mem_append2,fold_left&#39;def,fold_left&#39;def1,fold_right&#39;def,fold_right&#39;def1,array&#39;invariant1,numof&#39;def,numof&#39;def1,numof&#39;def2,Numof_bounds,Numof_bounds1,mem_append3,mem_append4,mem_append5,mem_tail,mem_tail1,mem_tail2,permut_all_mem,permut_all_mem1,H,H3,LoopInvariant,H8,Ensures3,H10,Ensures8,H11,Ensures10">
-     <goal name="binary_sort&#39;vc.19.0.0.0" expl="true case (loop invariant preservation)" proved="true">
-     <proof prover="1"><result status="valid" time="0.04" steps="94837"/></proof>
-     </goal>
-    </transf>
+    <proof prover="5" timelimit="50"><result status="valid" time="4.72" steps="764748"/></proof>
     </goal>
     <goal name="binary_sort&#39;vc.19.0.1" expl="false case (loop invariant preservation)" proved="true">
     <transf name="case" proved="true" arg1="(j &lt; mid)">
@@ -306,12 +301,12 @@
      <goal name="binary_sort&#39;vc.19.0.1.1" expl="false case (loop invariant preservation)" proved="true">
      <transf name="case" proved="true" arg1="(j = mid)">
       <goal name="binary_sort&#39;vc.19.0.1.1.0" expl="false case (true case. loop invariant preservation)" proved="true">
-      <proof prover="0"><result status="valid" time="2.26" steps="4607"/></proof>
+      <proof prover="0"><result status="valid" time="0.36" steps="585"/></proof>
       </goal>
       <goal name="binary_sort&#39;vc.19.0.1.1.1" expl="false case (loop invariant preservation)" proved="true">
       <transf name="case" proved="true" arg1="(i &lt; mid)">
        <goal name="binary_sort&#39;vc.19.0.1.1.1.0" expl="false case (true case. loop invariant preservation)" proved="true">
-       <proof prover="0"><result status="valid" time="3.37" steps="7044"/></proof>
+       <proof prover="0"><result status="valid" time="3.37" steps="7858"/></proof>
        </goal>
        <goal name="binary_sort&#39;vc.19.0.1.1.1.1" expl="false case (loop invariant preservation)" proved="true">
        <transf name="case" proved="true" arg1="(i = mid)">
@@ -319,7 +314,7 @@
         <proof prover="0" timelimit="1"><result status="valid" time="0.40" steps="572"/></proof>
         </goal>
         <goal name="binary_sort&#39;vc.19.0.1.1.1.1.1" expl="false case (loop invariant preservation)" proved="true">
-        <proof prover="0"><result status="valid" time="2.83" steps="8811"/></proof>
+        <proof prover="0"><result status="valid" time="3.81" steps="7343"/></proof>
         </goal>
        </transf>
        </goal>
@@ -334,7 +329,7 @@
   </transf>
   </goal>
   <goal name="binary_sort&#39;vc.20" expl="loop invariant preservation" proved="true">
-  <proof prover="5"><result status="valid" time="14.87" steps="2693908"/></proof>
+  <proof prover="5"><result status="valid" time="14.87" steps="2207768"/></proof>
   </goal>
   <goal name="binary_sort&#39;vc.21" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.06" steps="39"/></proof>
