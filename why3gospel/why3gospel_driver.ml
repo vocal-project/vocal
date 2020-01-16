@@ -19,6 +19,8 @@ let () = List.iter (fun (x, y) -> Hstr.add driver x y)
     Ty.[
       ts_integer.ts_ident.I.id_str, "int";
       "int", "int63";
+      "mixfix {}", "empty";
+      "mixfix {:_:}", "singleton";
     ]
 
 let query_syntax str =

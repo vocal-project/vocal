@@ -36,7 +36,7 @@ module I = Gospel.Longident
 module T = Gospel.Tast
 
 let extra_use ?(import=false) s =
-  use (Qident (mk_id s)) ~import
+  use ~import:true (Qdot (Qident (mk_id "gospel"), mk_id s))
 
 let use_array loc =
   use ~import:true (Qdot (Qident (mk_id ~loc "array"), mk_id ~loc "Array"))
@@ -56,6 +56,8 @@ module Ut = Gospel.Uast
 
 (* extract additional uses and vals from file.mli.why3, if any *)
 let extract_use sig_item = match sig_item.Ut.sdesc with
+  | Ut.Sig_ghost_open {popen_lid = {txt = Lident s}} when s = "Gospelstdlib" ->
+      None
   | Ut.Sig_ghost_open {popen_lid = {txt = Lident s}; popen_loc} ->
       Some s
   | _ -> None
@@ -111,25 +113,17 @@ let filter_equiv =
   List.fold_left mk_equiv []
 *)
 
-let use_gospel =
-  let gospel = Qdot (Qident (mk_id "gospel"), mk_id "Gospel") in
+let use_std_lib =
   let int63 = Qdot (Qdot (Qident (mk_id "mach"), mk_id "int"), mk_id "Int63") in
   let array =
     Qdot (Qdot (Qident (mk_id "mach"), mk_id "array"), mk_id "Array63") in
-  let seq = Qdot (Qident (mk_id "seq"), mk_id "Seq") in
-  let peano =
-    Qdot (Qdot (Qident (mk_id "mach"), mk_id "peano"), mk_id "Peano") in
-  let use_gospel = Duseimport (Loc.dummy_position, false, [gospel, None]) in
   let use_int63 = Duseimport (Loc.dummy_position, false, [int63, None]) in
   let use_array = Duseimport (Loc.dummy_position, false, [array, None]) in
-  let use_seq = Duseimport (Loc.dummy_position, false, [seq, None]) in
-  let use_peano = Duseimport (Loc.dummy_position, false, [peano, None]) in
-  [Gdecl use_gospel; Gdecl use_int63; Gdecl use_array;
-   Gdecl use_seq;    Gdecl use_peano]
+  [Gdecl use_int63; Gdecl use_array;]
 
 let read_channel env path file c =
   if !debug then eprintf "reading file '%s'@." file;
-  let _extra_uses, extra_vals = read_extra_file file in
+  let extra_uses, extra_vals = read_extra_file file in
   let nm =
     let f = Filename.basename file in
     String.capitalize_ascii (Filename.chop_extension f) in
@@ -141,13 +135,14 @@ let read_channel env path file c =
   let id = mk_id "Sig" in
   open_module id;
   use_array id.id_loc;
+  List.iter extra_use extra_uses;
   let rec add_decl = function
     | Gdecl d -> Typing.add_decl Loc.dummy_position d;
     | Gmodule (loc, id, dl) ->
        Typing.open_scope id.id_loc id;
        List.iter add_decl dl;
        Typing.close_scope ~import:true loc in
-  let f = use_gospel @ List.flatten f in
+  let f = use_std_lib @ List.flatten f in
   (* For debugging only: *)
   let rec pp_list pp fmt l = match l with
     | [] -> ()
