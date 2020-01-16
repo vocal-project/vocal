@@ -25,12 +25,12 @@ let dummy_loc = Loc.dummy_position
 
 let map_opt_default f d = function None -> d | Some x -> f x
 
-let mk_id ?(id_loc=Loc.dummy_position) id_str =
+let mk_id ?(id_ats=[]) ?(id_loc=Loc.dummy_position) id_str =
   let id_str = match id_str with
     | "mixfix [_]" -> "mixfix []"
     (* FIXME: many other cases; see src/core/ident.ml in Why3 sources *)
     | _ -> id_str in
-  { id_str; id_ats = []; id_loc }
+  { id_str; id_ats; id_loc }
 
 let mk_field ~mut:f_mutable ~ghost:f_ghost f_loc f_ident f_pty  =
   { f_loc; f_ident; f_pty; f_mutable; f_ghost }
@@ -202,7 +202,7 @@ let mk_logic_decl ld_loc ld_ident ld_params ld_type ld_def =
 let loc_of_vs vs = Term.(location vs.Tt.vs_name.I.id_loc)
 
 let ident_of_lb_arg lb = Term.ident_of_vsymbol (T.vs_of_lb_arg lb)
-let loc_of_lb_arg lb = loc_of_vs (T.vs_of_lb_arg lb)
+let loc_of_lb_arg   lb = loc_of_vs (T.vs_of_lb_arg lb)
 
 (** Given the result type [sp_ret] of a function and a GOSPEL postcondition
     [post] (represented as a [term]), convert it into a Why3's Ptree
@@ -328,16 +328,18 @@ let val_decl vd g =
         | _ -> flat_ptyp_arrow t1 @ flat_ptyp_arrow t2 end
     | _ -> assert false (* TODO *) in
   let mk_single_param lb_arg ct =
+    let add_at_id at id = { id with id_ats = ATstr at :: id.id_ats } in
     let id_loc = (location (T.vs_of_lb_arg lb_arg).vs_name.I.id_loc) in
     let pty = core_type ct in
-    let id = Some (ident_of_lb_arg lb_arg) in
-    let ghost, pty = match lb_arg with
-      | Lnone vs | Lnamed vs -> false, pty
-      | Lquestion vs -> false, PTtyapp (Qident (mk_id "option" ~id_loc), [pty])
-      | Lghost vs    -> true,  pty in
-    id_loc, id, ghost, pty in
-  let mk_ghost_param lb =
-    match lb with
+    let id = ident_of_lb_arg lb_arg in
+    let id, ghost, pty = match lb_arg with
+      | Lnone vs  -> id, false, pty
+      | Lghost vs -> id, true,  pty
+      | Lnamed vs -> add_at_id Ocaml.Print.named_arg id, false, pty
+      | Lquestion vs -> let id = add_at_id Ocaml.Print.optional_arg id in
+          id, false, PTtyapp (Qident (mk_id "option" ~id_loc), [pty]) in
+    id_loc, Some id, ghost, pty in
+  let mk_ghost_param = function
     | T.Lnone _ | Lnamed _ | Lquestion _ -> assert false
     | T.Lghost vs ->
         let id_loc = location vs.Tt.vs_name.I.id_loc in
