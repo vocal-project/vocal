@@ -30,6 +30,8 @@
     {!Vector.push} has overall complexity O(n) i.e. each insertion has
     amortized constant time complexity. *)
 
+(*@ open Seq *)
+
 type 'a t
 (** The polymorphic type of vectors.
     This is a mutable data type. *)

@@ -83,4 +83,3 @@ let focused (z: 'a t) : 'a option =
   | [] -> None
   | x :: _ -> Some x
   end
-

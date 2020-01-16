@@ -1,3 +1,5 @@
+(*@ open Seq *)
+
 type 'a buffer
 (*@ mutable model sequence: 'a seq  *)
 (*@         model capacity: integer *)
@@ -23,7 +25,7 @@ val push: 'a buffer -> 'a -> unit
       requires length b.sequence < b.capacity
       modifies b
       ensures  length b.sequence = length (old b.sequence) + 1
-      ensures  b.sequence = old b.sequence ++ (Seq.cons elt empty) *)
+      ensures  b.sequence = old b.sequence ++ (cons elt empty) *)
 
 val peek: 'a buffer -> 'a
 (*@ r = peek b
@@ -36,7 +38,7 @@ val pop: 'a buffer -> 'a
       modifies b
       ensures  length b.sequence = length (old b.sequence) - 1
       ensures  r = (old b.sequence)[0]
-      ensures  old b.sequence = Seq.cons r b.sequence *)
+      ensures  old b.sequence = cons r b.sequence *)
 
 val get: 'a buffer -> int -> 'a
 (*@ r = get b i

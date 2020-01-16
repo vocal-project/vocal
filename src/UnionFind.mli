@@ -9,25 +9,23 @@
 (**************************************************************************)
 
 (*@ open Set *)
-
 (*@ open Map *)
 
 type 'a elem
 
 (*@ type 'a uf *)
-(*@ ephemeral *)
 (*@ mutable model dom : 'a elem set *)
 (*@ mutable model rep : 'a elem -> 'a elem *)
 (*@ mutable model img : 'a elem -> 'a *)
-(*@ invariant forall x. mem x dom -> img x = img (rep x) *)
-(*@ invariant forall x. mem x dom -> rep (rep x) = rep x *)
-(*@ invariant forall x. mem x dom -> mem (rep x) dom *)
+(*@ invariant forall x: 'a elem. mem x dom -> img x = img (rep x) *)
+(*@ invariant forall x: 'a elem. mem x dom -> rep (rep x) = rep x *)
+(*@ invariant forall x: 'a elem. mem x dom -> mem (rep x) dom *)
 
 (*@ predicate equiv (uf: 'a uf) (x: 'a elem) (y: 'a elem) =
       rep uf x = rep uf y *)
 
 (*@ val create: unit -> 'a uf *)
-(*@ uf = create ()
+(* @ uf = create ()
       ensures dom uf = {} *)
 
 val make : 'a -> 'a elem
@@ -38,7 +36,6 @@ val make : 'a -> 'a elem
       ensures  dom uf = old (dom uf) `union` {:e:}
       ensures  rep uf = (old (rep uf))[e <- e]
       ensures  img uf = (old (img uf))[e <- v]
-
 *)
 
 (** note: in functions find, eq, and get,

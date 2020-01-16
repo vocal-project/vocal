@@ -13,30 +13,30 @@ module Make(X: sig type t
   val compare : t -> t -> int end) =
 struct
   type elt = X.t
-  
-  type t = X.t Vector.t
-  
-  let create (_: unit) : t =
+
+  type heap = X.t Vector.t
+
+  let create (_: unit) : heap =
     Vector.create ?capacity:(Some 0) ~dummy:X.dummy
-  
-  let is_empty (h: t) : bool = Vector.is_empty h
-  
-  let size (h: t) : int = Vector.length h
-  
+
+  let is_empty (h: heap) : bool = Vector.is_empty h
+
+  let size (h: heap) : int = Vector.length h
+
   exception Empty
-  
-  let find_min_exn (h: t) : X.t =
+
+  let find_min_exn (h: heap) : X.t =
     begin
       if Vector.is_empty h then begin raise Empty end;
       Vector.get h 0
     end
-  
-  let find_min (h: t) : X.t option =
+
+  let find_min (h: heap) : X.t option =
     if Vector.is_empty h then begin None end
     else
     begin
       Some (Vector.get h 0) end
-  
+
   let rec move_down (a: X.t Vector.t) (i: int) (x: X.t) : unit =
     let n = Vector.length a in
     let q = if n = 1 then begin (-1) end else begin (n - 2) / 2 end in
@@ -57,8 +57,8 @@ struct
     else
     begin
       Vector.set a i x end
-  
-  let extract_min_exn (h: t) : X.t =
+
+  let extract_min_exn (h: heap) : X.t =
     begin try let x = Vector.pop h in
       let n = Vector.length h in
       if not (n = 0) then begin
@@ -68,9 +68,9 @@ struct
         x end with
     | Vector.Empty -> raise Empty
     end
-  
-  let delete_min_exn (h: t) : unit = ignore (extract_min_exn h)
-  
+
+  let delete_min_exn (h: heap) : unit = ignore (extract_min_exn h)
+
   let rec move_up (a: X.t Vector.t) (i: int) (x: X.t) : unit =
     if i = 0 then begin Vector.set a i x end
     else
@@ -82,8 +82,8 @@ struct
       else
       begin
         Vector.set a i x end end
-  
-  let insert (x: X.t) (h: t) : unit =
+
+  let insert (x: X.t) (h: heap) : unit =
     begin
       if (size h) = Sys.max_array_length
       then begin
@@ -101,4 +101,3 @@ struct
           Vector.push h x end end
     end
 end
-

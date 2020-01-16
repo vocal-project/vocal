@@ -8,6 +8,8 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
+(*@ open Seq *)
+
 (** Zippers for lists *)
 
 type 'a t
@@ -67,7 +69,7 @@ val move_right : 'a t -> 'a t
 
 val insert_right : 'a -> 'a t -> 'a t
 (*@ r = insert_right x z
-    ensures  r.seq == z.seq[.. z.idx] ++ Seq.cons x z.seq[z.idx ..]
+    ensures  r.seq == z.seq[.. z.idx] ++ cons x z.seq[z.idx ..]
     ensures  r.idx = z.idx *)
 
 val remove_right : 'a t -> 'a t
