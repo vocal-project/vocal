@@ -55,7 +55,7 @@ module Impl
        heap_order a ->
        forall i. 0 < i < length a.view -> le a.view[div (i-1) 2] a.view[i] *)
 
-    type t = {
+    type heap = {
                       a : V.t elt;
       ghost mutable bag : bag elt;
     }
@@ -64,18 +64,18 @@ module Impl
       invariant { heap_order a } (* Heap order is preserved *)
       by { a = V.create (Some (0 : int63)) X.dummy; bag = empty_bag }
 
-    function minimum (h : t) : elt (* = h.a.view[0] ? *)
+    function minimum (h: heap) : elt (* = h.a.view[0] ? *)
 
     axiom min_def: forall h. card h.bag <> 0 -> minimum h = h.a.view[0]
 
-    predicate is_minimum (x: elt) (h: t) =
+    predicate is_minimum (x: elt) (h: heap) =
       mem x h.bag && forall e. mem e h.bag -> X.cmp x e <= 0
 
     lemma num_exist:
       forall h x. numocc' h.a x > 0 ->
       exists i. 0 <= i < length h.a.view /\ h.a.view[i] = x
 
-    let lemma min_coherent (h: t)
+    let lemma min_coherent (h: heap)
       requires { 0 < card h.bag }
       ensures  { is_minimum (minimum h) h }
     = let s = h.a.view in
@@ -182,27 +182,27 @@ module Impl
        children a i;
        ()
 
-    let create () : t
+    let create () : heap
       ensures { result.bag = empty_bag }
     = { a = V.create (Some (0 : int63)) X.dummy; bag = empty_bag }
 
-    let is_empty (h : t) : bool
+    let is_empty (h: heap) : bool
       ensures { result <-> h.bag = empty_bag }
     = V.is_empty h.a
 
-    let size (h : t) : int63
+    let size (h: heap) : int63
       ensures { result = card h.bag }
     = V.length h.a
 
     exception Empty
 
-    let find_min_exn (h : t) : elt
+    let find_min_exn (h: heap) : elt
       raises  { Empty -> card h.bag = 0 }
       ensures { card h.bag > 0 /\ result = minimum h }
     = if V.is_empty h.a then raise Empty;
       V.get h.a 0
 
-    let find_min (h : t) : option elt
+    let find_min (h: heap) : option elt
       ensures { match result with
       | None   -> card h.bag = 0
       | Some x -> card h.bag > 0 && x = minimum h end }
@@ -251,7 +251,7 @@ module Impl
         assert { substitution (old a) a i };
       end
 
-    let extract_min_exn (h : t) : elt
+    let extract_min_exn (h: heap) : elt
       raises  { Empty -> card h.bag = 0 /\ h.bag = old h.bag }
       ensures { result = minimum (old h) }
       ensures { (old h).bag = add result h.bag }
@@ -272,7 +272,7 @@ module Impl
         end
       with V.Empty -> raise Empty end
 
-    let delete_min_exn (h: t) : unit
+    let delete_min_exn (h: heap) : unit
       raises  { Empty -> card h.bag = 0 /\ h.bag = old h.bag }
       ensures { (old h).bag = add (minimum (old h)) h.bag }
     = let _ = extract_min_exn h in
@@ -318,7 +318,7 @@ module Impl
         end
       end
 
-    let insert (x : elt) (h : t) : unit
+    let insert (x : elt) (h: heap) : unit
       raises  { Invalid_argument _ -> card h.bag >= Sys.max_array_length }
       ensures { h.bag = add x (old h).bag }
     = if size h = Sys.max_array_length then raise Invalid_argument "insert";
@@ -358,7 +358,7 @@ module Correct
     function Make.X.cmp = Make.X.cmp,
     goal Make.X.is_pre_order,
     val  Make.X.compare = Make.X.compare,
-    type Make.heap = Make.t,
+    type Make.heap = Make.heap,
     val Make.create = Make.create,
     val Make.is_empty = Make.is_empty,
     val Make.size = Make.size,

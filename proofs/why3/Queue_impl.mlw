@@ -133,3 +133,13 @@ module Impl
       end
 
 end
+
+module Correct
+
+  use Impl
+
+  clone Queue.Sig with
+    type t,
+    val  create, val is_empty, val push, val pop, val transfer
+
+end

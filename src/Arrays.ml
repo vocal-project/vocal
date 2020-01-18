@@ -1,3 +1,13 @@
+(**************************************************************************)
+(*                                                                        *)
+(*  VOCaL -- A Verified OCaml Library                                     *)
+(*                                                                        *)
+(*  Copyright (c) 2020 The VOCaL Project                                  *)
+(*                                                                        *)
+(*  This software is free software, distributed under the MIT license     *)
+(*  (as described in file LICENSE enclosed).                              *)
+(**************************************************************************)
+
 let rec binary_search :
   type a. (a -> (a -> (int))) -> ((a array)) -> (int) -> (int) -> a ->  (int) =
   fun cmp a fromi toi v -> if fromi >= toi
@@ -48,7 +58,7 @@ let binary_search_right :
   type a. (a -> (a -> (int))) -> ((a array)) -> (int) -> (int) -> a ->  (int) =
   fun cmp a fromi toi v -> if
                              not (0  <= fromi && fromi <= toi && toi <= Array.length a)
-                           then raise (Invalid_argument "");
+                           then raise (Invalid_argument "binary_search_right");
                            unsafe_binary_search_right cmp a fromi toi v
 
 let binary_sort :

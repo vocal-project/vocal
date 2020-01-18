@@ -8,7 +8,7 @@
 <file format="whyml" proved="true">
 <path name=".."/><path name="PriorityQueueVector_impl.mlw"/>
 <theory name="Impl" proved="true">
- <goal name="Make.t&#39;vc" expl="VC for t" proved="true">
+ <goal name="Make.heap&#39;vc" expl="VC for heap" proved="true">
  <proof prover="6"><result status="valid" time="0.05" steps="86"/></proof>
  </goal>
  <goal name="Make.num_exist" proved="true">

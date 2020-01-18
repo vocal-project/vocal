@@ -1,3 +1,12 @@
+(**************************************************************************)
+(*                                                                        *)
+(*  VOCaL -- A Verified OCaml Library                                     *)
+(*                                                                        *)
+(*  Copyright (c) 2020 The VOCaL Project                                  *)
+(*                                                                        *)
+(*  This software is free software, distributed under the MIT license     *)
+(*  (as described in file LICENSE enclosed).                              *)
+(**************************************************************************)
 
 (*@ function num (a: string seq) (v: string) (lo hi: integer) : integer *)
 (** the number of occurrences of [v] in [a] between index [lo]

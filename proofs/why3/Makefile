@@ -2,7 +2,8 @@
 
 SRC=../../src/
 
-WHY3=Vector UnionFind PriorityQueueVector Arrays ZipperList PairingHeap Queue
+WHY3=Vector UnionFind PriorityQueueVector Arrays ZipperList PairingHeap \
+	Mjrty RingBuffer#Queue
 
 WHY3ML=$(addsuffix .ml, $(WHY3))
 WHY3IMPL=$(addsuffix _impl, $(WHY3))
@@ -19,7 +20,7 @@ all: $(WHY3GEN)
 	why3 prove -L . -L $(SRC) $*.mlw
 
 WHY3EXTRACT=why3 extract -D ocaml64 -D uf.drv\
-		--modular --recursive-deps -D queue.drv
+		--modular --recursive-deps #-D queue.drv
 
 WHY3EXTRACTNR=why3 extract -D ocaml64 -D uf.drv\
 		--modular

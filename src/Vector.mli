@@ -2,7 +2,7 @@
 (*                                                                        *)
 (*  VOCaL -- A Verified OCaml Library                                     *)
 (*                                                                        *)
-(*  Copyright (c) 2018 The VOCaL Project                                  *)
+(*  Copyright (c) 2020 The VOCaL Project                                  *)
 (*                                                                        *)
 (*  This software is free software, distributed under the MIT license     *)
 (*  (as described in file LICENSE enclosed).                              *)
@@ -246,19 +246,19 @@ val fold_right : 'b t -> ('b -> 'a -> 'a) -> 'a -> 'a
 (*@ r = fold_right a f acc
       ensures  r = Seq.fold_right f a.view acc *)
 
-val iter : ('a -> unit) -> 'a t -> unit
-(** [iter f a] applies function [f] in turn to all
-   the elements of [a].  It is equivalent to
-   [f (get a 0); f (get a 1); ...; f (get a (length a - 1))]. *)
-(*@ iter f a
-      equivalent "for i = 0 to length a - 1 do f (get a i) done" *)
-
-val iteri : (int -> 'a -> unit) -> 'a t -> unit
-(** Same as {!Vector.iter}, but the
-   function is applied to the index of the element as first argument,
-   and the element itself as second argument. *)
-(*@ iteri f a
-      equivalent "for i = 0 to length a - 1 do f i (get a i) done" *)
+(* val iter : ('a -> unit) -> 'a t -> unit
+ * (\** [iter f a] applies function [f] in turn to all
+ *    the elements of [a].  It is equivalent to
+ *    [f (get a 0); f (get a 1); ...; f (get a (length a - 1))]. *\)
+ * (\*@ iter f a
+ *       equivalent "for i = 0 to length a - 1 do f (get a i) done" *\)
+ *
+ * val iteri : (int -> 'a -> unit) -> 'a t -> unit
+ * (\** Same as {!Vector.iter}, but the
+ *    function is applied to the index of the element as first argument,
+ *    and the element itself as second argument. *\)
+ * (\*@ iteri f a
+ *       equivalent "for i = 0 to length a - 1 do f i (get a i) done" *\) *)
 
 (** {2 Stack interface}
 

@@ -1,3 +1,13 @@
+(**************************************************************************)
+(*                                                                        *)
+(*  VOCaL -- A Verified OCaml Library                                     *)
+(*                                                                        *)
+(*  Copyright (c) 2020 The VOCaL Project                                  *)
+(*                                                                        *)
+(*  This software is free software, distributed under the MIT license     *)
+(*  (as described in file LICENSE enclosed).                              *)
+(**************************************************************************)
+
 type 'a buffer = {
   dummy: 'a;
   data: ('a array);
@@ -6,8 +16,8 @@ type 'a buffer = {
   }
 
 let create : type a. (int) -> a ->  (a buffer) =
-  fun n dummy1 -> { dummy = dummy1; data = Array.make n dummy1; first = 0;
-                    len = 0 }
+  fun n dummy -> { dummy = dummy; data = Array.make n dummy; first = 0; len =
+                   0 }
 
 let length : type a. (a buffer) ->  (int) = fun b -> b.len
 
