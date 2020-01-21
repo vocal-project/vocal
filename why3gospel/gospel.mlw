@@ -9,7 +9,7 @@
 (**************************************************************************)
 
 (** This module mirrors the GOSPEL standard library.
-    It is used in the Why3 modules builts by the GOSPEL plug-in for Why3. *)
+    It is used in the Why3 modules built by the GOSPEL plug-in for Why3. *)
 
 module Stdlib
 
@@ -110,7 +110,21 @@ end
 
 module Set
 
-  use export set.Fset
+  use import set.Fset as FS
+
+  type set 'a = FS.fset 'a
+  predicate mem (x: 'a) (s: set 'a) = FS.mem x s
+
+  constant empty: set 'a = FS.empty
+
+  function singleton (x: 'a) : set 'a = FS.singleton x
+
+  function union (s1 s2: set 'a) : set 'a = FS.union s1 s2
+
+  use import set.FsetSum as FSum
+
+  use Stdlib
+  function sum (f: 'a -> integer) (x: set 'a) : integer = FSum.sum x f
 
 end
 

@@ -9,6 +9,7 @@
 (**************************************************************************)
 
 module T = Gospel.Tast
+module Tm = Gospel.Tmodule
 module Ot = Gospel.Oparsetree
 open Why3
 open Ptree
@@ -70,8 +71,12 @@ module Term = struct
       | Tt.Pas  (p, vs)  -> Pas (pattern p, ident_of_vsymbol vs, false)
       | Tt.Papp (ls, pat_list) when Tt.is_fs_tuple ls ->
           Ptuple (List.map pattern pat_list)
-      | Tt.Papp (ls, pat_list) ->
-          Papp (Qident (ident_of_lsymbol ls), List.map pattern pat_list) in
+      | Tt.Papp (ls, pat_list) -> let id_loc = location ls.ls_name.id_loc in
+          let id_str = match query_syntax ls.ls_name.id_str with
+            | None   -> ls.ls_name.id_str
+            | Some s -> s in
+          let id = mk_id id_str ~id_loc in
+          Papp (Qident id, List.map pattern pat_list) in
     mk_pattern (p_node pat.Tt.p_node)
 
   let rec ty Ty.{ty_node} = match ty_node with
@@ -142,7 +147,10 @@ module Term = struct
       | Tt.Tapp (ls, []) ->
           (* FIXME? is this the correct semantics for
                zero-arguments applications? *)
-          Tident (Qident (ident_of_lsymbol ls))
+          let id = match query_syntax ls.ls_name.id_str with
+            | None   -> ident_of_lsymbol ls
+            | Some s -> mk_id s ~id_loc:(location ls.ls_name.I.id_loc) in
+          Tident (Qident id)
       | Tt.Tapp (ls, term_list) when Tt.ls_equal ls Tt.fs_apply ->
           begin match term_list with
           | [fs; arg] -> Tapply (term fs, term arg)
@@ -435,70 +443,83 @@ let sig_open file mm loc =
   let dot_name = Qdot (Qident (mk_id file), mk_id mm) in
   Duseimport (loc, false, [dot_name, None])
 
-(** Convert a GOSPEL module declaration into a Why3 scope. *)
-let rec module_declaration T.{md_name; md_type; md_loc} =
-  let loc = location md_loc in
-  let id = mk_id md_name.I.id_str ~id_loc:(location md_name.I.id_loc) in
-  Gmodule (loc, id, module_type md_type)
+let signature =
+  let mod_type_table: (string, gdecl list) Hashtbl.t = Hashtbl.create 16 in
 
-and module_type mt = match mt.T.mt_desc with
-  | T.Mod_ident _ (* of string list *) ->
-      assert false
-  | T.Mod_signature s ->
-      List.flatten (signature s)
-  | T.Mod_functor (arg_name, arg, body) ->
-      let id_loc = location arg_name.I.id_loc in
-      let id = mk_id arg_name.I.id_str ~id_loc in
-      let body = module_type body in
-      Gmodule (id_loc, id, module_type (Opt.get arg)) :: body
-  | T.Mod_with _ (* of module_type * with_constraint list *) ->
-      assert false
-  | T.Mod_typeof _ (* of Oparsetree.module_expr *) ->
-      assert false
-  | T.Mod_extension _ (* of Oparsetree.extension *) ->
-      assert false
-  | T.Mod_alias _ (* of string list *) ->
-      assert false
+  (* Convert a GOSPEL module declaration into a Why3 scope. *)
+  let rec module_declaration T.{md_name; md_type; md_loc} =
+    let loc = location md_loc in
+    let id = mk_id md_name.I.id_str ~id_loc:(location md_name.I.id_loc) in
+    Gmodule (loc, id, module_type md_type)
 
-and signature_item i = match i.T.sig_desc with
-  | T.Sig_val (vd, g) ->
-      List.map (fun d -> Gdecl d) (val_decl vd g)
-  | T.Sig_type (_rec_flag, tdl, _gh) ->
-      [Gdecl (Dtype (List.map type_decl tdl))]
-  | T.Sig_typext _ (*  of Oparsetree.type_extension *) ->
-      assert false (*TODO*)
-  | T.Sig_module md ->
-      [module_declaration md]
-  | T.Sig_recmodule _ (* of module_declaration list *) ->
-      assert false (*TODO*)
-  | T.Sig_modtype _ (*  of module_type_declaration *) ->
-      assert false (*TODO*)
-  | T.Sig_exception exn_cstr ->
-      [Gdecl (exn exn_cstr)]
-  | T.Sig_open (_, false) ->
-      []
-  | T.Sig_open ({opn_id = ["Gospelstdlib"]; opn_loc}, true) ->
-      (* The GOSPEL standard library is opened by default. We map it into a
-         custom Why3 file. *)
-      [Gdecl (sig_open "gospel" "Stdlib" (location opn_loc))]
-  | T.Sig_open ({opn_id; opn_loc}, true) ->
-      let loc = location opn_loc in
-      List.map (fun mm -> Gdecl (sig_open "gospel" mm loc)) opn_id
-  | T.Sig_include _ (* of Oparsetree.include_description *) ->
-      assert false (*TODO*)
-  | T.Sig_class _ (* of Oparsetree.class_description list *) ->
-      assert false (*TODO*)
-  | T.Sig_class_type _ (* of Oparsetree.class_type_declaration list *) ->
-      assert false (*TODO*)
-  | T.Sig_attribute _ ->
-      []
-  | T.Sig_extension _ (* of Oparsetree.extension * Oparsetree.attributes *) ->
-      assert false (*TODO*)
-  | T.Sig_use _ (* of string *) ->
-      assert false (*TODO*)
-  | T.Sig_function f ->
-      [Gdecl (function_ f)]
-  | T.Sig_axiom ax ->
-      [Gdecl (axiom ax)] (*TODO*)
+  and module_type mt = match mt.T.mt_desc with
+    | T.Mod_ident s -> begin match s with
+        | [s] -> (* retrieve the list of declarations corresponding
+                    to module type [s] *)
+            Hashtbl.find mod_type_table s (* TODO: catch Not_found *)
+        | _ -> assert false end
+    | T.Mod_signature s ->
+        List.flatten (signature s)
+    | T.Mod_functor (arg_name, arg, body) ->
+        let id_loc = location arg_name.I.id_loc in
+        let id = mk_id arg_name.I.id_str ~id_loc in
+        let body = module_type body in
+        Gmodule (id_loc, id, module_type (Opt.get arg)) :: body
+    | T.Mod_with _ (* of module_type * with_constraint list *) ->
+        assert false
+    | T.Mod_typeof _ (* of Oparsetree.module_expr *) ->
+        assert false
+    | T.Mod_extension _ (* of Oparsetree.extension *) ->
+        assert false
+    | T.Mod_alias _ (* of string list *) ->
+        assert false
 
-and signature s = List.map signature_item s
+  and module_type_declaration mtd = let decls = match mtd.T.mtd_type with
+      | None -> []
+      | Some mt -> module_type mt in
+    Hashtbl.add mod_type_table mtd.mtd_name.I.id_str decls
+
+  and signature_item i = match i.T.sig_desc with
+    | T.Sig_val (vd, g) ->
+        List.map (fun d -> Gdecl d) (val_decl vd g)
+    | T.Sig_type (_rec_flag, tdl, _gh) ->
+        [Gdecl (Dtype (List.map type_decl tdl))]
+    | T.Sig_typext _ (*  of Oparsetree.type_extension *) ->
+        assert false (*TODO*)
+    | T.Sig_module md ->
+        [module_declaration md]
+    | T.Sig_recmodule _ (* of module_declaration list *) ->
+        assert false (*TODO*)
+    | T.Sig_modtype mtd ->
+        module_type_declaration mtd;
+        []
+    | T.Sig_exception exn_cstr ->
+        [Gdecl (exn exn_cstr)]
+    | T.Sig_open (_, false) ->
+        []
+    | T.Sig_open ({opn_id = ["Gospelstdlib"]; opn_loc}, true) ->
+        (* The GOSPEL standard library is opened by default. We map it into a
+           custom Why3 file. *)
+        [Gdecl (sig_open "gospel" "Stdlib" (location opn_loc))]
+    | T.Sig_open ({opn_id; opn_loc}, true) ->
+        let loc = location opn_loc in
+        List.map (fun mm -> Gdecl (sig_open "gospel" mm loc)) opn_id
+    | T.Sig_include _ (* of Oparsetree.include_description *) ->
+        assert false (*TODO*)
+    | T.Sig_class _ (* of Oparsetree.class_description list *) ->
+        assert false (*TODO*)
+    | T.Sig_class_type _ (* of Oparsetree.class_type_declaration list *) ->
+        assert false (*TODO*)
+    | T.Sig_attribute _ ->
+        []
+    | T.Sig_extension _ (* of Oparsetree.extension * Oparsetree.attributes *) ->
+        assert false (*TODO*)
+    | T.Sig_use _ (* of string *) ->
+        assert false (*TODO*)
+    | T.Sig_function f ->
+        [Gdecl (function_ f)]
+    | T.Sig_axiom ax ->
+        [Gdecl (axiom ax)] (*TODO*)
+
+  and signature s = List.map signature_item s in
+  signature

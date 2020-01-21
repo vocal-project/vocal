@@ -1,7 +1,7 @@
 opam-version: "2.0"
 name: "why3gospel"
-synopsis: "a Why3 plug-in to read GOSPEL files"
-description: "a Why3 plug-in to read GOSPEL files"
+synopsis: "A Why3 plug-in to read GOSPEL files"
+description: "A Why3 plug-in to read GOSPEL files"
 version: "0.1"
 maintainer: "Jean-Christophe.Filliatre@lri.fr"
 authors: [
@@ -18,7 +18,7 @@ build: [
 ]
 depends: [
   "dune"
-  "why3"
+  #"why3"
   "gospel"
   "ocaml" {>= "4.07"}
 ]

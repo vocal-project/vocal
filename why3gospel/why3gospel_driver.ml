@@ -21,6 +21,8 @@ let () = List.iter (fun (x, y) -> Hstr.add driver x y)
       "int", "int63";
       "mixfix {}", "empty";
       "mixfix {:_:}", "singleton";
+      "[]", "Nil";
+      "infix ::", "Cons";
     ]
 
 let query_syntax str =

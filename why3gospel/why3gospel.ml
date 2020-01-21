@@ -130,7 +130,7 @@ let read_channel env path file c =
   let f = read_file file nm c in
   let f = List.map (include_extra_vals extra_vals) f in
   let f = type_check file nm f in
-  let f = Why3gospel_trans.signature f.fl_sigs in
+  let sigs = Why3gospel_trans.signature f.fl_sigs in
   open_file env path;
   let id = mk_id "Sig" in
   open_module id;
@@ -142,7 +142,7 @@ let read_channel env path file c =
        Typing.open_scope id.id_loc id;
        List.iter add_decl dl;
        Typing.close_scope ~import:true loc in
-  let f = use_std_lib @ List.flatten f in
+  let f = use_std_lib @ List.flatten sigs in (* FIXME *)
   (* For debugging only: *)
   (* let rec pp_list pp fmt l = match l with
    *   | [] -> ()
