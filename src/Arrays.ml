@@ -14,7 +14,7 @@ let rec binary_search :
                            then raise (Not_found)
                            else
                              begin
-                               let mid = fromi + (toi - fromi / 2) in
+                               let mid = fromi + (toi - fromi) / 2 in
                                let c = cmp a.(mid) v in
                                if c < 0 
                                then binary_search cmp a (mid + 1 ) toi v
@@ -30,7 +30,7 @@ let rec binary_search_left :
                            then toi
                            else
                              begin
-                               let mid = fromi + (toi - fromi / 2) in
+                               let mid = fromi + (toi - fromi) / 2 in
                                let c = cmp a.(mid) v in
                                if c < 0 
                                then binary_search_left cmp a (mid + 1 ) toi v
@@ -42,7 +42,7 @@ let rec unsafe_binary_search_right :
                            then toi
                            else
                              begin
-                               let mid = fromi + (toi - fromi / 2) in
+                               let mid = fromi + (toi - fromi) / 2 in
                                let c = cmp a.(mid) v in
                                if c <= 0 
                                then
