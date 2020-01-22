@@ -30,6 +30,11 @@ module Spec
   function toi (a: seq int63) : seq int =
     create (length a) (fun x -> to_int (get a x))
 
+  lemma toi_eq: forall a: seq int63.
+    let b = toi a in
+    length a = length b &&
+    (forall i. 0 <= i < length a -> a[i] = b[i])
+
 end
 
 module CountingSortImpl
@@ -55,7 +60,7 @@ module CountingSortImpl
   let counting_sort (k: int63) (a: array int63) (b: array int63)
     requires { 0 < k }
     requires { k_values k (toi a) /\ length a = length b }
-    ensures  { sorted b /\ permut_all a b }
+    ensures  { sorted b /\ permut_all (toi a) (toi b) }
   = let c = make k (0:int63) in
     for i = 0 to Array.length a - 1 do
       invariant { forall v: int. 0 <= v < k -> c[v] = occ v (toi a) 0 i }
@@ -81,47 +86,46 @@ module CountingSortImpl
       done
     done;
     assert { j = length b }
-(*
+
   (* sorts array a in place *)
   let in_place_counting_sort (k: int63) (a: array int63)
     requires { 0 < k }
-    requires { k_values k a }
-    ensures  { sorted a /\ permut k (old a) a }
+    requires { k_values k (toi a) }
+    ensures  { sorted a /\ permut_all (old (toi a)) (toi a) }
   = let c = make k (0:int63) in
     for i = 0 to length a - 1 do
-      invariant { forall v: int. 0 <= v < k -> c[v] = numeq a v 0 i }
+      invariant { forall v: int. 0 <= v < k -> c[v] = occ v (toi a) 0 i }
       let v = a[i] in
       c[v] <- c[v] + 1
     done;
     let ref j = 0 in
     for v = 0 to k-1 do
-      invariant { j = numlt (old a) v 0 (length a) }
+      invariant { j = numlt v (old (toi a)) 0 (length a) }
       invariant { sorted_sub a 0 j }
       invariant { forall e: int. 0 <= e < j -> 0 <= a[e] < v }
       invariant { forall f: int.
-        0 <= f < v -> numeq a f 0 j = numeq (old a) f 0 (length a) }
+        0 <= f < v -> occ f (toi a) 0 j = occ f (old (toi a)) 0 (length a) }
       for i = 1 to c[v] do
-        invariant { j -i+1 = numlt (old a) v 0 (length a) }
+        invariant { j -i+1 = numlt v (old (toi a)) 0 (length a) }
         invariant { sorted_sub a 0 j }
         invariant { forall e: int. 0 <= e < j -> 0 <= a[e] <= v }
         invariant { forall f: int.
-          0 <= f < v -> numeq a f 0 j = numeq (old a) f 0 (length a) }
-        invariant { numeq a v 0 j = i-1 }
+          0 <= f < v -> occ f (toi a) 0 j = occ f (old (toi a)) 0 (length a) }
+        invariant { occ v (toi a) 0 j = i-1 }
         a[j] <- v;
         j <- j + 1;
-        assert {forall f. 0 <= f < v -> numeq a f 0 j = numeq a f 0 (j - 1)}
+        assert {forall f. 0 <= f < v -> occ f (toi a) 0 j = occ f (toi a) 0 (j - 1)}
       done
     done;
     assert { j = length a }
-*)
+
 end
-(*
+
 module Correct
 
   use CountingSortImpl
 
   clone CountingSort.Sig with
-    function numeq = Spec.numeq,
     val counting_sort, val in_place_counting_sort
 
-end*)
+end
