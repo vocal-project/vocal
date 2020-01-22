@@ -331,7 +331,7 @@ let val_decl vd g =
     | Ot.Ptyp_var _ | Ptyp_tuple _ | Ptyp_constr _ -> [ct]
     | Ot.Ptyp_arrow (_, t1, t2) ->
         begin match t1.ptyp_desc with
-        | Ot.Ptyp_arrow (lbl, t11, t12) -> t1 :: flat_ptyp_arrow t2
+        | Ot.Ptyp_arrow _-> t1 :: flat_ptyp_arrow t2
         | _ -> flat_ptyp_arrow t1 @ flat_ptyp_arrow t2 end
     | _ -> assert false (* TODO *) in
   let mk_single_param lb_arg ct =
@@ -340,10 +340,10 @@ let val_decl vd g =
     let pty = core_type ct in
     let id = ident_of_lb_arg lb_arg in
     let id, ghost, pty = match lb_arg with
-      | Lnone vs  -> id, false, pty
-      | Lghost vs -> id, true,  pty
-      | Lnamed vs -> add_at_id Ocaml.Print.named_arg id, false, pty
-      | Lquestion vs -> let id = add_at_id Ocaml.Print.optional_arg id in
+      | Lnone _  -> id, false, pty
+      | Lghost _ -> id, true,  pty
+      | Lnamed _ -> add_at_id Ocaml.Print.named_arg id, false, pty
+      | Lquestion _ -> let id = add_at_id Ocaml.Print.optional_arg id in
           id, false, PTtyapp (Qident (mk_id "option" ~id_loc), [pty]) in
     id_loc, Some id, ghost, pty in
   let mk_ghost_param = function
@@ -358,7 +358,7 @@ let val_decl vd g =
     | [], _  -> assert false (* there cannot be more core types than lb_args *)
     | lb_args, [] ->         (* all the remaining arguments must be ghost    *)
         List.map mk_ghost_param lb_args
-    | (T.Lghost vs) as lb :: lb_args, core_tys ->
+    | (T.Lghost _) as lb :: lb_args, core_tys ->
         mk_ghost_param lb :: mk_param lb_args core_tys
     | lb :: lb_args, ct :: core_tys ->
         (mk_single_param lb ct) :: mk_param lb_args core_tys in
@@ -375,7 +375,7 @@ let val_decl vd g =
     | None   -> [mk_val (mk_id vd_str) params ret pat mask empty_spec]
     | Some s -> (* creative indentation *)
     begin match split_on_checks s.sp_pre with
-    | pre, []     -> [mk_val (mk_id vd_str) params ret pat mask (spec s)]
+    | _, []     -> [mk_val (mk_id vd_str) params ret pat mask (spec s)]
     | pre, checks -> let id_unsafe = mk_id ("unsafe_" ^ vd_str) in
         let spec_checks = spec_with_checks s pre (List.map term checks) in
         [mk_val id_unsafe params ret pat mask (spec s);

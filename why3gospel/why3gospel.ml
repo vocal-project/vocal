@@ -29,7 +29,7 @@ let use ?(import=false) q =
   Typing.add_decl loc use_import;
   Typing.close_scope loc ~import
 
-let extra_use ?(import=false) s =
+let extra_use s =
   use ~import:true (Qdot (Qident (mk_id "gospel"), mk_id s))
 
 let use_array loc =
@@ -52,7 +52,7 @@ module Ut = Gospel.Uast
 let extract_use sig_item = match sig_item.Ut.sdesc with
   | Sig_ghost_open {popen_lid = {txt = Lident s}} when s = "Gospelstdlib" ->
       None
-  | Sig_ghost_open {popen_lid = {txt = Lident s}; popen_loc} ->
+  | Sig_ghost_open {popen_lid = {txt = Lident s}} ->
       Some s
   | _ -> None
 
@@ -142,7 +142,7 @@ let read_channel env path file c =
   let rec pp_list pp fmt l = match l with
     | [] -> ()
     | x :: r -> Format.eprintf "%a" pp x; pp_list pp fmt r in
-  let rec pp_decl fmt d = match d with
+  let rec pp_decl _ d = match d with
     | Gdecl d -> Format.eprintf "%a@." Mlw_printer.pp_decl d
     | Gmodule (_loc, id, dl) ->
         Format.eprintf "@[<hv 2>scope %s@\n%a@]@\nend@." id.id_str
