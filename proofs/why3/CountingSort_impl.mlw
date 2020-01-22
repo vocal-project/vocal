@@ -30,11 +30,6 @@ module Spec
   function toi (a: seq int63) : seq int =
     create (length a) (fun x -> to_int (get a x))
 
-  lemma toi_eq: forall a: seq int63.
-    let b = toi a in
-    length a = length b &&
-    (forall i. 0 <= i < length a -> a[i] = b[i])
-
 end
 
 module CountingSortImpl
