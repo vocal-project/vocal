@@ -66,6 +66,9 @@ _whizzy*
 #dune
 *.install
 
+# merlin
+*.merlin
+
 # generated
 gospel/dependencies.dot
 gospel/doc-plain/bnf
