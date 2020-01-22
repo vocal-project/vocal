@@ -2,6 +2,7 @@
 *~
 
 # OCaml.
+_opam
 _build
 *.cm*
 *.o
