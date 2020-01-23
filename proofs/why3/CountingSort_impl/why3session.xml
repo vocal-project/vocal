@@ -3,17 +3,15 @@
 "http://why3.lri.fr/why3session.dtd">
 <why3session shape_version="8">
 <prover id="0" name="Alt-Ergo" version="2.3.0" timelimit="5" steplimit="0" memlimit="1000"/>
-<prover id="1" name="CVC4" version="1.7" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="3" name="Z3" version="4.8.6" timelimit="5" steplimit="0" memlimit="1000"/>
-<prover id="4" name="CVC4" version="1.6" timelimit="5" steplimit="0" memlimit="1000"/>
-<file format="whyml">
+<file format="whyml" proved="true">
 <path name=".."/><path name="CountingSort_impl.mlw"/>
 <theory name="Spec" proved="true">
  <goal name="eqlt&#39;vc" expl="VC for eqlt" proved="true">
  <proof prover="0"><result status="valid" time="3.37" steps="4916"/></proof>
  </goal>
 </theory>
-<theory name="CountingSortImpl">
+<theory name="CountingSortImpl" proved="true">
  <goal name="Sorted.TO.Refl" proved="true">
  <proof prover="0"><result status="valid" time="0.01" steps="6"/></proof>
  <proof prover="3"><result status="valid" time="0.04" steps="77481"/></proof>
@@ -249,19 +247,19 @@
      <goal name="counting_sort&#39;vc.32.1.0.0" expl="VC for counting_sort" proved="true">
      <transf name="split_vc" proved="true" >
       <goal name="counting_sort&#39;vc.32.1.0.0.0" expl="VC for counting_sort" proved="true">
-      <proof prover="0"><result status="valid" time="0.03" steps="33"/></proof>
+      <proof prover="0"><result status="valid" time="0.02" steps="33"/></proof>
       </goal>
       <goal name="counting_sort&#39;vc.32.1.0.0.1" expl="VC for counting_sort" proved="true">
-      <proof prover="0"><result status="valid" time="0.02" steps="33"/></proof>
+      <proof prover="0"><result status="valid" time="0.03" steps="33"/></proof>
       </goal>
       <goal name="counting_sort&#39;vc.32.1.0.0.2" expl="VC for counting_sort" proved="true">
       <proof prover="0"><result status="valid" time="0.01" steps="31"/></proof>
       </goal>
       <goal name="counting_sort&#39;vc.32.1.0.0.3" expl="VC for counting_sort" proved="true">
-      <proof prover="0"><result status="valid" time="0.03" steps="33"/></proof>
+      <proof prover="0"><result status="valid" time="0.02" steps="33"/></proof>
       </goal>
       <goal name="counting_sort&#39;vc.32.1.0.0.4" expl="VC for counting_sort" proved="true">
-      <proof prover="0"><result status="valid" time="0.02" steps="33"/></proof>
+      <proof prover="0"><result status="valid" time="0.03" steps="33"/></proof>
       </goal>
       <goal name="counting_sort&#39;vc.32.1.0.0.5" expl="VC for counting_sort" proved="true">
       <proof prover="0"><result status="valid" time="0.02" steps="31"/></proof>
@@ -308,8 +306,8 @@
   </goal>
  </transf>
  </goal>
- <goal name="in_place_counting_sort&#39;vc" expl="VC for in_place_counting_sort">
- <transf name="split_goal_right" >
+ <goal name="in_place_counting_sort&#39;vc" expl="VC for in_place_counting_sort" proved="true">
+ <transf name="split_goal_right" proved="true" >
   <goal name="in_place_counting_sort&#39;vc.0" expl="array creation size" proved="true">
   <proof prover="0" timelimit="1"><result status="valid" time="0.05" steps="8"/></proof>
   </goal>
@@ -364,11 +362,10 @@
   <goal name="in_place_counting_sort&#39;vc.17" expl="loop invariant init" proved="true">
   <proof prover="3"><result status="valid" time="0.05" steps="125024"/></proof>
   </goal>
-  <goal name="in_place_counting_sort&#39;vc.18" expl="loop invariant init">
-  <proof prover="0" timelimit="1"><result status="timeout" time="1.00"/></proof>
+  <goal name="in_place_counting_sort&#39;vc.18" expl="loop invariant init" proved="true">
+  <proof prover="3"><result status="valid" time="0.05" steps="135881"/></proof>
   </goal>
   <goal name="in_place_counting_sort&#39;vc.19" expl="index in array bounds" proved="true">
-  <proof prover="0" timelimit="1" obsolete="true"><result status="timeout" time="2.00"/></proof>
   <proof prover="3"><result status="valid" time="0.21" steps="230114"/></proof>
   </goal>
   <goal name="in_place_counting_sort&#39;vc.20" expl="integer overflow" proved="true">
@@ -380,15 +377,15 @@
   <goal name="in_place_counting_sort&#39;vc.22" expl="loop invariant preservation" proved="true">
   <proof prover="0" timelimit="1"><result status="valid" time="0.05" steps="69"/></proof>
   </goal>
-  <goal name="in_place_counting_sort&#39;vc.23" expl="loop invariant preservation">
-  <transf name="introduce_premises" >
-   <goal name="in_place_counting_sort&#39;vc.23.0" expl="loop invariant preservation">
-   <transf name="assert" arg1="(sorted_sub (elts a) 0 (int63&#39;int j1))">
+  <goal name="in_place_counting_sort&#39;vc.23" expl="loop invariant preservation" proved="true">
+  <transf name="introduce_premises" proved="true" >
+   <goal name="in_place_counting_sort&#39;vc.23.0" expl="loop invariant preservation" proved="true">
+   <transf name="assert" proved="true" arg1="(sorted_sub (elts a) 0 (int63&#39;int j1))">
     <goal name="in_place_counting_sort&#39;vc.23.0.0" expl="asserted formula" proved="true">
     <proof prover="3"><result status="valid" time="0.22" steps="424479"/></proof>
     </goal>
-    <goal name="in_place_counting_sort&#39;vc.23.0.1" expl="loop invariant preservation">
-    <transf name="assert" arg1="(forall i. 0 &lt;= i &lt; j1 -&gt; le (elts a)[i] v1)">
+    <goal name="in_place_counting_sort&#39;vc.23.0.1" expl="loop invariant preservation" proved="true">
+    <transf name="assert" proved="true" arg1="(forall i. 0 &lt;= i &lt; j1 -&gt; le (elts a)[i] v1)">
      <goal name="in_place_counting_sort&#39;vc.23.0.1.0" expl="asserted formula" proved="true">
      <transf name="assert" proved="true" arg1="(int63&#39;int (elts a)[j1] &gt;= 0)">
       <goal name="in_place_counting_sort&#39;vc.23.0.1.0.0" expl="asserted formula" proved="true">
@@ -399,45 +396,19 @@
       </goal>
      </transf>
      </goal>
-     <goal name="in_place_counting_sort&#39;vc.23.0.1.1" expl="loop invariant preservation">
-     <transf name="assert" arg1="((elts a)[j1] = v1)">
+     <goal name="in_place_counting_sort&#39;vc.23.0.1.1" expl="loop invariant preservation" proved="true">
+     <transf name="assert" proved="true" arg1="((elts a)[j1] = v1)">
       <goal name="in_place_counting_sort&#39;vc.23.0.1.1.0" expl="asserted formula" proved="true">
       <proof prover="3"><result status="valid" time="0.26" steps="525976"/></proof>
       </goal>
-      <goal name="in_place_counting_sort&#39;vc.23.0.1.1.1" expl="loop invariant preservation">
-      <proof prover="3"><result status="timeout" time="5.00" steps="4816569"/></proof>
-      </goal>
-     </transf>
-     </goal>
-    </transf>
-    </goal>
-   </transf>
-   </goal>
-  </transf>
-  </goal>
-  <goal name="in_place_counting_sort&#39;vc.24" expl="loop invariant preservation">
-  <transf name="introduce_premises" >
-   <goal name="in_place_counting_sort&#39;vc.24.0" expl="loop invariant preservation">
-   <transf name="split_vc" >
-    <goal name="in_place_counting_sort&#39;vc.24.0.0" expl="loop invariant preservation">
-    <transf name="assert" arg1="(v1 &gt;= 0)">
-     <goal name="in_place_counting_sort&#39;vc.24.0.0.0" expl="asserted formula" proved="true">
-     <proof prover="0"><result status="valid" time="0.02" steps="58"/></proof>
-     </goal>
-     <goal name="in_place_counting_sort&#39;vc.24.0.0.1" expl="loop invariant preservation">
-     <transf name="assert" arg1="(int63&#39;int (elts a)[j1] &gt;= 0)">
-      <goal name="in_place_counting_sort&#39;vc.24.0.0.1.0" expl="asserted formula" proved="true">
-      <proof prover="3"><result status="valid" time="0.20" steps="435099"/></proof>
-      </goal>
-      <goal name="in_place_counting_sort&#39;vc.24.0.0.1.1" expl="loop invariant preservation">
-      <transf name="assert" arg1="(forall i. 0 &lt;= i &lt; j1 -&gt; 0 &lt;= (elts a)[i] &lt; k)">
-       <goal name="in_place_counting_sort&#39;vc.24.0.0.1.1.0" expl="asserted formula">
-       <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
-       <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="435293"/></proof>
-       <proof prover="3"><result status="timeout" time="5.00" steps="5513869"/></proof>
-       </goal>
-       <goal name="in_place_counting_sort&#39;vc.24.0.0.1.1.1" expl="loop invariant preservation" proved="true">
-       <proof prover="0"><result status="valid" time="0.04" steps="62"/></proof>
+      <goal name="in_place_counting_sort&#39;vc.23.0.1.1.1" expl="loop invariant preservation" proved="true">
+      <transf name="unfold" proved="true" arg1="sorted_sub">
+       <goal name="in_place_counting_sort&#39;vc.23.0.1.1.1.0" expl="VC for in_place_counting_sort" proved="true">
+       <transf name="unfold" proved="true" arg1="sorted_sub" arg2="in" arg3="h2">
+        <goal name="in_place_counting_sort&#39;vc.23.0.1.1.1.0.0" expl="VC for in_place_counting_sort" proved="true">
+        <proof prover="0" timelimit="60"><result status="valid" time="0.07" steps="244"/></proof>
+        </goal>
+       </transf>
        </goal>
       </transf>
       </goal>
@@ -445,32 +416,24 @@
      </goal>
     </transf>
     </goal>
-    <goal name="in_place_counting_sort&#39;vc.24.0.1" expl="loop invariant preservation">
-    <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
-    <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="339817"/></proof>
-    <proof prover="3" obsolete="true"><result status="timeout" time="5.00" steps="4903869"/></proof>
-    <transf name="case" arg1="(e &lt; j1)">
-     <goal name="in_place_counting_sort&#39;vc.24.0.1.0" expl="true case (loop invariant preservation)">
-     <proof prover="0" timelimit="60" obsolete="true"><result status="timeout" time="60.00"/></proof>
-     <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="411526"/></proof>
-     <proof prover="3" timelimit="60" obsolete="true"><result status="timeout" time="60.00" steps="27108068"/></proof>
-     <transf name="unfold" arg1="k_values" arg2="in" arg3="Requires">
-      <goal name="in_place_counting_sort&#39;vc.24.0.1.0.0" expl="true case (loop invariant preservation)">
-      <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
-      <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="436674"/></proof>
-      <proof prover="3" obsolete="true"><result status="timeout" time="5.00" steps="5403826"/></proof>
-      </goal>
-     </transf>
+   </transf>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="in_place_counting_sort&#39;vc.24" expl="loop invariant preservation" proved="true">
+  <transf name="introduce_premises" proved="true" >
+   <goal name="in_place_counting_sort&#39;vc.24.0" expl="loop invariant preservation" proved="true">
+   <transf name="assert" proved="true" arg1="(forall i. 0 &lt;= i &lt; j - 1 -&gt; 0 &lt;= (elts a)[i] &lt;= v)">
+    <goal name="in_place_counting_sort&#39;vc.24.0.0" expl="asserted formula" proved="true">
+    <proof prover="3"><result status="valid" time="0.23" steps="469660"/></proof>
+    </goal>
+    <goal name="in_place_counting_sort&#39;vc.24.0.1" expl="loop invariant preservation" proved="true">
+    <transf name="assert" proved="true" arg1="((elts a)[j-1] = v)">
+     <goal name="in_place_counting_sort&#39;vc.24.0.1.0" expl="asserted formula" proved="true">
+     <proof prover="3"><result status="valid" time="1.78" steps="2638284"/></proof>
      </goal>
-     <goal name="in_place_counting_sort&#39;vc.24.0.1.1" expl="false case (loop invariant preservation)" proved="true">
-     <transf name="assert" proved="true" arg1="(e = j1)">
-      <goal name="in_place_counting_sort&#39;vc.24.0.1.1.0" expl="asserted formula" proved="true">
-      <proof prover="0"><result status="valid" time="0.03" steps="60"/></proof>
-      </goal>
-      <goal name="in_place_counting_sort&#39;vc.24.0.1.1.1" expl="false case (loop invariant preservation)" proved="true">
-      <proof prover="3"><result status="valid" time="0.40" steps="702528"/></proof>
-      </goal>
-     </transf>
+     <goal name="in_place_counting_sort&#39;vc.24.0.1.1" expl="loop invariant preservation" proved="true">
+     <proof prover="0"><result status="valid" time="0.05" steps="153"/></proof>
      </goal>
     </transf>
     </goal>
@@ -478,34 +441,20 @@
    </goal>
   </transf>
   </goal>
-  <goal name="in_place_counting_sort&#39;vc.25" expl="loop invariant preservation">
-  <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
-  <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="418315"/></proof>
-  <proof prover="3" obsolete="true"><result status="timeout" time="5.00" steps="4076090"/></proof>
-  <transf name="introduce_premises" >
-   <goal name="in_place_counting_sort&#39;vc.25.0" expl="loop invariant preservation">
-   <transf name="assert" arg1="(occ v (toi (elts a)) 0 (int63&#39;int j) = occ v (toi (elts a)) 0 (int63&#39;int j1) + 1)">
-    <goal name="in_place_counting_sort&#39;vc.26.0.0" expl="asserted formula">
-    <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
-    <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="391463"/></proof>
-    <proof prover="3" obsolete="true"><result status="valid" time="1.63" steps="2035972"/></proof>
+  <goal name="in_place_counting_sort&#39;vc.25" expl="loop invariant preservation" proved="true">
+  <transf name="introduce_premises" proved="true" >
+   <goal name="in_place_counting_sort&#39;vc.25.0" expl="loop invariant preservation" proved="true">
+   <transf name="assert" proved="true" arg1="(forall i. 0 &lt;= i &lt; j1 -&gt; (elts a1)[i] = (elts a)[i])">
+    <goal name="in_place_counting_sort&#39;vc.25.0.0" expl="asserted formula" proved="true">
+    <proof prover="3"><result status="valid" time="0.25" steps="517299"/></proof>
     </goal>
-    <goal name="in_place_counting_sort&#39;vc.26.0.1" expl="loop invariant preservation">
-    <transf name="assert" arg1="(occ v (toi (elts a1)) 0 (int63&#39;int j1) = occ v (toi (elts a)) 0 (int63&#39;int j1))">
-     <goal name="in_place_counting_sort&#39;vc.26.0.1.0" expl="asserted formula">
-     <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
-     <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="367823"/></proof>
-     <proof prover="3" obsolete="true"><result status="timeout" time="5.00" steps="4778976"/></proof>
-     <transf name="remove" arg1="real,string,tuple0,unit,zero,one,(*),(&gt;),abs,div,mod,int63&#39;maxInt,int63&#39;minInt,in_bounds,cons,([..]),([_..]),([.._]),(++),Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_le,Abs_pos,Div_mod,Div_bound,Mod_bound,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_some,to_int_in_bounds,extensionality,length_nonnegative,create&#39;spec,empty&#39;def,cons&#39;spec,snoc&#39;spec,([..])&#39;spec,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,(++)&#39;spec,sorted_cons,sorted_append,aux,Requires1,Ensures,LoopInvariant,H3,H9,LoopInvariant5,LoopInvariant9,Ensures5,H11,LoopInvariant10,occ_cons,occ_snoc,occ_tail,append_num_occ,permut_sub,permut_all,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,permut_exists,mem_append,mem_tail,permut_all_mem,exchange_permut_all">
-      <goal name="in_place_counting_sort&#39;vc.26.0.1.0.0" expl="asserted formula">
-      <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="319653"/></proof>
-      <proof prover="3" timelimit="30" obsolete="true"><result status="timeout" time="30.00" steps="9841269"/></proof>
-      <proof prover="4" obsolete="true"><result status="timeout" time="5.00" steps="539996"/></proof>
-      </goal>
-     </transf>
+    <goal name="in_place_counting_sort&#39;vc.25.0.1" expl="loop invariant preservation" proved="true">
+    <transf name="assert" proved="true" arg1="((elts a)[j1] = v)">
+     <goal name="in_place_counting_sort&#39;vc.25.0.1.0" expl="asserted formula" proved="true">
+     <proof prover="3"><result status="valid" time="0.23" steps="444262"/></proof>
      </goal>
-     <goal name="in_place_counting_sort&#39;vc.26.0.1.1" expl="loop invariant preservation">
-     <proof prover="0" obsolete="true"><result status="valid" time="0.03" steps="60"/></proof>
+     <goal name="in_place_counting_sort&#39;vc.25.0.1.1" expl="loop invariant preservation" proved="true">
+     <proof prover="3" timelimit="20"><result status="valid" time="12.46" steps="10045586"/></proof>
      </goal>
     </transf>
     </goal>
@@ -513,8 +462,26 @@
    </goal>
   </transf>
   </goal>
-  <goal name="in_place_counting_sort&#39;vc.26" expl="loop invariant preservation">
-  <proof prover="3" timelimit="1"><result status="timeout" time="1.00" steps="1827048"/></proof>
+  <goal name="in_place_counting_sort&#39;vc.26" expl="loop invariant preservation" proved="true">
+  <transf name="introduce_premises" proved="true" >
+   <goal name="in_place_counting_sort&#39;vc.26.0" expl="loop invariant preservation" proved="true">
+   <transf name="assert" proved="true" arg1="(numeq v (elts a) 0 (int63&#39;int j) = numeq v (elts a) 0 (int63&#39;int j1) + 1)">
+    <goal name="in_place_counting_sort&#39;vc.26.0.0" expl="asserted formula" proved="true">
+    <proof prover="3"><result status="valid" time="1.38" steps="1760777"/></proof>
+    </goal>
+    <goal name="in_place_counting_sort&#39;vc.26.0.1" expl="loop invariant preservation" proved="true">
+    <transf name="assert" proved="true" arg1="(forall i. 0 &lt;= i &lt; j1 -&gt; (elts a1)[i] = (elts a)[i])">
+     <goal name="in_place_counting_sort&#39;vc.26.0.1.0" expl="asserted formula" proved="true">
+     <proof prover="3"><result status="valid" time="0.40" steps="703656"/></proof>
+     </goal>
+     <goal name="in_place_counting_sort&#39;vc.26.0.1.1" expl="loop invariant preservation" proved="true">
+     <proof prover="3"><result status="valid" time="0.35" steps="655054"/></proof>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   </goal>
+  </transf>
   </goal>
   <goal name="in_place_counting_sort&#39;vc.27" expl="loop invariant preservation" proved="true">
   <proof prover="0"><result status="valid" time="0.44" steps="365"/></proof>
@@ -525,105 +492,65 @@
   <goal name="in_place_counting_sort&#39;vc.29" expl="loop invariant preservation" proved="true">
   <proof prover="3" timelimit="1"><result status="valid" time="0.09" steps="209833"/></proof>
   </goal>
-  <goal name="in_place_counting_sort&#39;vc.30" expl="loop invariant preservation">
-  <transf name="introduce_premises" >
-   <goal name="in_place_counting_sort&#39;vc.30.0" expl="loop invariant preservation">
-   <transf name="assert" arg1="(occ f (toi (elts a)) 0 (int63&#39;int j1) = occ f (toi (elts a1)) 0 (int63&#39;int j1))">
-    <goal name="in_place_counting_sort&#39;vc.30.0.0" expl="asserted formula">
-    <transf name="assert" arg1="(forall i. 0 &lt;= i &lt; j1 -&gt; (elts a1)[i] = (elts a)[i])">
-     <goal name="in_place_counting_sort&#39;vc.30.0.0.0" expl="asserted formula">
-     <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
-     <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="176988"/></proof>
-     <proof prover="3" obsolete="true"><result status="timeout" time="5.00" steps="5422958"/></proof>
-     </goal>
-     <goal name="in_place_counting_sort&#39;vc.30.0.0.1" expl="asserted formula">
-     <transf name="unfold" arg1="occ">
-      <goal name="in_place_counting_sort&#39;vc.30.0.0.1.0" expl="asserted formula">
-      <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
-      <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="426444"/></proof>
-      <proof prover="3" obsolete="true"><result status="valid" time="0.57" steps="1064855"/></proof>
-      </goal>
-     </transf>
-     </goal>
-    </transf>
-    <transf name="assert" arg1="(forall i. 0 &lt;= i &lt; j1 -&gt; (toi (elts a1))[i] = (toi (elts a))[i])">
-     <goal name="in_place_counting_sort&#39;vc.30.0.0.0" expl="asserted formula">
-     <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
-     <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="447753"/></proof>
-     <proof prover="3" obsolete="true"><result status="valid" time="0.49" steps="811196"/></proof>
-     </goal>
-     <goal name="in_place_counting_sort&#39;vc.30.0.0.1" expl="asserted formula">
-     <proof prover="3" obsolete="true"><result status="valid" time="0.78" steps="1281114"/></proof>
-     </goal>
-    </transf>
-    </goal>
-    <goal name="in_place_counting_sort&#39;vc.30.0.1" expl="loop invariant preservation">
-    <proof prover="0" obsolete="true"><result status="valid" time="0.06" steps="64"/></proof>
-    </goal>
-   </transf>
-   </goal>
-  </transf>
+  <goal name="in_place_counting_sort&#39;vc.30" expl="loop invariant preservation" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="67"/></proof>
   </goal>
   <goal name="in_place_counting_sort&#39;vc.31" expl="out of loop bounds" proved="true">
   <proof prover="0"><result status="valid" time="0.61" steps="747"/></proof>
   </goal>
   <goal name="in_place_counting_sort&#39;vc.32" expl="assertion" proved="true">
-  <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
-  <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="320798"/></proof>
   <proof prover="3"><result status="valid" time="0.17" steps="181219"/></proof>
   </goal>
-  <goal name="in_place_counting_sort&#39;vc.33" expl="postcondition">
-  <transf name="split_vc" >
+  <goal name="in_place_counting_sort&#39;vc.33" expl="postcondition" proved="true">
+  <transf name="split_vc" proved="true" >
    <goal name="in_place_counting_sort&#39;vc.33.0" expl="VC for in_place_counting_sort" proved="true">
    <proof prover="0"><result status="valid" time="0.03" steps="31"/></proof>
    </goal>
-   <goal name="in_place_counting_sort&#39;vc.33.1" expl="VC for in_place_counting_sort">
-   <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
-   <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="383394"/></proof>
-   <proof prover="3" obsolete="true"><result status="timeout" time="5.00" steps="5007611"/></proof>
-   <transf name="unfold" arg1="permut_all">
-    <goal name="in_place_counting_sort&#39;vc.33.1.0" expl="VC for in_place_counting_sort">
-    <transf name="unfold" arg1="permut">
-     <goal name="in_place_counting_sort&#39;vc.33.1.0.0" expl="VC for in_place_counting_sort">
-     <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
-     <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="473392"/></proof>
-     <proof prover="3" obsolete="true"><result status="timeout" time="5.00" steps="4775915"/></proof>
-     <transf name="split_vc" >
+   <goal name="in_place_counting_sort&#39;vc.33.1" expl="VC for in_place_counting_sort" proved="true">
+   <transf name="unfold" proved="true" arg1="permut_all">
+    <goal name="in_place_counting_sort&#39;vc.33.1.0" expl="VC for in_place_counting_sort" proved="true">
+    <transf name="unfold" proved="true" arg1="permut">
+     <goal name="in_place_counting_sort&#39;vc.33.1.0.0" expl="VC for in_place_counting_sort" proved="true">
+     <transf name="split_vc" proved="true" >
       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.0" expl="VC for in_place_counting_sort" proved="true">
-      <proof prover="0"><result status="valid" time="0.02" steps="31"/></proof>
+      <proof prover="0"><result status="valid" time="0.03" steps="31"/></proof>
       </goal>
       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.1" expl="VC for in_place_counting_sort" proved="true">
-      <proof prover="0"><result status="valid" time="0.03" steps="31"/></proof>
+      <proof prover="0"><result status="valid" time="0.02" steps="31"/></proof>
       </goal>
       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.2" expl="VC for in_place_counting_sort" proved="true">
       <proof prover="0"><result status="valid" time="0.02" steps="29"/></proof>
       </goal>
       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.3" expl="VC for in_place_counting_sort" proved="true">
-      <proof prover="0"><result status="valid" time="0.03" steps="31"/></proof>
+      <proof prover="0"><result status="valid" time="0.02" steps="31"/></proof>
       </goal>
       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.4" expl="VC for in_place_counting_sort" proved="true">
-      <proof prover="0"><result status="valid" time="0.02" steps="31"/></proof>
+      <proof prover="0"><result status="valid" time="0.03" steps="31"/></proof>
       </goal>
       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.5" expl="VC for in_place_counting_sort" proved="true">
       <proof prover="0"><result status="valid" time="0.02" steps="29"/></proof>
       </goal>
-      <goal name="in_place_counting_sort&#39;vc.33.1.0.0.6" expl="VC for in_place_counting_sort">
-      <transf name="assert" arg1="(forall i. 0 &lt;= i &lt; length a1 -&gt; 0 &lt;= (toi (elts a1))[i] &lt; k)">
-       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.6.0" expl="asserted formula">
-       <proof prover="0" obsolete="true"><result status="valid" time="0.04" steps="121"/></proof>
-       </goal>
-       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.6.1" expl="VC for in_place_counting_sort">
-       <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
-       <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="486155"/></proof>
-       <proof prover="3" obsolete="true"><result status="timeout" time="5.00" steps="4828424"/></proof>
-       <transf name="assert" arg1="(length1 a = length1 a1)">
-        <goal name="in_place_counting_sort&#39;vc.33.1.0.0.6.1.0" expl="asserted formula">
-        <proof prover="0" obsolete="true"><result status="valid" time="0.02" steps="31"/></proof>
-        </goal>
-        <goal name="in_place_counting_sort&#39;vc.33.1.0.0.6.1.1" expl="VC for in_place_counting_sort">
-        <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
-        <proof prover="1" obsolete="true"><result status="timeout" time="5.00" steps="476561"/></proof>
-        <proof prover="3" obsolete="true"><result status="timeout" time="5.00" steps="4894828"/></proof>
+      <goal name="in_place_counting_sort&#39;vc.33.1.0.0.6" expl="VC for in_place_counting_sort" proved="true">
+      <transf name="unfold" proved="true" arg1="occ">
+       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.6.0" expl="VC for in_place_counting_sort" proved="true">
+       <transf name="unfold" proved="true" arg1="iseq">
+        <goal name="in_place_counting_sort&#39;vc.33.1.0.0.6.0.0" expl="VC for in_place_counting_sort" proved="true">
+        <transf name="unfold" proved="true" arg1="numeq" arg2="in" arg3="LoopInvariant">
+         <goal name="in_place_counting_sort&#39;vc.33.1.0.0.6.0.0.0" expl="VC for in_place_counting_sort" proved="true">
+         <transf name="inst_rem" proved="true" arg1="LoopInvariant" arg2="(int63&#39;int v)">
+          <goal name="in_place_counting_sort&#39;vc.33.1.0.0.6.0.0.0.0" expl="VC for in_place_counting_sort" proved="true">
+          <transf name="assert" proved="true" arg1="(j = length1 (elts a))">
+           <goal name="in_place_counting_sort&#39;vc.33.1.0.0.6.0.0.0.0.0" expl="asserted formula" proved="true">
+           <proof prover="0"><result status="valid" time="0.02" steps="32"/></proof>
+           </goal>
+           <goal name="in_place_counting_sort&#39;vc.33.1.0.0.6.0.0.0.0.1" expl="VC for in_place_counting_sort" proved="true">
+           <proof prover="3" timelimit="30"><result status="valid" time="8.25" steps="11729941"/></proof>
+           </goal>
+          </transf>
+          </goal>
+         </transf>
+         </goal>
+        </transf>
         </goal>
        </transf>
        </goal>
