@@ -99,7 +99,11 @@ module Seq
   use export seq.Seq
   use export seq.FoldLeft
   use export seq.FoldRight
-  use export seq.Sorted
+
+  use int.Int, mach.int.Int63
+  predicate le (x y: int63) =
+    x <= y
+  clone export seq.Sorted with type t = int63, predicate le, goal .
 
 end
 

@@ -49,7 +49,7 @@ module Spec
 
 end
 
-module CountingSortImpl
+module Impl
 
   use int.Int
   use mach.int.Int63
@@ -85,13 +85,13 @@ module CountingSortImpl
       invariant { forall e: int. 0 <= e < j -> 0 <= b[e] < v }
       invariant { forall f: int.
         0 <= f < v -> numeq f b 0 j = numeq f a 0 (length a) }
-      for i = 1 to c[v] do
-        invariant { j -i+1 = numlt v a 0 (length a) }
+      for _i = 1 to c[v] do
+        invariant { j -_i+1 = numlt v a 0 (length a) }
         invariant { sorted_sub b 0 j }
         invariant { forall e: int. 0 <= e < j -> 0 <= b[e] <= v }
         invariant { forall f: int.
           0 <= f < v -> numeq f b 0 j = numeq f a 0 (length a) }
-        invariant { numeq v b 0 j = i-1 }
+        invariant { numeq v b 0 j = _i-1 }
         b[j] <- v;
         j <- j + 1
       done
@@ -116,13 +116,13 @@ module CountingSortImpl
       invariant { forall e: int. 0 <= e < j -> 0 <= a[e] < v }
       invariant { forall f: int.
         0 <= f < v -> numeq f a 0 j = numeq f (old a) 0 (length a) }
-      for i = 1 to c[v] do
-        invariant { j -i+1 = numlt v (old a) 0 (length a) }
+      for _i = 1 to c[v] do
+        invariant { j -_i+1 = numlt v (old a) 0 (length a) }
         invariant { sorted_sub a 0 j }
         invariant { forall e: int. 0 <= e < j -> 0 <= a[e] <= v }
         invariant { forall f: int.
           0 <= f < v -> numeq f a 0 j = numeq f (old a) 0 (length a) }
-        invariant { numeq v a 0 j = i-1 }
+        invariant { numeq v a 0 j = _i-1 }
         a[j] <- v;
         j <- j + 1;
         assert {forall f. 0 <= f < v -> numeq f a 0 j = numeq f a 0 (j - 1)}
@@ -134,7 +134,7 @@ end
 
 module Correct
 
-  use CountingSortImpl
+  use Impl
 
   clone CountingSort.Sig with
     val counting_sort, val in_place_counting_sort

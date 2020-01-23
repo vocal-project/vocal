@@ -3,7 +3,7 @@
 SRC=../../src/
 
 WHY3=Vector UnionFind PriorityQueue Arrays ZipperList PairingHeap \
-	Mjrty RingBuffer#Queue
+	Mjrty RingBuffer CountingSort #Queue
 
 WHY3ML=$(addsuffix .ml, $(WHY3))
 WHY3IMPL=$(addsuffix _impl, $(WHY3))

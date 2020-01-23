@@ -11,7 +11,8 @@
 (*@ predicate k_values (k: int) (a: int seq) =
       forall i: integer. 0 <= i < length a -> 0 <= a[i] < k *)
 
-(*@ open Seq *)
+(*@ open Seq     *)
+(*@ open SeqPerm *)
 
 val counting_sort: int -> int array -> int array -> unit
 (*@ counting_sort k a b
