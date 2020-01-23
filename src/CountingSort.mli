@@ -1,3 +1,13 @@
+(**************************************************************************)
+(*                                                                        *)
+(*  VOCaL -- A Verified OCaml Library                                     *)
+(*                                                                        *)
+(*  Copyright (c) 2020 The VOCaL Project                                  *)
+(*                                                                        *)
+(*  This software is free software, distributed under the MIT license     *)
+(*  (as described in file LICENSE enclosed).                              *)
+(**************************************************************************)
+
 (*@ predicate k_values (k: int) (a: int seq) =
       forall i: integer. 0 <= i < length a -> 0 <= a[i] < k *)
 

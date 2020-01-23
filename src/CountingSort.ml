@@ -1,3 +1,13 @@
+(**************************************************************************)
+(*                                                                        *)
+(*  VOCaL -- A Verified OCaml Library                                     *)
+(*                                                                        *)
+(*  Copyright (c) 2020 The VOCaL Project                                  *)
+(*                                                                        *)
+(*  This software is free software, distributed under the MIT license     *)
+(*  (as described in file LICENSE enclosed).                              *)
+(**************************************************************************)
+
 let counting_sort (k: int) (a: ((int) array)) (b: ((int) array)) : unit =
   let c = Array.make k 0 in
   (let o = Array.length a - 1 in let o1 = 0 in
