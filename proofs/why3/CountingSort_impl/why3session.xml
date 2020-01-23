@@ -11,7 +11,7 @@
  <proof prover="0" timelimit="5"><result status="valid" time="3.37" steps="4916"/></proof>
  </goal>
 </theory>
-<theory name="CountingSortImpl" proved="true">
+<theory name="Impl" proved="true">
  <goal name="Sorted.TO.Refl" proved="true">
  <proof prover="0" timelimit="5"><result status="valid" time="0.01" steps="6"/></proof>
  <proof prover="3"><result status="valid" time="0.04" steps="77481"/></proof>
