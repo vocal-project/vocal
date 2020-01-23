@@ -99,6 +99,7 @@ module Seq
   use export seq.Seq
   use export seq.FoldLeft
   use export seq.FoldRight
+  use export seq.Sorted
 
 end
 
@@ -126,17 +127,6 @@ module Set
   use Stdlib
   function sum (f: 'a -> integer) (x: set 'a) : integer = FSum.sum x f
 
-  use mach.int.Int63
-
-  function integer_of_int (x: int63) : int = to_int x
-
-  predicate le (x y: int63) = x <= y
-
-  clone export seq.Sorted with
-    type t = int63, predicate le = le
-
-  use export seq.Permut
-
 end
 
 module Map
@@ -149,4 +139,8 @@ module Peano
 
   use export mach.peano.Peano
 
+end
+
+module SeqPerm
+  use export seq.Permut
 end
