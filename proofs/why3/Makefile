@@ -2,7 +2,7 @@
 
 SRC=../../src/
 
-WHY3=Vector UnionFind PriorityQueueVector Arrays ZipperList PairingHeap \
+WHY3=Vector UnionFind PriorityQueue Arrays ZipperList PairingHeap \
 	Mjrty RingBuffer#Queue
 
 WHY3ML=$(addsuffix .ml, $(WHY3))
@@ -25,17 +25,17 @@ WHY3EXTRACT=why3 extract -D ocaml64 -D uf.drv\
 WHY3EXTRACTNR=why3 extract -D ocaml64 -D uf.drv\
 		--modular
 
-$(SRC)PriorityQueueVector.ml : PriorityQueueVector_impl.mlw $(SRC)PriorityQueueVector.mli
-	$(WHY3EXTRACTNR)  -L . -L $(SRC) -o $(SRC) PriorityQueueVector_impl.Impl
-	sed -e "s/__Sig//g" $(SRC)PriorityQueueVector_impl__Impl.ml > $@
-	rm -f $(SRC)PriorityQueueVector_impl__Impl.ml
-	if test -f $(SRC)PriorityQueueVector_impl.mli.equiv; then \
+$(SRC)PriorityQueue.ml : PriorityQueue_impl.mlw $(SRC)PriorityQueue.mli
+	$(WHY3EXTRACTNR)  -L . -L $(SRC) -o $(SRC) PriorityQueue_impl.Impl
+	sed -e "s/__Sig//g" $(SRC)PriorityQueue_impl__Impl.ml > $@
+	rm -f $(SRC)PriorityQueue_impl__Impl.ml
+	if test -f $(SRC)PriorityQueue_impl.mli.equiv; then \
 	  echo ""  >> $@; \
-	  cat $(SRC)PriorityQueueVector_impl.mli.equiv >> $@; \
+	  cat $(SRC)PriorityQueue_impl.mli.equiv >> $@; \
 	fi
-	if test -f $(SRC)PriorityQueueVector_impl.ml.unproved; then \
+	if test -f $(SRC)PriorityQueue_impl.ml.unproved; then \
 	  echo ""  >> $@; \
-	  cat $(SRC)PriorityQueueVector_impl.ml.unproved >> $@; \
+	  cat $(SRC)PriorityQueue_impl.ml.unproved >> $@; \
 	fi
 
 $(SRC)%.ml: %_impl.mlw $(SRC)%.mli

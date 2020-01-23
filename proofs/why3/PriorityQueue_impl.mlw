@@ -353,7 +353,7 @@ module Correct
 
   use Impl
 
-  clone PriorityQueueVector.Sig with
+  clone PriorityQueue.Sig with
     type Make.X.t = Make.X.t,
     function Make.X.cmp = Make.X.cmp,
     goal Make.X.is_pre_order,

@@ -6,7 +6,7 @@
 <prover id="2" name="Z3" version="4.8.6" timelimit="1" steplimit="0" memlimit="1000"/>
 <prover id="6" name="Alt-Ergo" version="2.3.0" timelimit="1" steplimit="0" memlimit="1000"/>
 <file format="whyml" proved="true">
-<path name=".."/><path name="PriorityQueueVector_impl.mlw"/>
+<path name=".."/><path name="PriorityQueue_impl.mlw"/>
 <theory name="Impl" proved="true">
  <goal name="Make.heap&#39;vc" expl="VC for heap" proved="true">
  <proof prover="6"><result status="valid" time="0.05" steps="86"/></proof>
