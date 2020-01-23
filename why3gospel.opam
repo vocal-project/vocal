@@ -14,11 +14,16 @@ dev-repo: "git://github.com/vocal-project/vocal"
 bug-reports: "https://github.com/vocal-project/vocal/issues"
 doc: "https://github.com/vocal-project/vocal/blob/master/README.md"
 build: [
-  [ "dune" "build" "-p" name ]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name] {with-test}
 ]
 depends: [
-  "dune"
-  #"why3"
+  "dune" {>= "1.2.0"}
+  "why3"
   "gospel"
   "ocaml" {>= "4.07"}
+]
+
+pin-depends: [
+  [ "why3.dev" "git+https://gitlab.inria.fr/why3/why3.git#f40af3b05ee9b553e90be5a7b04d7fdf4d26f780" ]
 ]
