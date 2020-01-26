@@ -2,6 +2,7 @@
 <!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
 "http://why3.lri.fr/why3session.dtd">
 <why3session shape_version="8">
+<prover id="0" name="CVC4" version="1.7" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="1" name="CVC4" version="1.5" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="2" name="Z3" version="4.8.6" timelimit="1" steplimit="0" memlimit="1000"/>
 <prover id="6" name="Alt-Ergo" version="2.3.0" timelimit="1" steplimit="0" memlimit="1000"/>
@@ -12,7 +13,7 @@
  <proof prover="6"><result status="valid" time="0.05" steps="86"/></proof>
  </goal>
  <goal name="Make.num_exist" proved="true">
- <proof prover="2"><result status="valid" time="0.11" steps="332688"/></proof>
+ <proof prover="2"><result status="valid" time="0.11"/></proof>
  </goal>
  <goal name="Make.min_coherent&#39;vc" expl="VC for min_coherent" proved="true">
  <transf name="split_vc" proved="true" >
@@ -33,7 +34,7 @@
    <goal name="min_coherent&#39;vc.3.1" expl="false case (postcondition)" proved="true">
    <transf name="split_all_full" proved="true" >
     <goal name="min_coherent&#39;vc.3.1.0" expl="false case (postcondition)" proved="true">
-    <proof prover="1" timelimit="50"><result status="valid" time="2.48" steps="524717"/></proof>
+    <proof prover="1" timelimit="50"><result status="valid" time="4.72"/></proof>
     </goal>
    </transf>
    </goal>
@@ -47,7 +48,7 @@
  <goal name="Make.sub_occ_1" proved="true">
  <transf name="split_all_full" proved="true" >
   <goal name="sub_occ_1.0" proved="true">
-  <proof prover="1"><result status="valid" time="0.98" steps="138764"/></proof>
+  <proof prover="1"><result status="valid" time="1.38"/></proof>
   </goal>
  </transf>
  </goal>
@@ -56,21 +57,21 @@
   <goal name="sub_occ_2.0" proved="true">
   <transf name="assert" proved="true" arg1="(numocc a1 (view a1)[int63&#39;int i] 0 i   = numocc a2 (view a1)[int63&#39;int i] 0 i)">
    <goal name="sub_occ_2.0.0" expl="asserted formula" proved="true">
-   <proof prover="1" timelimit="50"><result status="valid" time="0.81" steps="114222"/></proof>
+   <proof prover="1" timelimit="50"><result status="valid" time="1.35"/></proof>
    </goal>
    <goal name="sub_occ_2.0.1" proved="true">
    <transf name="assert" proved="true" arg1="(numocc a1 (view a1)[int63&#39;int i] (i+1) (length1 (view a1))  = numocc a2 (view a1)[int63&#39;int i] (i+1) (length1 (view a2)))">
     <goal name="sub_occ_2.0.1.0" expl="asserted formula" proved="true">
     <transf name="split_all_full" proved="true" >
      <goal name="sub_occ_2.0.1.0.0" expl="asserted formula" proved="true">
-     <proof prover="1"><result status="valid" time="2.64" steps="183018"/></proof>
+     <proof prover="1"><result status="valid" time="2.64"/></proof>
      </goal>
     </transf>
     </goal>
     <goal name="sub_occ_2.0.1.1" proved="true">
     <transf name="split_all_full" proved="true" >
      <goal name="sub_occ_2.0.1.1.0" proved="true">
-     <proof prover="1"><result status="valid" time="3.02" steps="290293"/></proof>
+     <proof prover="1"><result status="valid" time="5.60"/></proof>
      </goal>
     </transf>
     </goal>
@@ -85,7 +86,7 @@
   <goal name="sub_occ_3.0" proved="true">
   <transf name="split_all_full" proved="true" >
    <goal name="sub_occ_3.0.0" proved="true">
-   <proof prover="1" timelimit="40"><result status="valid" time="0.71" steps="113342"/></proof>
+   <proof prover="1" timelimit="40"><result status="valid" time="1.13"/></proof>
    </goal>
   </transf>
   </goal>
@@ -112,10 +113,10 @@
      <goal name="sub_order&#39;vc.0.0.0.1" expl="false case" proved="true">
      <transf name="case" proved="true" arg1="(i = div (i1 - 1) 2)">
       <goal name="sub_order&#39;vc.0.0.0.1.0" expl="false case (true case)" proved="true">
-      <proof prover="6"><result status="valid" time="0.86" steps="1661"/></proof>
+      <proof prover="6"><result status="valid" time="0.86" steps="1664"/></proof>
       </goal>
       <goal name="sub_order&#39;vc.0.0.0.1.1" expl="false case" proved="true">
-      <proof prover="6"><result status="valid" time="0.83" steps="1601"/></proof>
+      <proof prover="6"><result status="valid" time="0.83" steps="1558"/></proof>
       </goal>
      </transf>
      </goal>
@@ -132,7 +133,7 @@
   <goal name="pop_occ_1.0" proved="true">
   <transf name="assert" proved="true" arg1="(numocc a1 x 0 (length1 (view a2)) = numocc a2 x 0 (length1 (view a2)))">
    <goal name="pop_occ_1.0.0" expl="asserted formula" proved="true">
-   <proof prover="6" timelimit="5"><result status="valid" time="2.26" steps="1600"/></proof>
+   <proof prover="6" timelimit="5"><result status="valid" time="3.44" steps="1600"/></proof>
    </goal>
    <goal name="pop_occ_1.0.1" proved="true">
    <proof prover="6"><result status="valid" time="0.13" steps="99"/></proof>
@@ -148,7 +149,7 @@
    <goal name="pop_occ_2.0.0" proved="true">
    <transf name="split_all_full" proved="true" >
     <goal name="pop_occ_2.0.0.0" proved="true">
-    <proof prover="1"><result status="valid" time="2.24" steps="449450"/></proof>
+    <proof prover="0"><result status="valid" time="1.85"/></proof>
     </goal>
    </transf>
    </goal>
@@ -164,7 +165,7 @@
   <goal name="push_occ&#39;vc.0" expl="postcondition" proved="true">
   <transf name="assert" proved="true" arg1="(numocc a1 x 0 (length1 (view a1)) = numocc a2 x 0 (length1 (view a2) - 1))">
    <goal name="push_occ&#39;vc.0.0" expl="asserted formula" proved="true">
-   <proof prover="6" timelimit="5"><result status="valid" time="2.43" steps="1539"/></proof>
+   <proof prover="6" timelimit="5"><result status="valid" time="3.96" steps="1539"/></proof>
    </goal>
    <goal name="push_occ&#39;vc.0.1" expl="postcondition" proved="true">
    <proof prover="6"><result status="valid" time="0.18" steps="100"/></proof>
@@ -197,7 +198,7 @@
  <proof prover="6"><result status="valid" time="0.04" steps="71"/></proof>
  </goal>
  <goal name="Make.trans&#39;vc" expl="VC for trans" proved="true">
- <proof prover="6"><result status="valid" time="0.31" steps="825"/></proof>
+ <proof prover="6"><result status="valid" time="0.31" steps="442"/></proof>
  </goal>
  <goal name="Make.create&#39;vc" expl="VC for create" proved="true">
  <proof prover="6"><result status="valid" time="0.05" steps="98"/></proof>
@@ -263,7 +264,7 @@
   <proof prover="6"><result status="valid" time="0.04" steps="32"/></proof>
   </goal>
   <goal name="move_down&#39;vc.14" expl="precondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.09" steps="60"/></proof>
+  <proof prover="6"><result status="valid" time="0.09" steps="171"/></proof>
   </goal>
   <goal name="move_down&#39;vc.15" expl="precondition" proved="true">
   <proof prover="6"><result status="valid" time="0.07" steps="62"/></proof>
@@ -272,7 +273,7 @@
   <proof prover="6"><result status="valid" time="0.04" steps="34"/></proof>
   </goal>
   <goal name="move_down&#39;vc.17" expl="assertion" proved="true">
-  <proof prover="2"><result status="valid" time="0.10" steps="209793"/></proof>
+  <proof prover="2"><result status="valid" time="0.10"/></proof>
   </goal>
   <goal name="move_down&#39;vc.18" expl="precondition" proved="true">
   <proof prover="6"><result status="valid" time="0.04" steps="40"/></proof>
@@ -281,10 +282,10 @@
   <proof prover="6"><result status="valid" time="0.05" steps="40"/></proof>
   </goal>
   <goal name="move_down&#39;vc.20" expl="precondition" proved="true">
-  <proof prover="6" timelimit="5"><result status="valid" time="3.50" steps="2261"/></proof>
+  <proof prover="6" timelimit="5"><result status="valid" time="2.94" steps="2304"/></proof>
   </goal>
   <goal name="move_down&#39;vc.21" expl="precondition" proved="true">
-  <proof prover="6" timelimit="40"><result status="valid" time="1.30" steps="2023"/></proof>
+  <proof prover="6" timelimit="40"><result status="valid" time="2.15" steps="2143"/></proof>
   </goal>
   <goal name="move_down&#39;vc.22" expl="precondition" proved="true">
   <proof prover="6"><result status="valid" time="0.44" steps="621"/></proof>
@@ -316,7 +317,7 @@
   </transf>
   </goal>
   <goal name="move_down&#39;vc.29" expl="postcondition" proved="true">
-  <proof prover="1" timelimit="50"><result status="valid" time="1.48" steps="102503"/></proof>
+  <proof prover="1" timelimit="50"><result status="valid" time="1.48"/></proof>
   </goal>
   <goal name="move_down&#39;vc.30" expl="postcondition" proved="true">
   <transf name="split_vc" proved="true" >
@@ -363,12 +364,12 @@
   <goal name="move_down&#39;vc.37" expl="precondition" proved="true">
   <transf name="split_all_full" proved="true" >
    <goal name="move_down&#39;vc.37.0" expl="precondition" proved="true">
-   <proof prover="6"><result status="valid" time="1.15" steps="1294"/></proof>
+   <proof prover="6"><result status="valid" time="1.15" steps="1292"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="move_down&#39;vc.38" expl="precondition" proved="true">
-  <proof prover="6"><result status="valid" time="1.28" steps="1043"/></proof>
+  <proof prover="6"><result status="valid" time="1.28" steps="1172"/></proof>
   </goal>
   <goal name="move_down&#39;vc.39" expl="postcondition" proved="true">
   <transf name="instantiate" proved="true" arg1="sub_order" arg2="a1,a,i">
@@ -378,22 +379,22 @@
   </transf>
   </goal>
   <goal name="move_down&#39;vc.40" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.09" steps="62"/></proof>
+  <proof prover="6"><result status="valid" time="0.09" steps="66"/></proof>
   </goal>
   <goal name="move_down&#39;vc.41" expl="postcondition" proved="true">
   <transf name="split_vc" proved="true" >
    <goal name="move_down&#39;vc.41.0" expl="postcondition" proved="true">
-   <proof prover="6"><result status="valid" time="0.10" steps="60"/></proof>
+   <proof prover="6"><result status="valid" time="0.10" steps="64"/></proof>
    </goal>
    <goal name="move_down&#39;vc.41.1" expl="postcondition" proved="true">
    <transf name="split_all_full" proved="true" >
     <goal name="move_down&#39;vc.41.1.0" expl="postcondition" proved="true">
-    <proof prover="2"><result status="valid" time="0.08" steps="259546"/></proof>
+    <proof prover="2"><result status="valid" time="0.08"/></proof>
     </goal>
    </transf>
    </goal>
    <goal name="move_down&#39;vc.41.2" expl="postcondition" proved="true">
-   <proof prover="6"><result status="valid" time="0.09" steps="60"/></proof>
+   <proof prover="6"><result status="valid" time="0.09" steps="64"/></proof>
    </goal>
   </transf>
   </goal>
@@ -475,7 +476,7 @@
     </transf>
     </goal>
     <goal name="extract_min_exn&#39;vc.7.1.1" expl="false case (type invariant)" proved="true">
-    <proof prover="6"><result status="valid" time="0.77" steps="736"/></proof>
+    <proof prover="6"><result status="valid" time="0.97" steps="736"/></proof>
     </goal>
    </transf>
    </goal>
@@ -503,7 +504,7 @@
   <proof prover="6"><result status="valid" time="0.05" steps="34"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.15" expl="postcondition" proved="true">
-  <proof prover="2"><result status="valid" time="0.34" steps="504956"/></proof>
+  <proof prover="2"><result status="valid" time="0.34"/></proof>
   </goal>
   <goal name="extract_min_exn&#39;vc.16" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.05" steps="22"/></proof>
@@ -540,7 +541,7 @@
   <proof prover="6"><result status="valid" time="0.04" steps="28"/></proof>
   </goal>
   <goal name="move_up&#39;vc.5" expl="precondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.17" steps="101"/></proof>
+  <proof prover="6"><result status="valid" time="0.05" steps="101"/></proof>
   </goal>
   <goal name="move_up&#39;vc.6" expl="precondition" proved="true">
   <proof prover="6"><result status="valid" time="0.08" steps="120"/></proof>
@@ -671,8 +672,8 @@
   <proof prover="6"><result status="valid" time="0.03" steps="44"/></proof>
   </goal>
   <goal name="move_up&#39;vc.34" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.73" steps="115064"/></proof>
-  <proof prover="6" timelimit="50"><result status="valid" time="32.84" steps="3900"/></proof>
+  <proof prover="1"><result status="valid" time="1.08"/></proof>
+  <proof prover="6" timelimit="50"><result status="valid" time="23.09" steps="3900"/></proof>
   </goal>
   <goal name="move_up&#39;vc.35" expl="postcondition" proved="true">
   <proof prover="6"><result status="valid" time="0.29" steps="601"/></proof>
@@ -708,7 +709,7 @@
   <proof prover="6"><result status="valid" time="0.05" steps="48"/></proof>
   </goal>
   <goal name="move_up&#39;vc.46" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.91" steps="1021"/></proof>
+  <proof prover="6"><result status="valid" time="1.11" steps="1021"/></proof>
   </goal>
   <goal name="move_up&#39;vc.47" expl="postcondition" proved="true">
   <proof prover="6"><result status="valid" time="0.03" steps="40"/></proof>

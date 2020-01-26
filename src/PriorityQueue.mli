@@ -44,7 +44,7 @@ end) : sig
       ensures b <-> h.bag = empty_bag *)
 
   val size : heap -> int
-  (* x = size h
+  (*@ x = size h
       ensures x = card h.bag *)
 
   (*@ function minimum (h: heap) : elt *)
