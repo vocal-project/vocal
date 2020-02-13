@@ -30,7 +30,7 @@ module Make (K : HashedType) = struct
 
   type key = K.t
 
-  (* A bucket is is a list of (unboxed) pairs of a key and a value. *)
+  (* A bucket is a list of (unboxed) pairs of a key and a value. *)
 
   type 'a bucket =
     Void
