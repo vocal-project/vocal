@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
 "http://why3.lri.fr/why3session.dtd">
-<why3session shape_version="8">
+<why3session shape_version="6">
 <prover id="0" name="Alt-Ergo" version="2.3.0" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="5" name="CVC4" version="1.5" timelimit="60" steplimit="0" memlimit="1000"/>
 <file format="whyml" proved="true">
@@ -49,7 +49,7 @@
   <proof prover="0"><result status="valid" time="0.06" steps="40"/></proof>
   </goal>
   <goal name="binary_search&#39;vc.13" expl="exceptional postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.31" steps="313"/></proof>
+  <proof prover="0"><result status="valid" time="0.16" steps="313"/></proof>
   </goal>
   <goal name="binary_search&#39;vc.14" expl="variant decrease" proved="true">
   <proof prover="0"><result status="valid" time="0.04" steps="34"/></proof>
@@ -125,10 +125,10 @@
   <proof prover="0"><result status="valid" time="0.04" steps="23"/></proof>
   </goal>
   <goal name="binary_search_left&#39;vc.16" expl="postcondition" proved="true">
-  <proof prover="0" timelimit="1"><result status="valid" time="1.88" steps="1011"/></proof>
+  <proof prover="0" timelimit="1"><result status="valid" time="0.98" steps="1011"/></proof>
   </goal>
   <goal name="binary_search_left&#39;vc.17" expl="postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.32" steps="298"/></proof>
+  <proof prover="0"><result status="valid" time="0.18" steps="298"/></proof>
   </goal>
  </transf>
  </goal>
@@ -183,10 +183,10 @@
   <proof prover="0"><result status="valid" time="0.04" steps="23"/></proof>
   </goal>
   <goal name="unsafe_binary_search_right&#39;vc.16" expl="postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="1.50" steps="738"/></proof>
+  <proof prover="0"><result status="valid" time="0.82" steps="738"/></proof>
   </goal>
   <goal name="unsafe_binary_search_right&#39;vc.17" expl="postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.35" steps="303"/></proof>
+  <proof prover="0"><result status="valid" time="0.19" steps="303"/></proof>
   </goal>
  </transf>
  </goal>
@@ -201,12 +201,12 @@
   <goal name="permut_rot&#39;vc.1" expl="loop invariant preservation" proved="true">
   <transf name="split_all_full" proved="true" >
    <goal name="permut_rot&#39;vc.1.0" expl="loop invariant preservation" proved="true">
-   <proof prover="5" timelimit="5"><result status="valid" time="3.33" steps="303476"/></proof>
+   <proof prover="5" timelimit="5"><result status="valid" time="2.02" steps="303476"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="permut_rot&#39;vc.2" expl="postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.60" steps="450"/></proof>
+  <proof prover="0"><result status="valid" time="0.33" steps="450"/></proof>
   </goal>
   <goal name="permut_rot&#39;vc.3" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.03" steps="20"/></proof>
@@ -291,7 +291,7 @@
    <goal name="binary_sort&#39;vc.19.0" expl="loop invariant preservation" proved="true">
    <transf name="case" proved="true" arg1="(j = k)">
     <goal name="binary_sort&#39;vc.19.0.0" expl="true case (loop invariant preservation)" proved="true">
-    <proof prover="5" timelimit="50"><result status="valid" time="4.72" steps="764748"/></proof>
+    <proof prover="5" timelimit="50"><result status="valid" time="5.87" steps="764748"/></proof>
     </goal>
     <goal name="binary_sort&#39;vc.19.0.1" expl="false case (loop invariant preservation)" proved="true">
     <transf name="case" proved="true" arg1="(j &lt; mid)">
@@ -301,20 +301,20 @@
      <goal name="binary_sort&#39;vc.19.0.1.1" expl="false case (loop invariant preservation)" proved="true">
      <transf name="case" proved="true" arg1="(j = mid)">
       <goal name="binary_sort&#39;vc.19.0.1.1.0" expl="false case (true case. loop invariant preservation)" proved="true">
-      <proof prover="0"><result status="valid" time="0.36" steps="585"/></proof>
+      <proof prover="0"><result status="valid" time="0.21" steps="585"/></proof>
       </goal>
       <goal name="binary_sort&#39;vc.19.0.1.1.1" expl="false case (loop invariant preservation)" proved="true">
       <transf name="case" proved="true" arg1="(i &lt; mid)">
        <goal name="binary_sort&#39;vc.19.0.1.1.1.0" expl="false case (true case. loop invariant preservation)" proved="true">
-       <proof prover="0"><result status="valid" time="3.37" steps="7858"/></proof>
+       <proof prover="0"><result status="valid" time="1.87" steps="7858"/></proof>
        </goal>
        <goal name="binary_sort&#39;vc.19.0.1.1.1.1" expl="false case (loop invariant preservation)" proved="true">
        <transf name="case" proved="true" arg1="(i = mid)">
         <goal name="binary_sort&#39;vc.19.0.1.1.1.1.0" expl="false case (true case. loop invariant preservation)" proved="true">
-        <proof prover="0" timelimit="1"><result status="valid" time="0.40" steps="572"/></proof>
+        <proof prover="0" timelimit="1"><result status="valid" time="0.20" steps="572"/></proof>
         </goal>
         <goal name="binary_sort&#39;vc.19.0.1.1.1.1.1" expl="false case (loop invariant preservation)" proved="true">
-        <proof prover="0"><result status="valid" time="3.81" steps="7343"/></proof>
+        <proof prover="0"><result status="valid" time="2.20" steps="7343"/></proof>
         </goal>
        </transf>
        </goal>

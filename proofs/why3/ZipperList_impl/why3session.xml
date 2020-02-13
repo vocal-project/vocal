@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
 "http://why3.lri.fr/why3session.dtd">
-<why3session shape_version="8">
+<why3session shape_version="6">
 <prover id="0" name="Alt-Ergo" version="2.3.0" timelimit="1" steplimit="0" memlimit="1000"/>
 <prover id="4" name="CVC4" version="1.5" timelimit="1" steplimit="0" memlimit="1000"/>
 <file format="whyml" proved="true">
@@ -59,7 +59,7 @@
    <proof prover="4"><result status="valid" time="0.06" steps="22199"/></proof>
    </goal>
    <goal name="remove_right&#39;vc.1.1" expl="VC for remove_right" proved="true">
-   <proof prover="4"><result status="valid" time="1.06" steps="92314"/></proof>
+   <proof prover="4"><result status="valid" time="0.58" steps="92314"/></proof>
    </goal>
   </transf>
   </goal>
@@ -101,13 +101,13 @@
   <proof prover="4"><result status="valid" time="0.06" steps="17045"/></proof>
   </goal>
   <goal name="remove_left&#39;vc.1" expl="assertion" proved="true">
-  <proof prover="0"><result status="valid" time="0.49" steps="1142"/></proof>
+  <proof prover="0"><result status="valid" time="0.33" steps="1142"/></proof>
   </goal>
   <goal name="remove_left&#39;vc.2" expl="precondition" proved="true">
-  <proof prover="4"><result status="valid" time="0.65" steps="60700"/></proof>
+  <proof prover="4"><result status="valid" time="0.37" steps="60700"/></proof>
   </goal>
   <goal name="remove_left&#39;vc.3" expl="precondition" proved="true">
-  <proof prover="4"><result status="valid" time="0.56" steps="60893"/></proof>
+  <proof prover="4"><result status="valid" time="0.32" steps="60893"/></proof>
   </goal>
   <goal name="remove_left&#39;vc.4" expl="precondition" proved="true">
   <proof prover="4"><result status="valid" time="0.13" steps="27955"/></proof>

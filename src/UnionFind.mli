@@ -25,7 +25,7 @@ type 'a elem
       rep uf x = rep uf y *)
 
 (*@ val create: unit -> 'a uf *)
-(* @ uf = create ()
+(*@ uf = create ()
       ensures dom uf = {} *)
 
 val make : 'a -> 'a elem
