@@ -1,32 +1,31 @@
-
 (library
-  (public_name why3gospel)
-  (flags :standard -w -9-32-27 -linkall)
-  (library_flags -linkall)
-  (modules why3gospel_driver why3gospel_trans why3gospel)
-  (libraries why3 gospel))
+ (public_name why3gospel)
+ (flags :standard -w -9-32-27 -linkall)
+ (library_flags -linkall)
+ (modules why3gospel_driver why3gospel_trans why3gospel)
+ (libraries why3 gospel))
 
 ;; cf https://discuss.ocaml.org/t/dune-problems-using-dynlink-plugins/2874
+;; In this rule, `gospel` is used in the action but is out of the scope of dune
+;; understanding, so scheduling issues can occur when running `dune build` for
+;; the whole project. Either use `-j 1`, build `gospel` before `why3gospel`
+;; manually, or restart the build after the failure
+;; Reported in https://github.com/ocaml/dune/issues/3136
+
 (rule
-  (targets plugin_why3gospel.cmxs)
-  (deps why3gospel.cmxa)
-  (action (run ocamlfind ocamlopt
-                  -shared
-                  -linkall
-                  -linkpkg
-                  -package gospel
-                  %{deps}
-                  -o %{targets}
-  )))
+ (targets plugin_why3gospel.cmxs)
+ (action
+  (run ocamlfind ocamlopt -shared -linkall -linkpkg -package gospel
+    %{cmxa:why3gospel} -o %{targets})))
 
 (install
-  (section lib_root)
-  (files
-   (plugin_why3gospel.cmxs as why3/plugins/plugin_why3gospel.cmxs))
-  (package why3gospel))
+ (section lib_root)
+ (files
+  (plugin_why3gospel.cmxs as why3/plugins/plugin_why3gospel.cmxs))
+ (package why3gospel))
 
 (install
-  (section share_root)
-  (files
-   (gospel.mlw as why3/stdlib/gospel.mlw))
-  (package why3gospel))
+ (section share_root)
+ (files
+  (gospel.mlw as why3/stdlib/gospel.mlw))
+ (package why3gospel))

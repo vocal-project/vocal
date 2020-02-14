@@ -1,0 +1,3 @@
+(library
+ (name vocal)
+ (public_name vocal))
