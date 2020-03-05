@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
 "http://why3.lri.fr/why3session.dtd">
-<why3session shape_version="8">
+<why3session shape_version="6">
 <prover id="0" name="Alt-Ergo" version="2.3.0" timelimit="1" steplimit="0" memlimit="1000"/>
 <prover id="3" name="Z3" version="4.8.6" timelimit="5" steplimit="0" memlimit="1000"/>
 <file format="whyml" proved="true">
@@ -112,7 +112,7 @@
      <goal name="counting_sort&#39;vc.22.0.1.1" expl="loop invariant preservation" proved="true">
      <transf name="remove" proved="true" arg1="real,string,tuple0,unit,zero,one,(*),(&gt;),(&gt;=),abs,div,mod,int63&#39;maxInt,int63&#39;minInt,min_int63,max_int63,in_bounds,max_int,min_int,(==),empty,singleton,cons,snoc,([..]),([_..]),([.._]),(++),permut,Assoc,Unit_def_l,Unit_def_r,Inv_def_l,Inv_def_r,Comm,Assoc1,Mul_distr_l,Mul_distr_r,Comm1,Unitary,NonTrivialRing,Refl,Trans,Antisymm,Total,ZeroLessOne,CompatOrderAdd,CompatOrderMult,Abs_le,Abs_pos,Div_mod,Div_bound,Mod_bound,Div_sign_pos,Div_sign_neg,Mod_sign_pos,Mod_sign_neg,Rounds_toward_zero,Div_1,Mod_1,Div_inf,Mod_inf,Div_mult,Mod_mult,Numof_append,Numof_left_no_add,Numof_left_add,Empty,Full,numof_increasing,numof_strictly_increasing,numof_change_any,numof_change_some,numof_change_equiv,to_int_in_bounds,extensionality,max_int&#39;def,min_int&#39;def,length_nonnegative,(==)&#39;spec,empty&#39;def,set&#39;spec,singleton&#39;spec,cons&#39;spec,snoc&#39;spec,([..])&#39;spec,([..])&#39;def,([_..])&#39;def,([.._])&#39;def,(++)&#39;spec,sorted_cons,sorted_append,sorted_snoc,aux,H1,LoopInvariant1,LoopInvariant2,H9,H11,LoopInvariant5,LoopInvariant6,LoopInvariant7,Ensures5,h1,occ_cons,occ_snoc,occ_tail,append_num_occ,permut_sub,permut_all,exchange_permut_sub,Permut_sub_weakening,permut_refl,permut_sym,permut_trans,permut_exists,mem_append,mem_tail,permut_all_mem,exchange_permut_all">
       <goal name="counting_sort&#39;vc.22.0.1.1.0" expl="loop invariant preservation" proved="true">
-      <proof prover="3"><result status="valid" time="0.15"/></proof>
+      <proof prover="3"><result status="valid" time="0.15" steps="93736"/></proof>
       </goal>
      </transf>
      </goal>
@@ -247,19 +247,19 @@
      <goal name="counting_sort&#39;vc.32.1.0.0" expl="VC for counting_sort" proved="true">
      <transf name="split_vc" proved="true" >
       <goal name="counting_sort&#39;vc.32.1.0.0.0" expl="VC for counting_sort" proved="true">
-      <proof prover="0" timelimit="5"><result status="valid" time="0.02" steps="33"/></proof>
+      <proof prover="0" timelimit="5"><result status="valid" time="0.03" steps="33"/></proof>
       </goal>
       <goal name="counting_sort&#39;vc.32.1.0.0.1" expl="VC for counting_sort" proved="true">
-      <proof prover="0" timelimit="5"><result status="valid" time="0.03" steps="33"/></proof>
+      <proof prover="0" timelimit="5"><result status="valid" time="0.02" steps="33"/></proof>
       </goal>
       <goal name="counting_sort&#39;vc.32.1.0.0.2" expl="VC for counting_sort" proved="true">
       <proof prover="0" timelimit="5"><result status="valid" time="0.01" steps="31"/></proof>
       </goal>
       <goal name="counting_sort&#39;vc.32.1.0.0.3" expl="VC for counting_sort" proved="true">
-      <proof prover="0" timelimit="5"><result status="valid" time="0.02" steps="33"/></proof>
+      <proof prover="0" timelimit="5"><result status="valid" time="0.03" steps="33"/></proof>
       </goal>
       <goal name="counting_sort&#39;vc.32.1.0.0.4" expl="VC for counting_sort" proved="true">
-      <proof prover="0" timelimit="5"><result status="valid" time="0.03" steps="33"/></proof>
+      <proof prover="0" timelimit="5"><result status="valid" time="0.02" steps="33"/></proof>
       </goal>
       <goal name="counting_sort&#39;vc.32.1.0.0.5" expl="VC for counting_sort" proved="true">
       <proof prover="0" timelimit="5"><result status="valid" time="0.02" steps="31"/></proof>
@@ -513,19 +513,19 @@
      <goal name="in_place_counting_sort&#39;vc.33.1.0.0" expl="VC for in_place_counting_sort" proved="true">
      <transf name="split_vc" proved="true" >
       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.0" expl="VC for in_place_counting_sort" proved="true">
-      <proof prover="0" timelimit="5"><result status="valid" time="0.03" steps="31"/></proof>
+      <proof prover="0" timelimit="5"><result status="valid" time="0.02" steps="31"/></proof>
       </goal>
       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.1" expl="VC for in_place_counting_sort" proved="true">
-      <proof prover="0" timelimit="5"><result status="valid" time="0.02" steps="31"/></proof>
+      <proof prover="0" timelimit="5"><result status="valid" time="0.03" steps="31"/></proof>
       </goal>
       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.2" expl="VC for in_place_counting_sort" proved="true">
       <proof prover="0" timelimit="5"><result status="valid" time="0.02" steps="29"/></proof>
       </goal>
       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.3" expl="VC for in_place_counting_sort" proved="true">
-      <proof prover="0" timelimit="5"><result status="valid" time="0.02" steps="31"/></proof>
+      <proof prover="0" timelimit="5"><result status="valid" time="0.03" steps="31"/></proof>
       </goal>
       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.4" expl="VC for in_place_counting_sort" proved="true">
-      <proof prover="0" timelimit="5"><result status="valid" time="0.03" steps="31"/></proof>
+      <proof prover="0" timelimit="5"><result status="valid" time="0.02" steps="31"/></proof>
       </goal>
       <goal name="in_place_counting_sort&#39;vc.33.1.0.0.5" expl="VC for in_place_counting_sort" proved="true">
       <proof prover="0" timelimit="5"><result status="valid" time="0.02" steps="29"/></proof>
