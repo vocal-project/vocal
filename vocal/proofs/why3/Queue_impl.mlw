@@ -9,9 +9,9 @@
 (**************************************************************************)
 
 (* Authors:
-     Mário Pereira (LRI, Univ Paris-Saclay then
+     MÃ¡rio Pereira (LRI, Univ Paris-Saclay then
                     NOVA-LINCS, Universidade Nova de Lisboa)
-     Jean-Christophe Filliâtre (CNRS, LRI, Univ Paris-Saclay) *)
+     Jean-Christophe FilliÃ¢tre (CNRS, LRI, Univ Paris-Saclay) *)
 
 (* Mutable queue implementation, following OCaml's queue implementation *)
 
@@ -34,8 +34,8 @@ module Impl
     mutable ghost view     : seq 'a;
     mutable ghost list     : seq (loc 'a);
     mutable ghost used_mem : mem 'a
-  } invariant { length > 0 -> first = list[0] /\ last = list[length - 1] /\
-                              used_mem.next last = Some null  }
+  } invariant { length > 0 -> first = list[0] /\ last = list[length - 1] /\ 
+                           used_mem.next last = Some null }
     invariant { length = 0 -> first = last = null }
     invariant { length = Seq.length view = Seq.length list }
     invariant { forall i. 0 <= i < length -> list[i] <> null }
@@ -52,6 +52,8 @@ module Impl
 
   (* OCaml code starts here *)
 
+  exception Empty
+
   lemma mem_tail: forall x: 'a, s: seq 'a.
     Seq.length s > 0 ->
     mem x s <-> (x = s[0] \/ mem x s[1 .. ])
@@ -66,7 +68,7 @@ module Impl
     ensures { result <-> q.view == empty }
   = q.first == null
 
-  let push (x: 'a) (q: t 'a) : unit
+  let add (x: 'a) (q: t 'a) : unit
     ensures { q.view == snoc (old q.view) x }
   = let c = mk_cell q.used_mem x null in
     if q.last == null then begin
@@ -83,13 +85,17 @@ module Impl
       q.list <- snoc q.list c;
     end
 
-  (*TODO: Subspecification: we must ensure that the returned value is indeed the
-          first element of the queue *)
-  let pop (q: t 'a) : 'a
-    requires { Seq.length q.view > 0 }
-    ensures  { q.view == (old q.view)[1 .. ] }
-    ensures  { old q.view == cons result q.view }
-  = let x = get_content q.used_mem q.first in
+  let push = add
+
+  let take_opt (q: t 'a) : option 'a
+    ensures  { old q.view == empty -> result = None }
+    ensures  { not (old q.view == empty) -> result = Some (old q.view)[0] }
+    ensures  { old q.view == empty -> q.view == old q.view }
+    ensures  { not old q.view == empty -> q.view == (old q.view)[1 .. ] }
+  =
+  if is_empty q then None
+  else
+  let x = get_content q.used_mem q.first in
     if get_next q.used_mem q.first == null then begin
       free q.used_mem q.first;
       q.first <- null;
@@ -105,7 +111,45 @@ module Impl
       q.list  <- q.list[1 .. ];
       free q.used_mem oldfirst
     end;
-    x
+    Some x
+
+  let take (q: t 'a) : 'a
+    raises   { Empty -> (old q.view) == empty }
+    ensures  { q.view == (old q.view)[1 .. ] }
+    ensures  { result = (old q.view)[0] }
+    ensures  { old q.view == cons result q.view }
+  =
+  match take_opt q with
+  | None -> raise Empty
+  | Some e -> e
+  end
+  
+  let pop = take
+
+  let peek (q: t 'a) : 'a
+    raises   { Empty -> q.view == empty }
+    ensures  { result = q.view[0] }
+  = 
+  if is_empty q then raise Empty;
+  get_content q.used_mem q.first
+
+  let top = peek
+  
+  let peek_opt (q: t 'a) : option 'a
+    ensures  { old q.view == empty -> result = None }
+    ensures  { not (old q.view == empty) -> result = Some q.view[0] }
+  = 
+  if is_empty q then None else Some (get_content q.used_mem q.first)
+  
+  let clear (q: t 'a) : unit 
+    ensures { q.view == empty }
+  =
+  q.length <- 0; 
+  q.first <- null; 
+  q.last <- null;
+  q.view <- empty; 
+  q.list <- empty; 
+  q.used_mem <- empty_memory ()
 
   predicate disjoint_queue (q1 q2: t 'a) =
     disjoint_mem q1.used_mem q2.used_mem
@@ -133,13 +177,14 @@ module Impl
         (* clear q1 is inlined, since type invariant for q1 is now broken *)
         q1.first, q1.last, q1.list, q1.view <- null, null, Seq.empty, Seq.empty;
       end else begin
-        let len = q2.length + q1.length in
-        q2.length, q1.length <- len, 0;
+        q2.length <- q2.length + q1.length;
+        q1.length <- 0;
         set_next q2.used_mem q2.last q1.first;
-        q2.last, q2.list, q2.view <-
-          q1.last, q2.list ++ q1.list, q2.view ++ q1.view;
-        q2.used_mem, q1.used_mem <-
-          mem_union q2.used_mem q1.used_mem, empty_memory ();
+        q2.last <- q1.last;
+        q2.list <- q2.list ++ q1.list;
+        q2.view <- q2.view ++ q1.view;
+        q2.used_mem <- mem_union q1.used_mem q2.used_mem;
+        q1.used_mem <- empty_memory ();
         (* clear q1 is inlined, since type invariant for q1 is now broken *)
         q1.first, q1.last, q1.list, q1.view <- null, null, Seq.empty, Seq.empty
       end
@@ -152,6 +197,8 @@ module Correct
 
   clone Queue.Sig with
     type t, predicate disjoint_t = disjoint_queue,
-    val  create, val is_empty, val push, val pop, val transfer
+    val  create, val add, val push, val take, val take_opt, val pop, 
+    val peek, val peek_opt, val top, val is_empty,  
+    val clear, val transfer
 
 end
