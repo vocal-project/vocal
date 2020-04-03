@@ -405,7 +405,7 @@ module Correct
   use Impl
 
   clone Vector.Sig with
-    type t,
+    type t, exception Empty,
     val  create, val make,     val init,    val resize,    val unsafe_resize,
     val  clear,  val is_empty, val length,  val get,       val set,
     val  sub,    val fill,     val blit,    val append,    val merge_right,
