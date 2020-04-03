@@ -173,7 +173,7 @@ let td_params (tvs, _) =
 (** Visibility of type declarations. An alias type cannot be private, so we
     check whether or not the GOSPEL type manifest is [None]. *)
 let td_vis_from_manifest = function
-  | None -> Private
+  | None   -> Private
   | Some _ -> Public
 
 (** Convert a GOSPEL type definition into a Why3's Ptree [type_def]. If the
@@ -190,7 +190,7 @@ let td_def td_spec td_manifest =
   | None -> td_def_of_ty_fields td_spec.T.ty_fields
   | Some ty -> TDalias (Term.ty ty)
 
-let type_decl (T.{td_ts = {ts_ident}; td_spec; td_manifest} as td) = T.{
+let type_decl (T.{td_ts = {ts_ident}; td_spec; td_manifest} as td) = {
   td_loc    = location td.td_loc;
   td_ident  = mk_id ts_ident.id_str ~id_loc:(location td.td_loc);
   td_params = List.map td_params td.td_params;
@@ -211,6 +211,30 @@ let loc_of_vs vs = Term.(location vs.Tt.vs_name.I.id_loc)
 
 let ident_of_lb_arg lb = Term.ident_of_vsymbol (T.vs_of_lb_arg lb)
 let loc_of_lb_arg   lb = loc_of_vs (T.vs_of_lb_arg lb)
+
+(** Check if a given type declaration is represented, i.e., if it is ephemeral
+    or contains at least a mutable model field. *)
+let is_represented T.{td_spec} =
+  td_spec.ty_ephemeral || List.exists (fun (_, mut) -> mut) td_spec.ty_fields
+
+(** Build a predicate of the form [predicate disjoint_t t t] for a represented
+    type declaration [t]. *)
+let disjoint_represented T.{td_ts = {ts_ident}; td_params} =
+  let id_pred = mk_id ("disjoint_" ^ ts_ident.id_str) in
+  let id_pty = mk_id ts_ident.id_str in
+  let mk_tyvar (v, _) = PTtyvar (Term.ident_of_tvsymbol v) in
+  let pty = PTtyapp (Qident id_pty, List.map mk_tyvar td_params) in
+  let param = (dummy_loc, None, false, pty) in
+  mk_logic_decl dummy_loc id_pred [param; param] None None
+
+(** [disjoint tdl] returns a list of predicate declarations, each of the form
+    [predicate disjoint_t t t] for all represented type declarations [t] that
+    are in the list [tdl]. *)
+let disjoint tdl =
+  let mk_disjoint acc td =
+    if is_represented td then disjoint_represented td :: acc else acc in
+  let predl = List.fold_left mk_disjoint [] tdl in
+  Dlogic (List.rev predl)
 
 (** Given the result type [sp_ret] of a function and a GOSPEL postcondition
     [post] (represented as a [term]), convert it into a Why3's Ptree
@@ -483,7 +507,9 @@ let signature =
     | T.Sig_val (vd, g) ->
         List.map (fun d -> Gdecl d) (val_decl vd g)
     | T.Sig_type (_rec_flag, tdl, _gh) ->
-        [Gdecl (Dtype (List.map type_decl tdl))]
+        let tdlw = Gdecl (Dtype (List.map type_decl tdl)) in
+        let pdlw = Gdecl (disjoint tdl) in
+        [tdlw; pdlw]
     | T.Sig_typext _ (*  of Oparsetree.type_extension *) ->
         assert false (*TODO*)
     | T.Sig_module md ->
@@ -522,4 +548,5 @@ let signature =
         [Gdecl (axiom ax)] (*TODO*)
 
   and signature s = List.map signature_item s in
+
   signature
