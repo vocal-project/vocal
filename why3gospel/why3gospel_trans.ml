@@ -251,6 +251,16 @@ let disjoint tdl =
   let predl = List.fold_left mk_disjoint [] tdl in
   Dlogic (List.rev predl)
 
+let mk_disjoint_term id_left id_right id_represented =
+  let decl_disjoint = Hstr.find env_represented id_represented.id_str in
+  let qualid_app = Qident decl_disjoint.ld_ident in
+  let tid_left = Tident (Qident id_left) in
+  let tid_right = Tident (Qident id_right) in
+  let arg_left = Term.mk_term tid_left id_left.id_loc in
+  let arg_right = Term.mk_term tid_right id_right.id_loc in
+  let term_desc = Tidapp (qualid_app, [arg_left; arg_right]) in
+  Term.mk_term term_desc dummy_loc
+
 (** Given the result type [sp_ret] of a function and a GOSPEL postcondition
     [post] (represented as a [term]), convert it into a Why3's Ptree
     postcondition of the form [Loc.position * (pattern * term)]. *)
@@ -388,10 +398,10 @@ let rec core_type Ot.{ ptyp_desc; ptyp_loc } =
 let val_decl vd ghost =
   let rec flat_ptyp_arrow ct = match ct.Ot.ptyp_desc with
     | Ot.Ptyp_var _ | Ptyp_tuple _ | Ptyp_constr _ -> [ct]
-    | Ot.Ptyp_arrow (_, t1, t2) ->
-        begin match t1.ptyp_desc with
-        | Ot.Ptyp_arrow (lbl, t11, t12) -> t1 :: flat_ptyp_arrow t2
-        | _ -> flat_ptyp_arrow t1 @ flat_ptyp_arrow t2 end
+    | Ot.Ptyp_arrow (_, t1, t2) -> (* creative indentation *)
+    begin match t1.ptyp_desc with
+    | Ot.Ptyp_arrow (lbl, t11, t12) -> t1 :: flat_ptyp_arrow t2
+    | _ -> flat_ptyp_arrow t1 @ flat_ptyp_arrow t2 end
     | _ -> assert false (* TODO *) in
   let mk_single_param lb_arg ct =
     let add_at_id at id = { id with id_ats = ATstr at :: id.id_ats } in
@@ -432,20 +442,9 @@ let val_decl vd ghost =
       Dlet (id, ghost, Expr.RKnone, e_any) in
     let mk_disjoint_pre params =
       let mk_disjoint = function
-        | [(_, id_left,  _, PTtyapp (q_left, _));
-           (_, id_right, _, PTtyapp (q_right, _))]
-          when cmp_id_qualid q_left q_right ->
-            let id_left = Opt.get id_left in
-            let id_right = Opt.get id_right in
-            let id_disjoint = ident_of_qualid q_left in
-            let decl_disjoint = Hstr.find env_represented id_disjoint.id_str in
-            let qualid_app = Qident decl_disjoint.ld_ident in
-            let tid_left = Tident (Qident id_left) in
-            let tid_right = Tident (Qident id_right) in
-            let arg_left = mk_term tid_left id_left.id_loc in
-            let arg_right = mk_term tid_right id_right.id_loc in
-            let term_desc = Tidapp (qualid_app, [arg_left; arg_right]) in
-            [mk_term term_desc dummy_loc]
+        | [(_, id,  _, PTtyapp (q, _)); (_, id', _, PTtyapp (q', _))]
+          when cmp_id_qualid q q' -> let id_q = Term.ident_of_qualid q in
+            [mk_disjoint_term (Opt.get id) (Opt.get id') id_q]
         | _ -> [] (* TODO *) in
       let represented_param (_, _, _, pty) = match pty with
         | PTtyapp (Qident {id_str}, _) -> Hstr.mem env_represented id_str
@@ -453,19 +452,27 @@ let val_decl vd ghost =
       let represented_params = List.filter represented_param params in
       { empty_spec with sp_pre = mk_disjoint represented_params } in
     let spec_disjoint = mk_disjoint_pre params in
-    match vd.T.vd_spec with
-    | None   -> [mk_val (mk_id vd_str) params ret pat mask empty_spec]
-    | Some s -> (* creative indentation *)
-    begin match split_on_checks s.sp_pre with
-    | pre, []     ->
-        let spec = spec_union (spec s) spec_disjoint in
-        [mk_val (mk_id vd_str) params ret pat mask spec]
-    | pre, checks -> let id_unsafe = mk_id ("unsafe_" ^ vd_str) in
-        let spec_checks = spec_with_checks s pre (List.map term checks) in
-        let spec_checks = spec_union spec_checks spec_disjoint in
-        let spec_regular = spec_union (spec s) spec_disjoint in
-        [mk_val id_unsafe params ret pat mask spec_regular;
-         mk_val (mk_id vd_str) params ret pat mask spec_checks] end in
+    let mk_spec = function
+      | None   -> empty_spec, None
+      | Some s -> (* creative indentation *)
+      begin match split_on_checks s.T.sp_pre with
+      | _, [] -> spec_union (spec s) spec_disjoint, None
+      | pre, checks ->
+          let spec_checks = spec_with_checks s pre (List.map term checks) in
+          let spec_checks = spec_union spec_checks spec_disjoint in
+          let spec_regular = spec_union (spec s) spec_disjoint in
+          spec_regular, Some spec_checks end in
+    let mk_val_checks pre checks =
+      mk_val (mk_id vd_str) params ret pat mask checks in
+    let mk_val_unsafe spec = let id_unsafe = mk_id ("unsafe_" ^ vd_str) in
+      mk_val id_unsafe params ret pat mask spec in
+    let (spec_regular, spec_checks) = mk_spec vd.T.vd_spec in
+    let mk_val_final spec_regular = function
+      | None -> [mk_val (mk_id vd_str) params ret pat mask spec_regular]
+      | Some spec_checks ->
+          [mk_val_unsafe spec_regular;
+           mk_val_checks spec_regular spec_checks] in
+    mk_val_final spec_regular spec_checks in
   let params, ret, pat, mask =
     let core_tys = flat_ptyp_arrow vd.T.vd_type in
     let core_tys, last = Lists.chop_last core_tys in
