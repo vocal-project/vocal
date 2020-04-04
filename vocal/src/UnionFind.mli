@@ -107,7 +107,7 @@ val union : 'a elem -> 'a elem -> unit
                       else old (img uf x)
 *)
 
-(*@ val join: 'a uf -> 'a uf -> unit *)
+(* @ val join: 'a uf -> 'a uf -> unit *)
 (* @ join uf1 uf2
       (*? requires disjoint (dom uf1) (dom uf2) *)
       modifies uf1

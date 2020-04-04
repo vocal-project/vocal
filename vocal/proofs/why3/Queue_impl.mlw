@@ -107,11 +107,23 @@ module Impl
     end;
     x
 
+  predicate disjoint_queue (q1 q2: t 'a) =
+    disjoint_mem q1.used_mem q2.used_mem
+
+  (* lemma aux: forall q1 q2: t 'a. *)
+  (*   disjoint_queue q1 q2 -> forall i. 0 <= i < Seq.length q1.list -> *)
+  (*   not (mem q1.list[i] q2.list) *)
+
   let transfer (q1 q2: t 'a) : unit
     requires { disjoint_mem q1.used_mem q2.used_mem }
     ensures  { q2.view == (old q2.view) ++ (old q1.view) }
     ensures  { q1.view == empty }
-  = if not (is_empty q1) then
+  = let lemma disjoint_mem_disjoint_list (q1 q2: t 'a)
+      requires { disjoint_queue q1 q2 }
+      ensures  { forall i. 0 <= i < Seq.length q1.list ->
+                   not (mem q1.list[i] q2.list) }
+    = () in
+    if not (is_empty q1) then
       if is_empty q2 then begin
         q2.length, q1.length <- q1.length, 0;
         q2.first, q2.last <- q1.first, q1.last;
@@ -139,7 +151,7 @@ module Correct
   use Impl
 
   clone Queue.Sig with
-    type t,
+    type t, predicate disjoint_t = disjoint_queue,
     val  create, val is_empty, val push, val pop, val transfer
 
 end

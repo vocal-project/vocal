@@ -12,6 +12,7 @@ module T = Gospel.Tast
 module Tm = Gospel.Tmodule
 module Ot = Gospel.Oparsetree
 open Why3
+open Wstdlib
 open Ptree
 open Why3gospel_driver
 
@@ -55,6 +56,10 @@ module Term = struct
 
   let ident_of_lsymbol Tt.{ls_name = name} =
     mk_id name.I.id_str ~id_loc:(location name.I.id_loc)
+
+  let ident_of_qualid = function Qident x | Qdot (_, x) -> x
+  let cmp_id_qualid q1 q2 =
+    (ident_of_qualid q1).id_str = (ident_of_qualid q2).id_str
 
   let quant = function
     | Tt.Tforall -> Dterm.DTforall
@@ -212,6 +217,12 @@ let loc_of_vs vs = Term.(location vs.Tt.vs_name.I.id_loc)
 let ident_of_lb_arg lb = Term.ident_of_vsymbol (T.vs_of_lb_arg lb)
 let loc_of_lb_arg   lb = loc_of_vs (T.vs_of_lb_arg lb)
 
+(** Global environment of represented types to their disjoint predicate. *)
+(* TODO: can we have something better than this global hashtbl? I know we could
+   fill up our functions with an extra argument [env], but I would really like
+   to avoid the pain of redifining every functions because of the extra arg. *)
+let env_represented : logic_decl Hstr.t = Hstr.create 64
+
 (** Check if a given type declaration is represented, i.e., if it is ephemeral
     or contains at least a mutable model field. *)
 let is_represented T.{td_spec} =
@@ -231,8 +242,12 @@ let disjoint_represented T.{td_ts = {ts_ident}; td_params} =
     [predicate disjoint_t t t] for all represented type declarations [t] that
     are in the list [tdl]. *)
 let disjoint tdl =
-  let mk_disjoint acc td =
-    if is_represented td then disjoint_represented td :: acc else acc in
+  let mk_disjoint acc (T.{td_ts} as td) =
+    if is_represented td then begin let decl = disjoint_represented td in
+      (* while generating the [disjoint] predicate, also fill [env_type_decl] *)
+      Hstr.add env_represented td_ts.ts_ident.id_str decl;
+      decl :: acc end
+    else acc in
   let predl = List.fold_left mk_disjoint [] tdl in
   Dlogic (List.rev predl)
 
@@ -297,6 +312,38 @@ let spec_with_checks val_spec pre checks =
   sp_partial = false;
 }
 
+let empty_spec = {
+  sp_pre     = [];
+  sp_post    = [];
+  sp_xpost   = [];
+  sp_reads   = [];
+  sp_writes  = [];
+  sp_alias   = [];
+  sp_variant = [];
+  sp_checkrw = false;
+  sp_diverge = false;
+  sp_partial = false;
+}
+
+let variant_union v1 v2 = match v1, v2 with
+  | _, [] -> v1
+  | [], _ -> v2
+  | _, ({term_loc = loc},_)::_ ->
+      Loc.errorm ~loc "multiple `variant' clauses are not allowed"
+
+let spec_union s1 s2 = {
+  sp_pre     = s1.sp_pre @ s2.sp_pre;
+  sp_post    = s1.sp_post @ s2.sp_post;
+  sp_xpost   = s1.sp_xpost @ s2.sp_xpost;
+  sp_reads   = s1.sp_reads @ s2.sp_reads;
+  sp_writes  = s1.sp_writes @ s2.sp_writes;
+  sp_alias   = s1.sp_alias @ s2.sp_alias;
+  sp_variant = variant_union s1.sp_variant s2.sp_variant;
+  sp_checkrw = s1.sp_checkrw || s2.sp_checkrw;
+  sp_diverge = s1.sp_diverge || s2.sp_diverge;
+  sp_partial = s1.sp_partial || s2.sp_partial;
+}
+
 let spec val_spec = {
   sp_pre     = List.map (fun (t, _) -> term t) val_spec.T.sp_pre;
   sp_post    = sp_post val_spec.sp_ret val_spec.sp_post;
@@ -315,19 +362,6 @@ let split_on_checks sp_pre =
     if is_checks then pre, t :: checks else t :: pre, checks in
   let pre, checks = List.fold_left mk_split ([], []) sp_pre in
   List.rev pre, List.rev checks
-
-let empty_spec = {
-  sp_pre     = [];
-  sp_post    = [];
-  sp_xpost   = [];
-  sp_reads   = [];
-  sp_writes  = [];
-  sp_alias   = [];
-  sp_variant = [];
-  sp_checkrw = false;
-  sp_diverge = false;
-  sp_partial = false;
-}
 
 let rec core_type Ot.{ ptyp_desc; ptyp_loc } =
   match ptyp_desc with
@@ -351,7 +385,7 @@ let rec core_type Ot.{ ptyp_desc; ptyp_loc } =
   | _ -> assert false (* TODO *)
 
 (** Convert GOSPEL [val] declarations into Why3's Ptree [val] declarations. *)
-let val_decl vd g =
+let val_decl vd ghost =
   let rec flat_ptyp_arrow ct = match ct.Ot.ptyp_desc with
     | Ot.Ptyp_var _ | Ptyp_tuple _ | Ptyp_constr _ -> [ct]
     | Ot.Ptyp_arrow (_, t1, t2) ->
@@ -395,15 +429,42 @@ let val_decl vd g =
     let mk_val id params ret pat mask spec =
       let e_any = Eany (params, Expr.RKnone, ret, pat, mask, spec) in
       let e_any = mk_expr e_any (location vd.T.vd_loc) in
-      Dlet (id, g, Expr.RKnone, e_any) in
+      Dlet (id, ghost, Expr.RKnone, e_any) in
+    let mk_disjoint_pre params =
+      let mk_disjoint = function
+        | [(_, id_left,  _, PTtyapp (q_left, _));
+           (_, id_right, _, PTtyapp (q_right, _))]
+          when cmp_id_qualid q_left q_right ->
+            let id_left = Opt.get id_left in
+            let id_right = Opt.get id_right in
+            let id_disjoint = ident_of_qualid q_left in
+            let decl_disjoint = Hstr.find env_represented id_disjoint.id_str in
+            let qualid_app = Qident decl_disjoint.ld_ident in
+            let tid_left = Tident (Qident id_left) in
+            let tid_right = Tident (Qident id_right) in
+            let arg_left = mk_term tid_left id_left.id_loc in
+            let arg_right = mk_term tid_right id_right.id_loc in
+            let term_desc = Tidapp (qualid_app, [arg_left; arg_right]) in
+            [mk_term term_desc dummy_loc]
+        | _ -> [] (* TODO *) in
+      let represented_param (_, _, _, pty) = match pty with
+        | PTtyapp (Qident {id_str}, _) -> Hstr.mem env_represented id_str
+        | _ -> false in
+      let represented_params = List.filter represented_param params in
+      { empty_spec with sp_pre = mk_disjoint represented_params } in
+    let spec_disjoint = mk_disjoint_pre params in
     match vd.T.vd_spec with
     | None   -> [mk_val (mk_id vd_str) params ret pat mask empty_spec]
     | Some s -> (* creative indentation *)
     begin match split_on_checks s.sp_pre with
-    | pre, []     -> [mk_val (mk_id vd_str) params ret pat mask (spec s)]
+    | pre, []     ->
+        let spec = spec_union (spec s) spec_disjoint in
+        [mk_val (mk_id vd_str) params ret pat mask spec]
     | pre, checks -> let id_unsafe = mk_id ("unsafe_" ^ vd_str) in
         let spec_checks = spec_with_checks s pre (List.map term checks) in
-        [mk_val id_unsafe params ret pat mask (spec s);
+        let spec_checks = spec_union spec_checks spec_disjoint in
+        let spec_regular = spec_union (spec s) spec_disjoint in
+        [mk_val id_unsafe params ret pat mask spec_regular;
          mk_val (mk_id vd_str) params ret pat mask spec_checks] end in
   let params, ret, pat, mask =
     let core_tys = flat_ptyp_arrow vd.T.vd_type in
@@ -468,7 +529,7 @@ let sig_open file mm loc =
   Duseimport (loc, false, [dot_name, None])
 
 let signature =
-  let mod_type_table: (string, gdecl list) Hashtbl.t = Hashtbl.create 16 in
+  let mod_type_table: gdecl list Hstr.t = Hstr.create 16 in
 
   (* Convert a GOSPEL module declaration into a Why3 scope. *)
   let rec module_declaration T.{md_name; md_type; md_loc} =
@@ -480,7 +541,7 @@ let signature =
     | T.Mod_ident s -> begin match s with
         | [s] -> (* retrieve the list of declarations corresponding
                     to module type [s] *)
-            Hashtbl.find mod_type_table s (* TODO: catch Not_found *)
+            Hstr.find mod_type_table s (* TODO: catch Not_found *)
         | _ -> assert false end
     | T.Mod_signature s ->
         List.flatten (signature s)
@@ -501,7 +562,7 @@ let signature =
   and module_type_declaration mtd = let decls = match mtd.T.mtd_type with
       | None -> []
       | Some mt -> module_type mt in
-    Hashtbl.add mod_type_table mtd.mtd_name.I.id_str decls
+    Hstr.add mod_type_table mtd.mtd_name.I.id_str decls
 
   and signature_item i = match i.T.sig_desc with
     | T.Sig_val (vd, g) ->
