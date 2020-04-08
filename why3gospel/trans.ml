@@ -11,9 +11,9 @@
 module T = Gospel.Tast
 module Tm = Gospel.Tmodule
 module Ot = Gospel.Oparsetree
+open Driver
 open Why3
 open Ptree
-open Why3gospel_driver
 
 type gdecl =
   | Gdecl of decl

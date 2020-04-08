@@ -8,7 +8,7 @@
 (install
  (section lib_root)
  (files
-  (why3gospel.cmxs as why3/plugins/plugin_why3gospel.cmxs))
+  (why3gospel.cmxs as why3/plugins/gospel.cmxs))
  (package why3gospel))
 
 (install

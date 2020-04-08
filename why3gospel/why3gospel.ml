@@ -9,13 +9,13 @@
 (**************************************************************************)
 
 open Format
+open Trans
 open Why3
 open Pmodule
 open Typing
 open Ident
 open Wstdlib
 open Ptree
-open Why3gospel_trans
 
 let debug = ref true
 
@@ -130,7 +130,7 @@ let read_channel env path file c =
   let f = read_file file nm c in
   let f = List.map (include_extra_vals extra_vals) f in
   let f = type_check file nm f in
-  let sigs = Why3gospel_trans.signature f.fl_sigs in
+  let sigs = signature f.fl_sigs in
   open_file env path;
   let id = mk_id "Sig" in
   open_module id;
