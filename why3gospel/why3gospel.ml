@@ -8,14 +8,11 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-open Format
 open Trans
 open Why3
-open Pmodule
-open Typing
-open Ident
-open Wstdlib
 open Ptree
+
+module Mstr = Why3.Wstdlib.Mstr
 
 let debug = ref true
 
@@ -31,9 +28,6 @@ let use ?(import=false) q =
   let use_import = Duseimport (loc, import, [q, None]) in
   Typing.add_decl loc use_import;
   Typing.close_scope loc ~import
-
-module I = Gospel.Longident
-module T = Gospel.Tast
 
 let extra_use ?(import=false) s =
   use ~import:true (Qdot (Qident (mk_id "gospel"), mk_id s))
@@ -56,20 +50,20 @@ module Ut = Gospel.Uast
 
 (* extract additional uses and vals from file.mli.why3, if any *)
 let extract_use sig_item = match sig_item.Ut.sdesc with
-  | Ut.Sig_ghost_open {popen_lid = {txt = Lident s}} when s = "Gospelstdlib" ->
+  | Sig_ghost_open {popen_lid = {txt = Lident s}} when s = "Gospelstdlib" ->
       None
-  | Ut.Sig_ghost_open {popen_lid = {txt = Lident s}; popen_loc} ->
+  | Sig_ghost_open {popen_lid = {txt = Lident s}; popen_loc} ->
       Some s
   | _ -> None
 
 let extract_vals m sig_item = match sig_item.Ut.sdesc with
-  | Ut.Sig_val {vname; vtype} -> Mstr.add vname.txt vtype m
+  | Sig_val {vname; vtype} -> Mstr.add vname.txt vtype m
   | _ -> m
 
 let include_extra_vals extra_vals sig_item = match sig_item.Ut.sdesc with
-  | Ut.Sig_val ({vname} as sval) -> begin try
+  | Sig_val ({vname} as sval) -> begin try
       let vtype = Mstr.find vname.txt extra_vals in
-      {sig_item with sdesc = Ut.Sig_val {sval with vtype}}
+      {sig_item with sdesc = Sig_val {sval with vtype}}
     with Not_found -> sig_item end
   | _ -> sig_item
 
@@ -122,7 +116,8 @@ let use_std_lib =
   [Gdecl use_int63; Gdecl use_array;]
 
 let read_channel env path file c =
-  if !debug then eprintf "reading file '%s'@." file;
+  let open Typing in
+  if !debug then Format.eprintf "reading file '%s'@." file;
   let extra_uses, extra_vals = read_extra_file file in
   let nm =
     let f = Filename.basename file in
@@ -160,6 +155,8 @@ let read_channel env path file c =
   (* let f = filter_equiv f in
    * if f <> [] then print_equiv file f; *)
   if Debug.test_flag print_modules then begin
+    let open Why3.Ident in
+    let open Why3.Pmodule in
     let print_m _ m = Format.eprintf "%a@\n@." print_module m in
     let add_m _ m mm = Mid.add m.mod_theory.Theory.th_name m mm in
     Mid.iter print_m (Mstr.fold add_m mm Mid.empty)
@@ -167,5 +164,5 @@ let read_channel env path file c =
   mm
 
 let () =
-  Env.register_format mlw_language "gospel" ["mli"] read_channel
+  Env.register_format Why3.Pmodule.mlw_language "gospel" ["mli"] read_channel
     ~desc:"GOSPEL format"

@@ -9,7 +9,6 @@
 (**************************************************************************)
 
 module T = Gospel.Tast
-module Tm = Gospel.Tmodule
 module Ot = Gospel.Oparsetree
 open Driver
 open Why3
