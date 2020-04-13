@@ -110,10 +110,6 @@ module Impl
   predicate disjoint_queue (q1 q2: t 'a) =
     disjoint_mem q1.used_mem q2.used_mem
 
-  (* lemma aux: forall q1 q2: t 'a. *)
-  (*   disjoint_queue q1 q2 -> forall i. 0 <= i < Seq.length q1.list -> *)
-  (*   not (mem q1.list[i] q2.list) *)
-
   let transfer (q1 q2: t 'a) : unit
     requires { disjoint_mem q1.used_mem q2.used_mem }
     ensures  { q2.view == (old q2.view) ++ (old q1.view) }
