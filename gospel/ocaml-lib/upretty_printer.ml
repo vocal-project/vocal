@@ -12,6 +12,7 @@ open Identifier
 open Oparsetree
 open Uast
 open Opprintast
+open Oasttypes
 
 let const_hole s fmt _ = pp fmt "%s" s
 
@@ -27,6 +28,12 @@ let labelled_arg fmt (l:labelled_arg) = match l with
 
 let spec f fmt x =
   pp fmt "@[(*@@ %a@ *)@]" f x
+
+(* let pattern fmt pat =
+ *   match pat.pat_desc with
+ *   | Pwild  -> pp fmt "_"
+ *   | Pvar x -> pp fmt "%a" protect_ident x.pid_str
+ *   | _ -> assert false (\* TODO *\) *)
 
 let term fmt x = pp fmt "@[TERM ... @]"
 
@@ -314,3 +321,21 @@ and s_module_type1 f x =
         pp f "@[<hov2>module@ type@ of@ %a@]" (module_expr reset_ctxt) me
     | Mod_extension e -> extension reset_ctxt f e
     | _ -> paren true s_module_type f x
+
+let rec s_structure_item fmt str =
+  match str.sstr_desc with
+  | Str_eval (e, _) ->
+      pp fmt "%a" expression e
+  | Str_value (rec_flag, vb_list) ->
+      pp fmt "%a" (list (s_value_binding rec_flag)) vb_list
+  | _ -> assert false (* TODO *)
+
+and s_value_binding is_rec fmt s_val =
+  let intro = "let " ^ (match is_rec with Recursive -> "rec " | _ -> "") in
+  pp fmt "@[<2>%s%a@ =@ %a@]%a@\n%a" intro
+    pattern s_val.spvb_pat
+    expression s_val.spvb_expr
+    (item_attributes reset_ctxt) s_val.spvb_attributes
+    val_spec s_val.spvb_vspec
+
+and structure fmt str = list ~sep:"@\n@\n" s_structure_item fmt str

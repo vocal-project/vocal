@@ -187,6 +187,21 @@ let val_description v =
      { vd with vspec = Some (get_val_spec x)}, xs
   | xs -> vd, xs
 
+let mk_svb spvb_pat spvb_expr spvb_attributes spvb_vspec spvb_loc =
+  { spvb_pat; spvb_expr; spvb_attributes; spvb_vspec; spvb_loc }
+
+(** [val_binding v] parses the attributes of a value binding. As for val
+    description, only the first attribute is considered as specification. *)
+let val_binding v =
+  let spec, attrs = split_attr v.pvb_attributes in
+  let spec = List.map attr2spec spec in
+  let vb = mk_svb v.pvb_pat v.pvb_expr v.pvb_attributes None v.pvb_loc in
+  match spec with
+  | [] -> vb, spec
+  | Sval (x, _) :: xs ->
+      { vb with spvb_vspec = Some x}, xs
+  | xs -> vb, xs
+
 (** It parses floating attributes for specification. If nested
    specification is found in type/val declarations they must be
    type/val specification.
@@ -377,3 +392,22 @@ and module_type_declaration m =
               mtdtype = Utils.opmap module_type m.pmtd_type;
               mtdattributes = attrs; mtdloc = m.pmtd_loc} in
   mtd, specs
+
+let mk_s_structure_item ~loc sstr_desc =
+  { sstr_desc; sstr_loc = loc }
+
+let rec structure_item str_item =
+  let loc = str_item.pstr_loc in
+  match str_item.pstr_desc with
+  | Pstr_eval (e, attrs) ->
+      mk_s_structure_item (Str_eval (e, attrs)) ~loc
+  | Pstr_value (rec_flag, vb_list) ->
+      let vbs = List.map s_value_binding vb_list in
+      mk_s_structure_item (Str_value (rec_flag, vbs)) ~loc
+  | _ -> assert false (* TODO *)
+
+and s_value_binding vb_list =
+  (* TODO: take care of those floating specs *)
+  let spec, _ = val_binding vb_list in spec
+
+let structure s = List.map structure_item s

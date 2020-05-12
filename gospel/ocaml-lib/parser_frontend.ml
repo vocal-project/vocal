@@ -35,14 +35,21 @@ let with_loadpath load_path file =
   else if Sys.file_exists file then file
   else raise Not_found
 
-let parse_ocaml_lb lb =
+let parse_ocaml_signature_lb lb =
   try interface Olexer.token lb with
     Error -> begin
       let spos,fpos = lb.lex_start_p, lb.lex_curr_p in
       let loc = Location.{loc_start=spos; loc_end=fpos;loc_ghost=false}  in
       raise (Ocaml_syntax_error loc) end
 
-let parse_ocaml file =
+let parse_ocaml_structure_lb lb =
+  try implementation Olexer.token lb with
+    Error -> begin
+      let spos,fpos = lb.lex_start_p, lb.lex_curr_p in
+      let loc = Location.{loc_start=spos; loc_end=fpos;loc_ghost=false}  in
+      raise (Ocaml_syntax_error loc) end
+
+let parse_ocaml_signature file =
   let lb =
     if file = gospelstdlib_file then
       Lexing.from_string Gospelstdlib.contents
@@ -50,7 +57,12 @@ let parse_ocaml file =
       open_in file |> Lexing.from_channel
   in
   Location.init lb file;
-  parse_ocaml_lb lb
+  parse_ocaml_signature_lb lb
+
+let parse_ocaml_structure file =
+  let lb = Lexing.from_channel (open_in file) in
+  Location.init lb file;
+  parse_ocaml_structure_lb lb
 
 let default_open =
   let open Uast in
@@ -63,9 +75,17 @@ let default_open =
   {sdesc = od gospelstdlib; sloc = Location.none}
 
 (** Parse the attributes as GOSPEL specification. *)
-let parse_gospel sign nm =
+let parse_signature_gospel sign nm =
   if nm = gospelstdlib then signature sign else
     default_open :: signature sign
 
-let parse_ocaml_gospel file =
-  parse_ocaml file |> parse_gospel
+let parse_structure_gospel str =
+  (* TODO: default open of stdlib as a structure item *)
+  (* default_open :: *)
+  structure str
+
+let parse_ocaml_signature_gospel file =
+  parse_ocaml_signature file |> parse_signature_gospel
+
+let parse_ocaml_structure_gospel file =
+  parse_structure_gospel (parse_ocaml_structure file)

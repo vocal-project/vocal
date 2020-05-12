@@ -207,7 +207,6 @@ type s_with_constraint =
   | Wmodsubst of Longident.t loc * Longident.t loc
         (* with module X.Y := Z *)
 
-
 type s_signature_item_desc =
   | Sig_val of s_val_description
         (*
@@ -293,3 +292,62 @@ and s_module_type_declaration =
      mtdattributes : attributes; (* ... [@@id1] [@@id2] *)
      mtdloc        : Location.t;
     }
+
+type s_structure = s_structure_item list
+
+and s_structure_item =
+  {
+    sstr_desc: s_structure_item_desc;
+    sstr_loc: Location.t;
+  }
+
+and s_structure_item_desc =
+  | Str_eval of expression * attributes
+        (* E *)
+  | Str_value of rec_flag * s_value_binding list
+        (* let P1 = E1 and ... and Pn = EN       (flag = Nonrecursive)
+           let rec P1 = E1 and ... and Pn = EN   (flag = Recursive)
+         *)
+  | Str_primitive of s_val_description
+        (*  val x: T
+            external x: T = "s1" ... "sn" *)
+  | Str_type of rec_flag * type_declaration list
+        (* type t1 = ... and ... and tn = ... *)
+  | Str_typext of type_extension
+        (* type t1 += ... *)
+  | Str_exception of type_exception
+        (* exception C of T
+           exception C = M.X *)
+  | Str_module of module_binding
+        (* module X = ME *)
+  | Str_recmodule of module_binding list
+        (* module rec X1 = ME1 and ... and Xn = MEn *)
+  | Str_modtype of module_type_declaration
+        (* module type S = MT *)
+  | Str_open of open_description
+        (* open X *)
+  | Str_class of class_declaration list
+        (* class c1 = ... and ... and cn = ... *)
+  | Str_class_type of class_type_declaration list
+        (* class type ct1 = ... and ... and ctn = ... *)
+  | Str_include of include_declaration
+        (* include ME *)
+  | Str_attribute of attribute
+        (* [@@@id] *)
+  | Str_extension of extension * attributes
+        (* [%%id] *)
+  (* Specific to specification *)
+  | Str_function of function_
+  | Str_axiom of axiom
+  | Str_ghost_type of rec_flag * s_type_declaration list
+  | Str_ghost_val  of s_val_description
+  | Str_ghost_open of open_description
+
+and s_value_binding =
+  {
+    spvb_pat: Oparsetree.pattern; (* FIXME: change this pattern type *)
+    spvb_expr: expression;
+    spvb_attributes: attributes;
+    spvb_vspec: val_spec option;
+    spvb_loc: Location.t;
+  }

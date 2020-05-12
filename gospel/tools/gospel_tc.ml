@@ -34,9 +34,9 @@ let run_bench () =
   let ok,error = ref 0, ref 0 in
   let parse f =
     try
-      let ocaml = parse_ocaml f in
+      let ocaml = parse_ocaml_signature f in
       let module_nm = path2module f in
-      let sigs  =  parse_gospel ocaml module_nm in
+      let sigs  =  parse_signature_gospel ocaml module_nm in
       ok := !ok + 1;
       pp fmt "parse OK - ";
       if !parse_only then raise Exit;
@@ -51,7 +51,7 @@ let run_bench () =
 
 let run_on_file file =
   try
-    let ocaml = parse_ocaml file in
+    let ocaml = parse_ocaml_signature file in
     if !print_intermediate then begin
         pp fmt "@[@\n ********* Parsed file - %s *********@\n@]@." file;
         pp fmt "@[%a@]@." Opprintast.signature ocaml
@@ -59,7 +59,7 @@ let run_on_file file =
 
     if !parse_ocaml_only then raise Exit;
     let module_nm = path2module file in
-    let sigs = parse_gospel ocaml module_nm in
+    let sigs = parse_signature_gospel ocaml module_nm in
     if !print_intermediate || !print_parsed then begin
         pp fmt "@[@\n*******************************@]@.";
         pp fmt    "@[****** GOSPEL translation *****@]@.";

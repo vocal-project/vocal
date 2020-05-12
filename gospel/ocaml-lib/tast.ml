@@ -317,6 +317,8 @@ type open_description =
      opn_attrs    : Oparsetree.attributes;
     }
 
+(** Signatures *)
+
 type signature = signature_item list
 
 and signature_item = {
@@ -398,6 +400,68 @@ let sig_item sig_desc sig_loc = {sig_desc; sig_loc}
 
 let mk_sig_item desc loc = sig_item desc loc
 
+(** Structures *)
+
+type structure = structure_item list
+
+and structure_item =
+  {
+    str_desc: structure_item_desc;
+    str_loc: Location.t;
+  }
+
+and structure_item_desc =
+  | Sstr_eval of Oparsetree.expression * Oparsetree.attributes
+        (* E *)
+  | Str_value of rec_flag * value_binding list
+        (* let P1 = E1 and ... and Pn = EN       (flag = Nonrecursive)
+           let rec P1 = E1 and ... and Pn = EN   (flag = Recursive)
+         *)
+  | Str_primitive of val_description
+        (*  val x: T
+            external x: T = "s1" ... "sn" *)
+  | Str_type of rec_flag * type_declaration list
+        (* type t1 = ... and ... and tn = ... *)
+  | Str_typext of Oparsetree.type_extension
+        (* type t1 += ... *)
+  | Str_exception of type_exception
+        (* exception C of T
+           exception C = M.X *)
+  | Str_module of Oparsetree.module_binding
+        (* module X = ME *)
+  | Str_recmodule of Oparsetree.module_binding list
+        (* module rec X1 = ME1 and ... and Xn = MEn *)
+  | Str_modtype of module_type_declaration
+        (* module type S = MT *)
+  | Str_open of open_description
+        (* open X *)
+  | Str_class of Oparsetree.class_declaration list
+        (* class c1 = ... and ... and cn = ... *)
+  | Str_class_type of Oparsetree.class_type_declaration list
+        (* class type ct1 = ... and ... and ctn = ... *)
+  | Str_include of Oparsetree.include_declaration
+        (* include ME *)
+  | Str_attribute of Oparsetree.attribute
+        (* [@@@id] *)
+  | Str_extension of Oparsetree.extension * Oparsetree.attributes
+        (* [%%id] *)
+  (* Specific to specification *)
+  | Str_function of function_
+  | Str_axiom of axiom
+  (* TODO: convert the following constructors to correspondent nodes in TAST *)
+  (* | Str_ghost_type of rec_flag * s_type_declaration list
+   * | Str_ghost_val  of s_val_description
+   * | Str_ghost_open of open_description *)
+
+and value_binding =
+  {
+    spvb_pat: pattern;
+    spvb_expr: Oparsetree.expression;
+    spvb_attributes: Oparsetree.attributes;
+    spvb_vspec: val_spec option;
+    spvb_loc: Location.t;
+  }
+
 (** Pretty printing *)
 
 open Opprintast
@@ -439,7 +503,6 @@ let print_type_kind fmt = function
        (list ~sep:"@\n" print_ls_decl) (rd.rd_cs::pjs)
   | Pty_open -> assert false
 
-open Opprintast
 open Oparsetree
 open Upretty_printer
 

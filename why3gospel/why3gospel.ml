@@ -44,7 +44,8 @@ let use_array loc =
 let read_file file nm c =
   let lb = Lexing.from_channel c in
   Gospel.Location.init lb file;
-  Gospel.Parser_frontend.(parse_gospel (parse_ocaml_lb lb) nm)
+  let ocaml_signature = Gospel.Parser_frontend.parse_ocaml_signature_lb lb in
+  Gospel.Parser_frontend.(parse_signature_gospel ocaml_signature nm)
 
 let type_check name nm sigs =
   let md = Gospel.Tmodule.init_muc name in
