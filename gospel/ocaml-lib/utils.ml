@@ -135,9 +135,11 @@ let check ?loc c exn =
   if not c then error ?loc exn
 
 let error_report ?loc s =
+  Format.eprintf "error=%s@." s;
   error ?loc (TypeCheckingError s)
 
 let check_report ?loc c s =
+  Format.eprintf "error=%s; c=%b@." s c;
   check ?loc c (TypeCheckingError s)
 
 let not_supported ?loc s =

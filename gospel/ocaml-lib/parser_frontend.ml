@@ -74,6 +74,16 @@ let default_open =
     Sig_ghost_open od in
   {sdesc = od gospelstdlib; sloc = Location.none}
 
+let default_open_str =
+  let open Uast in
+  let open Oparsetree in
+  let od nm =
+    let id = Location.{txt = Longident.Lident nm; loc = none} in
+    let od = {popen_lid = id; popen_override = Fresh;
+              popen_loc = Location.none; popen_attributes = []} in
+    Str_ghost_open od in
+  {sstr_desc = od gospelstdlib; sstr_loc = Location.none}
+
 (** Parse the attributes as GOSPEL specification. *)
 let parse_signature_gospel sign nm =
   if nm = gospelstdlib then signature sign else
@@ -81,8 +91,7 @@ let parse_signature_gospel sign nm =
 
 let parse_structure_gospel str =
   (* TODO: default open of stdlib as a structure item *)
-  (* default_open :: *)
-  structure str
+  (* default_open_str ::  *)structure str
 
 let parse_ocaml_signature_gospel file =
   parse_ocaml_signature file |> parse_signature_gospel

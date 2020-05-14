@@ -145,12 +145,14 @@ type known_ids = signature_item Mid.t
 type file = {
     fl_nm     : ident;
     fl_sigs   : signature;
+    fl_strs   : t_structure; (* FIXME: create a file type for implementations *)
     fl_export : namespace;
   }
 
 type module_uc = {
     muc_nm     : ident;
     muc_sigs   : signature list;
+    muc_strs   : t_structure list; (* FIXME: really think about this *)
     muc_prefix : string    list; (* essential when closing namespaces *)
     muc_import : namespace list;
     muc_export : namespace list;
@@ -235,14 +237,16 @@ let open_empty_module muc s =
             muc_export = empty_ns :: muc.muc_export}
 
 let close_module_file muc =
-  match muc.muc_import, muc.muc_export, muc.muc_prefix, muc.muc_sigs with
-  | _ :: i1 :: il, e0 :: e1 :: el, p0 :: pl, s0 :: sl ->
-     let file = { fl_nm = fresh_id p0;
-                  fl_sigs   = List.rev s0; fl_export = e0 } in
+  match muc.muc_import, muc.muc_export, muc.muc_prefix,
+        muc.muc_sigs, muc.muc_strs with
+  | _ :: i1 :: il, e0 :: e1 :: el, p0 :: pl, s0 :: sl, str0 :: strl ->
+      let file = { fl_nm = fresh_id p0; fl_sigs = List.rev s0;
+                   fl_strs = List.rev str0; fl_export = e0 } in
      {muc with  muc_prefix = pl;
                 muc_import = ns_add_ns i1 p0 e0 :: il;
                 muc_export = e1 :: el;
                 muc_sigs   = sl;
+                muc_strs   = strl;
                 muc_files  = Mstr.add p0 file muc.muc_files}
   | _ -> assert false
 
@@ -335,11 +339,15 @@ let add_sig_contents muc sig_ =
      add_ns_top ~export:false (add_ns ~export:false muc nm ns) ns
   | _ -> muc (* TODO *)
 
+let add_str_contents muc str =
+  assert false
+
 (** Module under construction with primitive types and functions *)
 
 let init_muc s = {
     muc_nm      = fresh_id s;
     muc_sigs    = [[]];
+    muc_strs    = [[]];
     muc_prefix  = [s];
     muc_import  = [ns_with_primitives];
     muc_export  = [empty_ns];
@@ -348,9 +356,9 @@ let init_muc s = {
     muc_crcm    = Coercion.empty}
 
 let wrap_up_muc muc =
-  match muc.muc_export, muc.muc_sigs with
-  | [e], [s] ->
-     { fl_nm = muc.muc_nm; fl_sigs = List.rev s; fl_export = e }
+  match muc.muc_export, muc.muc_sigs, muc.muc_strs with
+  | [e], [s], [st] ->
+     { fl_nm = muc.muc_nm; fl_sigs = List.rev s; fl_strs = st; fl_export = e }
   | _ -> assert false
 
 (** Pretty printing *)

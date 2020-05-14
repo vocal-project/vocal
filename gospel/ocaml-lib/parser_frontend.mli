@@ -26,10 +26,15 @@ val parse_ocaml_signature : string -> Oparsetree.signature
 
 val parse_ocaml_signature_lb : Lexing.lexbuf -> Oparsetree.signature
 
+val parse_ocaml_structure_lb : Lexing.lexbuf -> Oparsetree.structure
+
 (** [parse_gospel sig_list name] parses the GOSPEL attributes and
    integrates them in the corresponding OCaml signatures. *)
 val parse_signature_gospel :
   Oparsetree.signature_item list -> string -> Uast.s_signature_item list
+
+val parse_structure_gospel :
+  Oparsetree.structure_item list -> Uast.s_structure_item list
 
 (** [parse_ocaml_gospel file] parses the OCaml interface and
    the GOSPEL specification of `file`.

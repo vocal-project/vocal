@@ -29,3 +29,8 @@ val process_sig_item : parse_env -> module_uc -> Uast.s_signature_item ->
 
 (** the same as above but it drops the typed signature *)
 val type_sig_item : parse_env -> module_uc -> Uast.s_signature_item -> module_uc
+
+val process_str_item : parse_env -> module_uc -> Uast.s_structure_item ->
+                       module_uc * t_structure_item
+
+val type_str_item : parse_env -> module_uc -> Uast.s_structure_item -> module_uc

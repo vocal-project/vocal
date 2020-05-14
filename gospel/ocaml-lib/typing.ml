@@ -87,6 +87,12 @@ let rec ty_of_core ns cty =
      (* TODO check what to do with the arg_label *)
      let ty1, ty2 = (ty_of_core ns) ct1, (ty_of_core ns) ct2 in
      ty_app ts_arrow [ty1;ty2]
+  | Ptyp_object _ -> assert false
+  | Ptyp_alias _ -> assert false
+  | Ptyp_class _ -> assert false
+  | Ptyp_variant _ -> assert false
+  | Ptyp_poly ([], ct) ->
+      ty_of_core ns ct
   | _ -> assert false
 
 (** Typing terms *)
@@ -931,6 +937,43 @@ and process_sig_item penv muc {sdesc;sloc} =
 
 and type_sig_item penv muc sig_item =
   let muc, _ = process_sig_item penv muc sig_item in muc
+
+let rec process_str_item penv muc {sstr_desc; sstr_loc} =
+  let rec_flag = function
+    | Oasttypes.Nonrecursive -> Nonrecursive
+    | Oasttypes.Recursive -> Recursive in
+  let kid, ns, crcm = muc.muc_kid, get_top_import muc, muc.muc_crcm in
+  let process_str_item sti muc = match sti with
+    | Uast.Str_value (flag, svb_list) ->
+        let vbs = List.map (process_vb ~loc:sstr_loc kid crcm ns) svb_list in
+        muc, mk_str_item (TStr_value (rec_flag flag, vbs)) sstr_loc
+    (* | Uast.Str_ghost_open _ -> assert false TODO *)
+    | _ -> assert false in
+  let rec process_and_import sti muc =
+    try process_str_item sti muc with
+    | Utils.Located (loc, NsNotFound s) ->
+       (* if a namespace does not exist we try to load
+          a file with the same name *)
+       let muc = module_as_file ~loc:loc penv muc s in
+       let str = mk_str_item (TStr_use s) sstr_loc in
+       let muc = add_str_contents muc str in
+       process_and_import sti muc in
+  let muc, structure = process_and_import sstr_desc muc in
+  let muc = add_str_contents muc structure in
+  muc, structure
+
+and process_vb ~loc ?(ghost=false) kid crcm ns vb =
+  let open Oparsetree in
+  let get_vb_id_core_type {ppat_desc} = match ppat_desc with
+    | Ppat_constraint ({ppat_desc = Ppat_var s}, cty) -> s, cty
+    | _ -> assert false (* TODO *) in
+  let id, cty = get_vb_id_core_type vb.spvb_pat in
+  let id = id_add_loc id.loc (fresh_id id.txt) in
+  let spec = opmap (process_val_spec kid crcm ns id cty) vb.spvb_vspec in
+  mk_val_binding vb.spvb_pat vb.spvb_expr vb.spvb_attributes spec vb.spvb_loc
+
+let type_str_item penv muc str_item =
+  let muc, _ = process_str_item penv muc str_item in muc
 
 let () =
   let open Location in
