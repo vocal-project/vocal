@@ -38,6 +38,7 @@
     sp_writes  = List.rev s.sp_writes;
     sp_consumes= List.rev s.sp_consumes;
     sp_alias   = List.rev s.sp_alias;
+    sp_variant = List.rev s.sp_variant;
     sp_diverge = s.sp_diverge;
     sp_equiv   = List.rev s.sp_equiv;
   }
@@ -53,6 +54,7 @@
     sp_writes  = [];
     sp_consumes= [];
     sp_alias   = [];
+    sp_variant = [];
     sp_diverge = false;
     sp_equiv   = [];
   }
@@ -253,6 +255,8 @@ val_spec_body:
   { empty_vspec }
 | bd=val_spec_body DIVERGES
   { {bd with sp_diverge = true} }
+| bd=val_spec_body v=variant (* TODO: we only support a single variant *)
+  { {bd with sp_diverge = false; sp_variant = [v]} }
 | bd=val_spec_body MODIFIES wr=separated_list(COMMA, term)
     { { bd with sp_writes = wr @ bd.sp_writes } }
 | bd=val_spec_body CONSUMES cs=separated_list(COMMA, term)

@@ -404,6 +404,9 @@ let rec structure_item str_item =
   | Pstr_value (rec_flag, vb_list) ->
       let vbs = List.map s_value_binding vb_list in
       mk_s_structure_item (Str_value (rec_flag, vbs)) ~loc
+  | Pstr_type (rec_flag, type_decl_list) ->
+      let td_list, _ = type_declaration type_decl_list in
+      mk_s_structure_item (Str_type (rec_flag, td_list)) ~loc
   | _ -> assert false (* TODO *)
 
 and s_value_binding vb_list =

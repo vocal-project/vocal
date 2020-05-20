@@ -90,6 +90,8 @@ and term_desc =
 
 type invariant = term list
 
+type variant = term list (* TODO: add support for more complex relations *)
+
 type pre = term * bool (* wether it is a checks *)
 type post = term
 type xpost = Location.t * (qualid * (pattern * term) option) list
@@ -105,6 +107,7 @@ type val_spec = {
     sp_writes  : term list;
     sp_consumes: term list;
     sp_alias   : (term * term) list; (* TODO *)
+    sp_variant : variant;
     sp_diverge : bool;
     sp_equiv   : string list;
 }
@@ -311,7 +314,7 @@ and s_structure_item_desc =
   | Str_primitive of s_val_description
         (*  val x: T
             external x: T = "s1" ... "sn" *)
-  | Str_type of rec_flag * type_declaration list
+  | Str_type of rec_flag * s_type_declaration list
         (* type t1 = ... and ... and tn = ... *)
   | Str_typext of type_extension
         (* type t1 += ... *)
