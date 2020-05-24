@@ -393,6 +393,12 @@ and module_type_declaration m =
               mtdattributes = attrs; mtdloc = m.pmtd_loc} in
   mtd, specs
 
+let floating_specs_str = function
+  | Sfunction (f, _) ->
+      (* TODO: look forward for function specification *)
+      Str_function f
+  | _ -> assert false (* TODO *)
+
 let mk_s_structure_item ~loc sstr_desc =
   { sstr_desc; sstr_loc = loc }
 
@@ -407,6 +413,9 @@ let rec structure_item str_item =
   | Pstr_type (rec_flag, type_decl_list) ->
       let td_list, _ = type_declaration type_decl_list in
       mk_s_structure_item (Str_type (rec_flag, td_list)) ~loc
+  | Pstr_attribute attr when is_spec attr ->
+      let spec = attr2spec attr in
+      mk_s_structure_item (floating_specs_str spec) ~loc
   | _ -> assert false (* TODO *)
 
 and s_value_binding vb_list =
