@@ -322,10 +322,12 @@ and s_module_type1 f x =
     | Mod_extension e -> extension reset_ctxt f e
     | _ -> paren true s_module_type f x
 
+let s_expression _e = assert false (* TODO *)
+
 let rec s_structure_item fmt str =
   match str.sstr_desc with
   | Str_eval (e, _) ->
-      pp fmt "%a" expression e
+      pp fmt "%a" s_expression e
   | Str_value (rec_flag, vb_list) ->
       pp fmt "%a" (list (s_value_binding rec_flag)) vb_list
   | _ -> assert false (* TODO *)
@@ -334,7 +336,7 @@ and s_value_binding is_rec fmt s_val =
   let intro = "let " ^ (match is_rec with Recursive -> "rec " | _ -> "") in
   pp fmt "@[<2>%s%a@ =@ %a@]%a@\n%a" intro
     pattern s_val.spvb_pat
-    expression s_val.spvb_expr
+    s_expression s_val.spvb_expr
     (item_attributes reset_ctxt) s_val.spvb_attributes
     val_spec s_val.spvb_vspec
 

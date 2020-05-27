@@ -457,7 +457,7 @@ and t_structure_item_desc =
 and t_value_binding =
   {
     tpvb_pat: Oparsetree.pattern; (* FIXME: change this pattern type *)
-    tpvb_expr: Oparsetree.expression;
+    tpvb_expr: Uast.s_expression;
     tpvb_attributes: Oparsetree.attributes;
     tpvb_vspec: val_spec option;
     tpvb_loc: Location.t;
