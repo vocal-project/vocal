@@ -280,29 +280,26 @@ and s_module_type =
     mattributes : attributes; (* ... [@id1] [@id2] *)
   }
 
-and s_module_declaration =
-  {
-    mdname       : string loc;
-    mdtype       : s_module_type;
-    mdattributes : attributes; (* ... [@@id1] [@@id2] *)
-    mdloc        : Location.t;
-  }
+and s_module_declaration = {
+  mdname       : string loc;
+  mdtype       : s_module_type;
+  mdattributes : attributes; (* ... [@@id1] [@@id2] *)
+  mdloc        : Location.t;
+}
 
-and s_module_type_declaration =
-    {
-     mtdname       : string loc;
-     mtdtype       : s_module_type option;
-     mtdattributes : attributes; (* ... [@@id1] [@@id2] *)
-     mtdloc        : Location.t;
-    }
+and s_module_type_declaration = {
+  mtdname       : string loc;
+  mtdtype       : s_module_type option;
+  mtdattributes : attributes; (* ... [@@id1] [@@id2] *)
+  mtdloc        : Location.t;
+}
 
-type s_expression =
-  {
-    spexp_desc: s_expression_desc;
-    spexp_loc: Location.t;
-    spexp_loc_stack: Location.t list;
-    spexp_attributes: attributes; (* ... [@id1] [@id2] *)
-  }
+type s_expression = {
+  spexp_desc: s_expression_desc;
+  spexp_loc: Location.t;
+  spexp_loc_stack: Location.t list;
+  spexp_attributes: attributes; (* ... [@id1] [@id2] *)
+}
 
 and s_expression_desc =
   | Sexp_ident of Longident.t loc
@@ -411,7 +408,7 @@ and s_expression_desc =
         (* object ... end *)
   | Sexp_newtype of string loc * s_expression
         (* fun (type t) -> E *)
-  | Sexp_pack of module_expr
+  | Sexp_pack of s_module_expr
         (* (module ME)
 
            (module ME : S) is represented as
@@ -425,20 +422,40 @@ and s_expression_desc =
   | Sexp_unreachable
         (* . *)
 
-and s_case =   (* (P -> E) or (P when E0 -> E) *)
-  {
-    spc_lhs: Oparsetree.pattern;
-    spc_guard: s_expression option;
-    spc_rhs: s_expression;
-   }
+and s_case = {   (* (P -> E) or (P when E0 -> E) *)
+  spc_lhs: Oparsetree.pattern;
+  spc_guard: s_expression option;
+  spc_rhs: s_expression;
+}
+
+and s_module_expr = {
+  spmod_desc: s_module_expr_desc;
+  spmod_loc: Location.t;
+  spmod_attributes: attributes; (* ... [@id1] [@id2] *)
+}
+
+and s_module_expr_desc =
+  | Smod_ident of Longident.t loc
+        (* X *)
+  | Smod_structure of s_structure
+        (* struct ... end *)
+  | Smod_functor of string loc * s_module_type option * s_module_expr
+        (* functor(X : MT1) -> ME *)
+  | Smod_apply of s_module_expr * s_module_expr
+        (* ME1(ME2) *)
+  | Smod_constraint of s_module_expr * s_module_type
+        (* (ME : MT) *)
+  | Smod_unpack of s_expression
+        (* (val E) *)
+  | Smod_extension of extension
+        (* [%id] *)
 
 and s_structure = s_structure_item list
 
-and s_structure_item =
-  {
-    sstr_desc: s_structure_item_desc;
-    sstr_loc: Location.t;
-  }
+and s_structure_item = {
+  sstr_desc: s_structure_item_desc;
+  sstr_loc: Location.t;
+}
 
 and s_structure_item_desc =
   | Str_eval of s_expression * attributes
@@ -457,11 +474,11 @@ and s_structure_item_desc =
   | Str_exception of type_exception
         (* exception C of T
            exception C = M.X *)
-  | Str_module of module_binding
+  | Str_module of s_module_binding
         (* module X = ME *)
-  | Str_recmodule of module_binding list
+  | Str_recmodule of s_module_binding list
         (* module rec X1 = ME1 and ... and Xn = MEn *)
-  | Str_modtype of module_type_declaration
+  | Str_modtype of s_module_type_declaration
         (* module type S = MT *)
   | Str_open of open_description
         (* open X *)
@@ -482,11 +499,17 @@ and s_structure_item_desc =
   | Str_ghost_val  of s_val_description
   | Str_ghost_open of open_description
 
-and s_value_binding =
-  {
-    spvb_pat: Oparsetree.pattern; (* FIXME: change this pattern type *)
-    spvb_expr: s_expression;
-    spvb_attributes: attributes;
-    spvb_vspec: val_spec option;
-    spvb_loc: Location.t;
-  }
+and s_value_binding = {
+  spvb_pat: Oparsetree.pattern; (* FIXME: change this pattern type *)
+  spvb_expr: s_expression;
+  spvb_attributes: attributes;
+  spvb_vspec: val_spec option;
+  spvb_loc: Location.t;
+}
+
+and s_module_binding = {
+  spmb_name: string loc;
+  spmb_expr: s_module_expr;
+  spmb_attributes: attributes;
+  spmb_loc: Location.t;
+}

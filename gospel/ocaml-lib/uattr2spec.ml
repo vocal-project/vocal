@@ -395,11 +395,14 @@ let mk_s_structure_item ~loc sstr_desc =
 let mk_s_expression spexp_desc spexp_loc spexp_loc_stack spexp_attributes =
   { spexp_desc; spexp_loc; spexp_loc_stack; spexp_attributes }
 
+let mk_s_module_expr spmod_desc spmod_loc spmod_attributes =
+  { spmod_desc; spmod_loc; spmod_attributes }
+
 let rec s_expression expr =
   let loc = expr.pexp_loc in
   let loc_stack = expr.pexp_loc_stack in
   let attributes = expr.pexp_attributes in
-  let lbl_expr    (lbl, expr) = lbl, s_expression expr in
+  let lbl_expr (lbl, expr) = lbl, s_expression expr in
   let longid_expr (id,  expr) = id,  s_expression expr in
   let case {pc_lhs; pc_guard; pc_rhs} =
     let spc_lhs = pc_lhs in
@@ -468,33 +471,43 @@ let rec s_expression expr =
         Sexp_letexception (construct, s_expression expr)
     | Pexp_assert expr ->
         Sexp_assert (s_expression expr)
-    (* | Pexp_lazy of expression
-     * (\* lazy E *\)
-     * | Pexp_poly of expression * core_type option
-     * (\* Used for method bodies.
-     *
-     *    Can only be used as the expression under Cfk_concrete
-     *    for methods (not values). *\)
-     * | Pexp_object of class_structure
-     * (\* object ... end *\)
-     * | Pexp_newtype of string loc * expression
-     * (\* fun (type t) -> E *\)
-     * | Pexp_pack of module_expr
-     * (\* (module ME)
-     *
-     *    (module ME : S) is represented as
-     *    Pexp_constraint(Pexp_pack, Ptyp_package S) *\)
-     * | Pexp_open of override_flag * Longident.t loc * expression
-     * (\* M.(E)
-     *    let open M in E
-     *    let! open M in E *\)
-     * | Pexp_extension of extension
-     * (\* [%id] *\)
-     * | Pexp_unreachable ->
-     *     Sexp_unreachable in
-     *     (\* . *\) *)
-    | _ -> assert false in
+    | Pexp_lazy expr ->
+        Sexp_lazy (s_expression expr)
+    | Pexp_poly (expr, cty) ->
+        Sexp_poly (s_expression expr, cty)
+    | Pexp_object class_str ->
+        Sexp_object class_str
+    | Pexp_newtype (id, expr) ->
+        Sexp_newtype (id, s_expression expr)
+    | Pexp_pack mod_expr ->
+        Sexp_pack (s_module_expr mod_expr)
+    | Pexp_open (override_flag, id, expr) ->
+        Sexp_open (override_flag, id, s_expression expr)
+    | Pexp_extension extension ->
+        Sexp_extension extension
+    | Pexp_unreachable ->
+        Sexp_unreachable in
   mk_s_expression (spexp_desc expr.pexp_desc) loc loc_stack attributes
+
+and s_module_expr {pmod_desc; pmod_loc; pmod_attributes} =
+  let spmod_desc = match pmod_desc with
+    | Pmod_ident id ->
+        Smod_ident id
+    | Pmod_structure str ->
+        Smod_structure (structure str)
+    | Pmod_functor (id, mod_type, mod_expr) ->
+        Smod_functor (id, opmap module_type mod_type, s_module_expr mod_expr)
+    | Pmod_apply (mod_expr1, mod_expr2) ->
+        Smod_apply (s_module_expr mod_expr1, s_module_expr mod_expr2)
+    | Pmod_constraint (mod_expr, mod_type) ->
+        Smod_constraint (s_module_expr mod_expr, module_type mod_type)
+    | Pmod_unpack expr ->
+        Smod_unpack (s_expression expr)
+    | Pmod_extension extension ->
+        Smod_extension extension in
+  mk_s_module_expr spmod_desc pmod_loc pmod_attributes
+
+and structure s = List.map structure_item s
 
 and structure_item str_item =
   let loc = str_item.pstr_loc in
@@ -510,6 +523,8 @@ and structure_item str_item =
     | Pstr_attribute attr when is_spec attr ->
         let spec = attr2spec attr in
         floating_specs_str spec
+    | Pstr_module mod_binding ->
+        Str_module (s_module_binding mod_binding)
     | _ -> assert false (* TODO *) in
   mk_s_structure_item (str_desc str_item.pstr_desc) ~loc
 
@@ -529,4 +544,6 @@ and s_value_binding vb_list =
   (* TODO: take care of those floating specs *)
   let spec, _ = val_binding vb_list in spec
 
-let structure s = List.map structure_item s
+and s_module_binding {pmb_name; pmb_expr; pmb_attributes; pmb_loc} =
+  { spmb_expr = s_module_expr pmb_expr; spmb_name = pmb_name;
+    spmb_attributes = pmb_attributes; spmb_loc = pmb_loc }
