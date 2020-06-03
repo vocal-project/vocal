@@ -382,11 +382,11 @@ and module_type_declaration m =
   mtd, specs
 
 let floating_specs_str = function
-  | Sfunction (f, _) ->
+  | Sfunction (f, loc) ->
       (* TODO: look forward for function specification *)
-      Str_function f
-  | Saxiom (a, _) ->
-      Str_axiom a
+      Str_function f, loc
+  | Saxiom (a, loc) ->
+      Str_axiom a, loc
   | _ -> assert false (* TODO *)
 
 let mk_s_structure_item ~loc sstr_desc =
@@ -415,7 +415,10 @@ let rec s_expression expr =
     | Pexp_constant c ->
         Sexp_constant c
     | Pexp_let (rec_flag, vb_list, expr) ->
-        Sexp_let (rec_flag, List.map s_value_binding vb_list, s_expression expr)
+        (* we ignore any floating specification that might appear within a local
+           [let .. in] expression *)
+        let s_vb_list, _ = s_value_binding vb_list in
+        Sexp_let (rec_flag, s_vb_list, s_expression expr)
     | Pexp_function case_list ->
         Sexp_function case_list
     | Pexp_fun (arg, expr_arg, pat, expr) ->
@@ -507,31 +510,41 @@ and s_module_expr {pmod_desc; pmod_loc; pmod_attributes} =
         Smod_extension extension in
   mk_s_module_expr spmod_desc pmod_loc pmod_attributes
 
-and structure s = List.map structure_item s
+and structure s =
+  let add_str_item acc str_item = structure_item str_item :: acc in
+  let structure = List.fold_left add_str_item [] s in
+  List.rev (List.flatten structure)
 
 and structure_item str_item =
+  let mk_fspec fspec =
+    let desc, loc = floating_specs_str fspec in
+    mk_s_structure_item desc ~loc in
   let loc = str_item.pstr_loc in
-  let str_desc = function
-    | Pstr_eval (e, attrs) ->
-        Str_eval (s_expression e, attrs)
-    | Pstr_value (rec_flag, vb_list) ->
-        let vbs = List.map s_value_binding vb_list in
-        Str_value (rec_flag, vbs)
-    | Pstr_type (rec_flag, type_decl_list) ->
-        let td_list, _ = type_declaration type_decl_list in
-        Str_type (rec_flag, td_list)
-    | Pstr_attribute attr when is_spec attr ->
-        let spec = attr2spec attr in
-        floating_specs_str spec
-    | Pstr_module mod_binding ->
-        Str_module (s_module_binding mod_binding)
-    | _ -> assert false (* TODO *) in
-  mk_s_structure_item (str_desc str_item.pstr_desc) ~loc
+  match str_item.pstr_desc with
+  | Pstr_eval (e, attrs) ->
+      [mk_s_structure_item (Str_eval (s_expression e, attrs)) ~loc]
+  | Pstr_value (rec_flag, vb_list) ->
+      let vb_list, fspec = s_value_binding vb_list in
+      let fspec_list = List.map mk_fspec fspec in
+      let str_desc = mk_s_structure_item (Str_value (rec_flag, vb_list)) ~loc in
+      List.rev (str_desc :: fspec_list)
+  | Pstr_type (rec_flag, type_decl_list) ->
+      let td_list, fspec = type_declaration type_decl_list in
+      let fspec_list = List.map mk_fspec fspec in
+      let str_desc = mk_s_structure_item (Str_type (rec_flag, td_list)) ~loc in
+      List.rev (str_desc :: fspec_list)
+  | Pstr_attribute attr when is_spec attr ->
+      let spec = attr2spec attr in
+      let desc, loc = floating_specs_str spec in
+      [mk_s_structure_item desc ~loc]
+  | Pstr_module mod_binding ->
+      [mk_s_structure_item (Str_module (s_module_binding mod_binding)) ~loc]
+  | _ -> assert false (* TODO *)
 
 and s_value_binding vb_list =
   (* [val_binding v] parses the attributes of a value binding. As for val
      description, only the first attribute is considered as specification. *)
-  let val_binding v =
+  let val_spec v =
     let spec, attrs = split_attr v.pvb_attributes in
     let spec = List.map attr2spec spec in
     let expr = s_expression v.pvb_expr in
@@ -541,9 +554,11 @@ and s_value_binding vb_list =
     | Sval (x, _) :: xs ->
         { vb with spvb_vspec = Some x}, xs
     | xs -> vb, xs in
-  (* TODO: take care of those floating specs *)
-  let spec, _ = val_binding vb_list in spec
+  let vspec_fspec = List.map val_spec vb_list in
+  let mk_vb_fspec (vb_acc, fs_acc) (vb, fs) = vb :: vb_acc, fs :: fs_acc in
+  let vb_list, fspec = List.fold_left mk_vb_fspec ([], []) vspec_fspec in
+  List.rev vb_list, List.flatten fspec
 
 and s_module_binding {pmb_name; pmb_expr; pmb_attributes; pmb_loc} =
-  { spmb_expr = s_module_expr pmb_expr; spmb_name = pmb_name;
-    spmb_attributes = pmb_attributes; spmb_loc = pmb_loc }
+  { spmb_expr       = s_module_expr pmb_expr; spmb_name = pmb_name;
+    spmb_attributes = pmb_attributes;         spmb_loc  = pmb_loc }

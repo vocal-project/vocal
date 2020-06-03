@@ -91,7 +91,7 @@ let parse_signature_gospel sign nm =
 
 let parse_structure_gospel str =
   (* TODO: default open of stdlib as a structure item *)
-  (* default_open_str ::  *)structure str
+  default_open_str :: structure str
 
 let parse_ocaml_signature_gospel file =
   parse_ocaml_signature file |> parse_signature_gospel
