@@ -1,5 +1,5 @@
 (executable
- (flags :standard -w -9-32-27 -linkall)
+ (flags :standard -w -9 -linkall)
  (name why3gospel)
  (modes plugin)
  (libraries why3 gospel)
