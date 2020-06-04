@@ -381,16 +381,37 @@ and module_type_declaration m =
               mtdattributes = attrs; mtdloc = m.pmtd_loc} in
   mtd, specs
 
-let floating_specs_str = function
-  | Sfunction (f, loc) ->
-      (* TODO: look forward for function specification *)
-      Str_function f, loc
-  | Saxiom (a, loc) ->
-      Str_axiom a, loc
-  | _ -> assert false (* TODO *)
-
 let mk_s_structure_item ~loc sstr_desc =
   { sstr_desc; sstr_loc = loc }
+
+let rec floating_specs_str = function
+  | [] -> []
+  | Stype _ :: _ -> assert false (* TODO *)
+  | Sval _ :: _ -> assert false (* TODO *)
+  | Sfunction (f, loc) :: xs ->
+      (* look forward for function specification *)
+      let (fun_specs, xs) = split_at_f is_func_spec xs in
+      let fun_specs = List.map get_func_spec fun_specs in
+      let fun_specs = List.fold_left Uast_utils.fspec_union
+          f.fun_spec fun_specs in
+      let f = {f with fun_spec = fun_specs } in
+      mk_s_structure_item (Str_function f) ~loc :: floating_specs_str xs
+  | Sfunc_spec (_, loc) :: _ ->
+      raise (Orphan_decl_spec loc)
+  | Saxiom (a, loc) :: xs ->
+      mk_s_structure_item (Str_axiom a) ~loc :: floating_specs_str xs
+  | Stype_ghost (rec_flag, type_decl, loc) :: xs ->
+      (* look forward for type specification *)
+      let tspecs,xs = split_at_f is_type_spec xs in
+      let extra_spec = List.map get_type_spec tspecs in
+      let td,fspec = type_declaration ~extra_spec type_decl in
+      (* if there is nested specification they must refer to the ghost type *)
+      if fspec != [] then
+        raise (Floating_not_allowed loc);
+      let sdesc = Str_ghost_type (rec_flag,td) in
+      mk_s_structure_item sdesc ~loc :: floating_specs_str xs
+  | Sval_ghost _ :: _ -> assert false (* TODO *)
+  | Sopen_ghost _ :: _ -> assert false (* TODO *)
 
 let mk_s_expression spexp_desc spexp_loc spexp_loc_stack spexp_attributes =
   { spexp_desc; spexp_loc; spexp_loc_stack; spexp_attributes }
@@ -516,29 +537,29 @@ and structure s =
   List.rev (List.flatten structure)
 
 and structure_item str_item =
-  let mk_fspec fspec =
-    let desc, loc = floating_specs_str fspec in
-    mk_s_structure_item desc ~loc in
   let loc = str_item.pstr_loc in
   match str_item.pstr_desc with
   | Pstr_eval (e, attrs) ->
       [mk_s_structure_item (Str_eval (s_expression e, attrs)) ~loc]
   | Pstr_value (rec_flag, vb_list) ->
       let vb_list, fspec = s_value_binding vb_list in
-      let fspec_list = List.map mk_fspec fspec in
+      let fspec_list = floating_specs_str fspec in
       let str_desc = mk_s_structure_item (Str_value (rec_flag, vb_list)) ~loc in
       List.rev (str_desc :: fspec_list)
   | Pstr_type (rec_flag, type_decl_list) ->
       let td_list, fspec = type_declaration type_decl_list in
-      let fspec_list = List.map mk_fspec fspec in
+      let fspec_list = floating_specs_str fspec in
       let str_desc = mk_s_structure_item (Str_type (rec_flag, td_list)) ~loc in
       List.rev (str_desc :: fspec_list)
   | Pstr_attribute attr when is_spec attr ->
       let spec = attr2spec attr in
-      let desc, loc = floating_specs_str spec in
-      [mk_s_structure_item desc ~loc]
+      floating_specs_str [spec]
+  | Pstr_attribute attr ->
+      [mk_s_structure_item (Str_attribute attr) ~loc]
   | Pstr_module mod_binding ->
       [mk_s_structure_item (Str_module (s_module_binding mod_binding)) ~loc]
+  | Pstr_exception ty_exn ->
+      [mk_s_structure_item (Str_exception ty_exn) ~loc]
   | _ -> assert false (* TODO *)
 
 and s_value_binding vb_list =
