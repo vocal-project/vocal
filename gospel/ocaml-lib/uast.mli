@@ -315,7 +315,8 @@ and s_expression_desc =
   | Sexp_function of case list
         (* function P1 -> E1 | ... | Pn -> En *)
   | Sexp_fun of
-      arg_label * s_expression option * Oparsetree.pattern * s_expression
+      arg_label * s_expression option * Oparsetree.pattern * s_expression *
+      val_spec option
         (* fun P -> E1                          (Simple, None)
            fun ~l:P -> E1                       (Labelled l, None)
            fun ?l:P -> E1                       (Optional l, None)

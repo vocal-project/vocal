@@ -444,8 +444,13 @@ let rec s_expression expr =
         Sexp_let (rec_flag, s_vb_list, s_expression expr)
     | Pexp_function case_list ->
         Sexp_function case_list
-    | Pexp_fun (arg, expr_arg, pat, expr) ->
-        Sexp_fun (arg, opmap s_expression expr_arg, pat, s_expression expr)
+    | Pexp_fun (arg, expr_arg, pat, expr_body) ->
+        let spec, _ = split_attr expr.pexp_attributes in
+        let spec = List.map attr2spec spec in
+        let val_spec = match spec with Sval (x, _) :: _ -> Some x | _ -> None in
+        let expr_arg = opmap s_expression expr_arg in
+        let expr_body = s_expression expr_body in
+        Sexp_fun (arg, expr_arg, pat, expr_body, val_spec)
     | Pexp_apply (expr, arg_list) ->
         Sexp_apply (s_expression expr, List.map lbl_expr arg_list)
     | Pexp_match (expr, case_list) ->
