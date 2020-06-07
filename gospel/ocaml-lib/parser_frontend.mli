@@ -34,7 +34,7 @@ val parse_signature_gospel :
   Oparsetree.signature_item list -> string -> Uast.s_signature_item list
 
 val parse_structure_gospel :
-  Oparsetree.structure_item list -> Uast.s_structure_item list
+  Oparsetree.structure_item list -> string -> Uast.s_structure_item list
 
 (** [parse_ocaml_gospel file] parses the OCaml interface and
    the GOSPEL specification of `file`.
@@ -44,4 +44,4 @@ val parse_structure_gospel :
 val parse_ocaml_signature_gospel :
   string -> string -> Uast.s_signature_item list
 
-val parse_ocaml_structure_gospel : string -> Uast.s_structure
+val parse_ocaml_structure_gospel : string -> string -> Uast.s_structure

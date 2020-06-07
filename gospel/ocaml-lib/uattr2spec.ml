@@ -411,7 +411,9 @@ let rec floating_specs_str = function
       let sdesc = Str_ghost_type (rec_flag,td) in
       mk_s_structure_item sdesc ~loc :: floating_specs_str xs
   | Sval_ghost _ :: _ -> assert false (* TODO *)
-  | Sopen_ghost _ :: _ -> assert false (* TODO *)
+  | Sopen_ghost (open_desc, loc) :: xs ->
+      let fspec = floating_specs_str xs in
+      mk_s_structure_item (Str_ghost_open open_desc) ~loc :: fspec
 
 let mk_s_expression spexp_desc spexp_loc spexp_loc_stack spexp_attributes =
   { spexp_desc; spexp_loc; spexp_loc_stack; spexp_attributes }

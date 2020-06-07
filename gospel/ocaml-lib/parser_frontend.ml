@@ -89,7 +89,8 @@ let parse_signature_gospel sign nm =
   if nm = gospelstdlib then signature sign else
     default_open :: signature sign
 
-let parse_structure_gospel str =
+let parse_structure_gospel str nm =
+  if nm = gospelstdlib then structure str else
   (* TODO: default open of stdlib as a structure item *)
   default_open_str :: structure str
 
@@ -97,4 +98,4 @@ let parse_ocaml_signature_gospel file =
   parse_ocaml_signature file |> parse_signature_gospel
 
 let parse_ocaml_structure_gospel file =
-  parse_structure_gospel (parse_ocaml_structure file)
+  parse_ocaml_structure file |> parse_structure_gospel
