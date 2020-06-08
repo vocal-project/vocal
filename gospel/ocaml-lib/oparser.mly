@@ -3068,6 +3068,11 @@ attr_id:
 attribute:
   LBRACKETAT attr_id payload RBRACKET
     { Attr.mk ~loc:(make_loc $sloc) $2 $3 }
+  | LBRACKETAT GOSPEL STRING RBRACKET
+      { let loc = make_loc $loc($3) in
+        let loc = {loc with loc_start={loc.loc_start
+          with pos_cnum=loc.loc_start.pos_cnum+1}} in
+        Attr.mk ~loc {txt=gospel;loc=make_loc $loc($2)}  (PGospel (fst $3)) }
 ;
 post_item_attribute:
   LBRACKETATAT attr_id payload RBRACKET

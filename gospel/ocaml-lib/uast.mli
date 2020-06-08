@@ -316,7 +316,7 @@ and s_expression_desc =
         (* function P1 -> E1 | ... | Pn -> En *)
   | Sexp_fun of
       arg_label * s_expression option * Oparsetree.pattern * s_expression *
-      val_spec option
+      fun_spec option
         (* fun P -> E1                          (Simple, None)
            fun ~l:P -> E1                       (Labelled l, None)
            fun ?l:P -> E1                       (Optional l, None)

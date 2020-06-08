@@ -447,7 +447,8 @@ let rec s_expression expr =
     | Pexp_fun (arg, expr_arg, pat, expr_body) ->
         let spec, _ = split_attr expr.pexp_attributes in
         let spec = List.map attr2spec spec in
-        let val_spec = match spec with Sval (x, _) :: _ -> Some x | _ -> None in
+        let val_spec = match spec with
+          | Sfunc_spec (x, _) :: _ -> Some x | _ -> None in
         let expr_arg = opmap s_expression expr_arg in
         let expr_body = s_expression expr_body in
         Sexp_fun (arg, expr_arg, pat, expr_body, val_spec)
