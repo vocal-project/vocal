@@ -179,11 +179,11 @@ let td_vis_from_manifest = function
     GOSPEL type manifest is [None], then the type is defined via its
     specification fields. Otherwise, it is an alias type. *)
 let td_def td_spec td_manifest =
+  let field_of_lsymbol (ls, mut) =
+    let id  = Term.ident_of_lsymbol ls in
+    let pty = Term.ty Term.(Opt.get ls.Tt.ls_value) in
+    mk_field id.id_loc id pty ~mut ~ghost:true in
   let td_def_of_ty_fields ty_fields =
-    let field_of_lsymbol (ls, mut) =
-      let id  = Term.ident_of_lsymbol ls in
-      let pty = Term.ty Term.(Opt.get ls.Tt.ls_value) in
-      mk_field id.id_loc id pty ~mut ~ghost:true in
     TDrecord (List.map field_of_lsymbol ty_fields) in
   match td_manifest with
   | None -> td_def_of_ty_fields td_spec.T.ty_fields
