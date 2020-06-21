@@ -947,8 +947,44 @@ let rec process_str_item penv muc {sstr_desc; sstr_loc} =
     | Uast.Str_value (flag, svb_list) ->
         let vbs = List.map (process_vb ~loc:sstr_loc kid crcm ns) svb_list in
         muc, mk_str_item (TStr_value (rec_flag flag, vbs)) sstr_loc
-    (* | Uast.Str_ghost_open _ -> assert false TODO *)
-    | _ -> assert false in
+    | Str_eval _ -> assert false (* TODO *)
+        (* let P1 = E1 and ... and Pn = EN       (flag = Nonrecursive)
+           let rec P1 = E1 and ... and Pn = EN   (flag = Recursive)
+         *)
+    | Str_primitive _ -> assert false (* TODO *)
+        (*  val x: T
+            external x: T = "s1" ... "sn" *)
+    | Str_type _ -> assert false (* TODO *)
+        (* type t1 = ... and ... and tn = ... *)
+    | Str_typext _ -> assert false (* TODO *)
+        (* type t1 += ... *)
+    | Str_exception _ -> assert false (* TODO *)
+        (* exception C of T
+           exception C = M.X *)
+    | Str_module _ -> assert false (* TODO *)
+        (* module X = ME *)
+    | Str_recmodule _ -> assert false (* TODO *)
+        (* module rec X1 = ME1 and ... and Xn = MEn *)
+    | Str_modtype _ -> assert false (* TODO *)
+        (* module type S = MT *)
+    | Str_open _ -> assert false (* TODO *)
+        (* open X *)
+    | Str_class _ -> assert false (* TODO *)
+        (* class c1 = ... and ... and cn = ... *)
+    | Str_class_type _ -> assert false (* TODO *)
+        (* class type ct1 = ... and ... and ctn = ... *)
+    | Str_include _ -> assert false (* TODO *)
+        (* include ME *)
+    | Str_attribute _ -> assert false (* TODO *)
+        (* [@@@id] *)
+    | Str_extension _ -> assert false (* TODO *)
+        (* [%%id] *)
+  (* Specific to specification *)
+    | Str_function _ -> assert false (* TODO *)
+    | Str_axiom _ -> assert false (* TODO *)
+    | Str_ghost_type _ -> assert false (* TODO *)
+    | Str_ghost_val _ -> assert false (* TODO *)
+    | Str_ghost_open _ -> assert false (* TODO *) in
   let rec process_and_import sti muc =
     try process_str_item sti muc with
     | Utils.Located (loc, NsNotFound s) ->
@@ -965,8 +1001,61 @@ let rec process_str_item penv muc {sstr_desc; sstr_loc} =
 and process_vb ~loc ?(ghost=false) kid crcm ns vb =
   let open Oparsetree in
   let get_vb_id_core_type {ppat_desc} = match ppat_desc with
+    | Ppat_any -> assert false (* TODO *)
+        (* _ *)
+    | Ppat_var x -> assert false (* TODO *)
+        (* x *)
+    | Ppat_alias _ -> assert false (* TODO *)
+        (* P as 'a *)
+    | Ppat_constant _ -> assert false (* TODO *)
+        (* 1, 'a', "true", 1.0, 1l, 1L, 1n *)
+    | Ppat_interval _ -> assert false (* TODO *)
+        (* 'a'..'z'
+
+           Other forms of interval are recognized by the parser
+           but rejected by the type-checker. *)
+    | Ppat_tuple _ -> assert false (* TODO *)
+        (* (P1, ..., Pn)
+
+           Invariant: n >= 2
+        *)
+    | Ppat_construct _ -> assert false (* TODO *)
+        (* C                None
+           C P              Some P
+           C (P1, ..., Pn)  Some (Ppat_tuple [P1; ...; Pn])
+         *)
+    | Ppat_variant _ -> assert false (* TODO *)
+        (* `A             (None)
+           `A P           (Some P)
+         *)
+    | Ppat_record _ -> assert false (* TODO *)
+        (* { l1=P1; ...; ln=Pn }     (flag = Closed)
+           { l1=P1; ...; ln=Pn; _}   (flag = Open)
+
+           Invariant: n > 0
+         *)
+    | Ppat_array _ -> assert false (* TODO *)
+        (* [| P1; ...; Pn |] *)
+    | Ppat_or _ -> assert false (* TODO *)
+    (* P1 | P2 *)
     | Ppat_constraint ({ppat_desc = Ppat_var s}, cty) -> s, cty
-    | _ -> assert false (* TODO *) in
+    | Ppat_constraint _ -> assert false (* TODO *)
+        (* (P : T) *)
+    | Ppat_type _ -> assert false (* TODO *)
+        (* #tconst *)
+    | Ppat_lazy _ -> assert false (* TODO *)
+        (* lazy P *)
+    | Ppat_unpack _ -> assert false (* TODO *)
+        (* (module P)
+           Note: (module P : S) is represented as
+           Ppat_constraint(Ppat_unpack, Ptyp_package)
+         *)
+    | Ppat_exception _ -> assert false (* TODO *)
+        (* exception P *)
+    | Ppat_extension _ -> assert false (* TODO *)
+        (* [%id] *)
+    | Ppat_open _ -> assert false (* TODO *) in
+        (* M.(P) *)
   let id, cty = get_vb_id_core_type vb.spvb_pat in
   let id = id_add_loc id.loc (fresh_id id.txt) in
   let spec = opmap (process_val_spec kid crcm ns id cty) vb.spvb_vspec in

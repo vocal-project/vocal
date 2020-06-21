@@ -145,7 +145,7 @@ spec_init:
 | type_spec EOF      { Stype (rev_tspec $1, mk_loc $startpos $endpos) }
 | val_spec EOF       { Sval ($1, mk_loc $startpos $endpos) }
 | func EOF           { Sfunction ($1, mk_loc $startpos $endpos)}
-| func_spec EOF      { Sfunc_spec (rev_fspec $1, mk_loc $startpos $endpos)}
+(* | func_spec EOF      { Sfunc_spec (rev_fspec $1, mk_loc $startpos $endpos)} *)
 | axiom EOF          { Saxiom ($1, mk_loc $startpos $endpos)}
 | VAL                { raise Ghost_decl }
 | TYPE               { raise Ghost_decl }
@@ -241,6 +241,8 @@ val_spec:
     { bd with sp_hd_ret  = r;
       sp_hd_nm  = f; sp_hd_args = a;}
   }
+| bd = val_spec_body
+  { rev_vspec bd }
 ;
 
 val_spec_header:

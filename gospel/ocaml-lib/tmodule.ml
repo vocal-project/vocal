@@ -189,6 +189,12 @@ let add_sig muc sig_ =
      {muc with muc_sigs = (sig_ :: s0) :: sl}
   | _ -> assert false
 
+let add_str muc str_ =
+  match muc.muc_strs with
+  | s0 :: sl ->
+     {muc with muc_strs = (str_ :: s0) :: sl}
+  | _ -> assert false
+
 let add_coer muc ls =
   {muc with muc_crcm = Coercion.add muc.muc_crcm ls}
 
