@@ -167,16 +167,16 @@ module Impl
       | T x l -> occ_heap_list_nonneg x l
       end
 
-    type heap = { data: tree; ghost bag: bag elt; }
+    type t = { data: tree; ghost bag: bag elt; }
       invariant { inv_heap data }
       invariant { forall x. nb_occ x bag = occ_heap x data }
       invariant { card bag = size_heap data }
 
-    function size (t: heap) : int = size_heap t.data
+    function size (t: t) : int = size_heap t.data
 
     lemma size_nonneg : forall t. size t >= 0
 
-    predicate le_root (e: elt) (t: heap) = le_root_heap e t.data
+    predicate le_root (e: elt) (t: t) = le_root_heap e t.data
 
     lemma le_root_heap_trans:
       forall x y h. X.le x y -> le_root_heap y h -> le_root_heap x h
@@ -184,33 +184,33 @@ module Impl
     lemma le_root_trans:
       forall x y t. X.le x y -> le_root y t -> le_root x t
 
-    function occ (x: elt) (t: heap) : int = occ_heap x t.data
+    function occ (x: elt) (t: t) : int = occ_heap x t.data
 
     lemma occ_nonneg : forall x t. occ x t >= 0
 
-    predicate mem (x: elt) (t: heap) =
+    predicate mem (x: elt) (t: t) =
       0 < occ x t
 
     lemma mem_t : forall t. heap t.data ->
       forall x. le_root x t -> forall y. mem y t -> X.le x y
 
-    predicate is_minimum (x: elt) (t: heap) = is_minimum_heap x t.data
+    predicate is_minimum (x: elt) (t: t) = is_minimum_heap x t.data
 
-    function minimum (t: heap) : elt = minimum_heap t.data
+    function minimum (t: t) : elt = minimum_heap t.data
 
     lemma root_is_minimum : forall t. 0 < size t -> heap t.data ->
       is_minimum (minimum t) t
 
-    let empty () : heap
+    let empty () : t
       ensures { size result = 0 }
       ensures { forall e. not (mem e result) }
     = { data = E; bag = empty_bag }
 
-    let is_empty (t: heap) : bool
+    let is_empty (t: t) : bool
       ensures  { result <-> size t = 0 }
     = match t.data with E -> true | T _ _ -> false end
 
-    let find_min (t: heap) : elt
+    let find_min (t: t) : elt
       requires { 0 < size t }
       ensures  { result = minimum t }
     = match t.data with
@@ -230,12 +230,12 @@ module Impl
          else T x2 (Cons h1 l2)
       end
 
-    let merge (t1 t2: heap): heap
+    let merge (t1 t2: t): t
       ensures  { size result = size t1 + size t2 }
       ensures  { forall x. occ x result = occ x t1 + occ x t2 }
     = { data = merge_heap t1.data t2.data; bag = union t1.bag t2.bag }
 
-    let insert (x: elt) (t: heap) : heap
+    let insert (x: elt) (t: t) : t
       ensures  { size result = size t + 1 }
       ensures  { occ x result = occ x t + 1 }
       ensures  { forall y. x <> y -> occ y result = occ y t }
@@ -254,7 +254,7 @@ module Impl
           merge_heap (merge_heap h1 h2) (merge_pairs_heap r)
       end
 
-    let delete_min (t: heap) : heap
+    let delete_min (t: t) : t
       requires { 0 < size t }
       ensures  { occ (minimum t) result = occ (minimum t) t - 1 }
       ensures  { forall y. y <> minimum t -> occ y result = occ y t }
@@ -278,7 +278,7 @@ module Correct
     type Make.X.t = PH.Make.X.t,
     function Make.X.cmp = PH.Make.X.cmp,
     val  Make.X.compare = PH.Make.X.compare,
-    type Make.heap = PH.Make.heap,
+    type Make.t = PH.Make.t,
     function Make.minimum = PH.Make.minimum,
     lemma Make.min_def,
     val Make.empty = PH.Make.empty,
@@ -349,7 +349,7 @@ module Main
   use PHint as PH
 
   clone Client with (* Sig = PH.Impl *)
-    type Sig.Make.heap = PH.Impl.Make.heap,
+    type Sig.Make.t = PH.Impl.Make.t,
     function Sig.Make.minimum = PH.Impl.Make.minimum,
     goal Sig.Make.min_def,
     val Sig.Make.empty = PH.Impl.Make.empty,

@@ -24,42 +24,42 @@ end) : sig
 
   type elt = X.t
 
-  type heap
+  type t
   (*@ model bag : elt bag *)
 
-  val empty : unit -> heap
+  val empty : unit -> t
   (*@ h = empty ()
         ensures card h.bag = 0
         ensures forall x. nb_occ x h.bag = 0 *)
 
-  val is_empty : heap -> bool
+  val is_empty : t -> bool
   (*@ b = is_empty h
         ensures b <-> h.bag = empty_bag *)
 
-  val merge : heap -> heap -> heap
+  val merge : t -> t -> t
   (*@ h = merge h1 h2
         ensures card h.bag = card h1.bag + card h2.bag
         ensures forall x. nb_occ x h.bag = nb_occ x h1.bag + nb_occ x h2.bag *)
 
-  val insert : elt -> heap -> heap
+  val insert : elt -> t -> t
   (*@ h' = insert x h
         ensures nb_occ x h'.bag = nb_occ x h.bag + 1
         ensures forall y. y <> x -> nb_occ y h'.bag = nb_occ y h.bag
         ensures card h'.bag = card h.bag + 1 *)
 
-  (*@ predicate mem        (x: elt) (h: heap) = nb_occ x h.bag > 0 *)
-  (*@ predicate is_minimum (x: elt) (h: heap) =
+  (*@ predicate mem        (x: elt) (h: t) = nb_occ x h.bag > 0 *)
+  (*@ predicate is_minimum (x: elt) (h: t) =
         mem x h /\ forall e. mem e h -> X.cmp x e <= 0 *)
 
-  (*@ function minimum (h: heap) : elt *)
+  (*@ function minimum (h: t) : elt *)
   (*@ axiom min_def: forall h. 0 < card h.bag -> is_minimum (minimum h) h *)
 
-  val find_min : heap -> elt
+  val find_min : t -> elt
   (*@ x = find_min h
         requires card h.bag > 0
         ensures  x = minimum h *)
 
-  val delete_min : heap -> heap
+  val delete_min : t -> t
   (*@ h' = delete_min h
         requires card h.bag > 0
         ensures  let x = minimum h in nb_occ x h'.bag = nb_occ x h.bag - 1
