@@ -528,6 +528,8 @@ let signature =
         let id_str = arg_name.I.id_str in
         let id = mk_id id_str ~id_loc in
         let info_arg = { info with info_path = id_str :: info.info_path } in
+        (* we treat the functor argument before the body in order to correctly
+           update the info table *)
         let mod_arg = module_type info_arg (Opt.get arg) in
         let body = module_type info body in
         Gmodule (id_loc, id, mod_arg) :: body
