@@ -16,6 +16,13 @@ type gdecl =
   | Gdecl of Why3.Ptree.decl
   | Gmodule of Why3.Loc.position * Why3.Ptree.ident * gdecl list
 
-val signature : Gospel.Tast.signature -> gdecl list list
-(** [signature s] is the translated [gdecl] corresponding to the GOPEL signature
-    [s]. *)
+module Info : sig
+
+  type info
+
+  val empty_info : info
+end
+
+val signature : Info.info -> Gospel.Tast.signature -> gdecl list list
+(** [signature info s] is the translated [gdecl] corresponding to the GOPEL
+   signature [s]. *)

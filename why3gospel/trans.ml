@@ -32,8 +32,57 @@ let mk_id ?(id_ats=[]) ?(id_loc=Loc.dummy_position) id_str =
     | _ -> id_str in
   { id_str; id_ats; id_loc }
 
+let mk_qualid_path path id_loc ident = match path with
+  | []     -> Qident ident
+  | q :: r -> let mk_qdot q id_str = Qdot (q, mk_id ~id_loc id_str) in
+      let id_q = mk_id ~id_loc q in
+      let qdot = List.fold_left mk_qdot (Qident id_q) r in
+      Qdot (qdot, ident)
+
 let mk_field ~mut:f_mutable ~ghost:f_ghost f_loc f_ident f_pty  =
   { f_loc; f_ident; f_pty; f_mutable; f_ghost }
+
+module TS = struct
+  include Gospel.Ttypes.Ts
+  let hash = (Hashtbl.hash : Gospel.Ttypes.tysymbol -> int)
+end
+
+module XS = struct
+  include Gospel.Ttypes.Xs
+  let hash = (Hashtbl.hash : Gospel.Ttypes.xsymbol -> int)
+end
+
+module Hls = Hashtbl.Make(Gospel.Tterm.LS)
+module Hts = Hashtbl.Make(TS)
+module Hxs = Hashtbl.Make(XS)
+
+module Info = struct
+  type path = string list
+
+  let reduce_path info_path curr_path =
+    let rec loop info_path curr_path = match info_path, curr_path with
+      | p, [] -> p
+      | ip :: rip, cp :: rcp -> assert (ip = cp);
+          loop rip rcp
+      | _ -> assert false (* I think this covers all the possible cases *) in
+    loop info_path curr_path
+
+  type info = {
+    info_ls   : path Hls.t;
+    info_ts   : path Hts.t;
+    info_xs   : path Hxs.t;
+    info_path : path;
+  }
+
+  let empty_info = {
+    info_ls   = Hls.create 16;
+    info_ts   = Hts.create 16;
+    info_xs   = Hxs.create 16;
+    info_path = [];
+  }
+end
+
+open Info
 
 module Term = struct
   module Tt = Gospel.Tterm
@@ -78,34 +127,42 @@ module Term = struct
           Papp (Qident id, List.map pattern pat_list) in
     mk_pattern (p_node pat.Tt.p_node)
 
-  let rec ty Ty.{ty_node} = match ty_node with
+  let rec ty info Ty.{ty_node} = match ty_node with
     | Ty.Tyvar {tv_name} ->
         PTtyvar (mk_id tv_name.id_str ~id_loc:(location tv_name.id_loc))
     | Ty.Tyapp (ts, tyl) when Ty.is_ts_tuple ts ->
-        PTtuple (List.map ty tyl)
+        PTtuple (List.map (ty info) tyl)
     | Ty.Tyapp (ts, tyl) when Ty.is_ts_arrow ts ->
         let rec arrow_of_pty_list = function
           | [] -> assert false
           | [pty] -> pty
           | arg :: ptyl -> PTarrow (arg, arrow_of_pty_list ptyl) in
-        arrow_of_pty_list (List.map ty tyl)
-    | Ty.Tyapp ({ts_ident}, tyl) -> let id_loc = location ts_ident.id_loc in
-        let id_str = match query_syntax ts_ident.id_str with
+        arrow_of_pty_list (List.map (ty info) tyl)
+    | Ty.Tyapp ({ts_ident} as tys, tyl) ->
+        let ty_arg = List.map (ty info) tyl in
+        let id_loc = location ts_ident.id_loc in
+        try let info_path = Hts.find info.info_ts tys in
+          let curr_path = info.info_path in
+          let path = reduce_path (List.rev info_path) (List.rev curr_path) in
+          let id = mk_id ~id_loc ts_ident.id_str in
+          let qualid = mk_qualid_path path id_loc id in
+          PTtyapp (qualid, ty_arg)
+        with Not_found -> let id_str = match query_syntax ts_ident.id_str with
             | None   -> ts_ident.id_str
             | Some s -> s in
-        let qualid = mk_id id_str ~id_loc in
-        PTtyapp (Qident qualid, List.map ty tyl)
+          let qualid = mk_id id_str ~id_loc in
+          PTtyapp (Qident qualid, ty_arg)
 
-  let binder_of_vsymbol vs =
+  let binder_of_vsymbol info vs =
     let loc = vs.Tt.vs_name.I.id_loc in
     let id  = ident_of_vsymbol vs in
-    let pty = ty vs.vs_ty in
+    let pty = ty info vs.vs_ty in
     location loc, Some id, false, Some pty
 
-  let param_of_vsymbol Tt.{vs_name; vs_ty} =
+  let param_of_vsymbol info Tt.{vs_name; vs_ty} =
     let id_loc = location vs_name.I.id_loc in
     let id = mk_id vs_name.I.id_str ~id_loc in
-    let pty = ty vs_ty in
+    let pty = ty info vs_ty in
     id_loc, Some id, false, pty
 
   let binop = function
@@ -116,33 +173,34 @@ module Term = struct
     | Tt.Timplies  -> Dterm.DTimplies
     | Tt.Tiff      -> Dterm.DTiff
 
-  let rec term t =
+  let rec term info t =
     let id_loc = map_opt_default location dummy_loc t.Tt.t_loc in
     let mk_term term_desc = mk_term term_desc id_loc in
     let t_node = function
       | Tt.Ttrue    -> Ttrue
       | Tt.Tfalse   -> Tfalse
       | Tt.Tvar vs  -> Tident (Qident (ident_of_vsymbol vs))
-      | Tt.Tnot t   -> Tnot (term t)
-      | Tt.Told t   -> Tat (term t, mk_id Dexpr.old_label ~id_loc)
+      | Tt.Tnot t   -> Tnot (term info t)
+      | Tt.Told t   -> Tat (term info t, mk_id Dexpr.old_label ~id_loc)
       | Tt.Tconst c -> begin match c with
           | Pconst_integer (s, None) -> (* FIXME: check that [neg] parameter *)
               let n = Number.(int_literal ILitDec ~neg:false s) in
               Tconst (Constant.ConstInt n)
           | _ -> assert false (* TODO *) end
       | Tt.Tif (t1, t2, t3) ->
-          Tif (term t1, term t2, term t3)
+          Tif (term info t1, term info t2, term info t3)
       | Tt.Tlet (vs, t1, t2) ->
-          Tlet (ident_of_vsymbol vs, term t1, term t2)
+          Tlet (ident_of_vsymbol vs, term info t1, term info t2)
       | Tt.Tcase (t, pat_term_list) ->
-          let f_pair (pat, t) = pattern pat, term t in
-          Tcase (term t, List.map f_pair pat_term_list)
+          let f_pair (pat, t) = pattern pat, term info t in
+          Tcase (term info t, List.map f_pair pat_term_list)
       | Tt.Tquant (q, vs_list, trigger, t) ->
-          let mk_trigger t = List.map term t in
+          let mk_trigger t = List.map (term info) t in
           let trigger = List.map mk_trigger trigger in
-          Tquant (quant q, List.map binder_of_vsymbol vs_list, trigger, term t)
+          let binder_list = List.map (binder_of_vsymbol info) vs_list in
+          Tquant (quant q, binder_list, trigger, term info t)
       | Tt.Tbinop (op, t1, t2) ->
-          Tbinop (term t1, binop op, term t2)
+          Tbinop (term info t1, binop op, term info t2)
       | Tt.Tapp (ls, []) ->
           (* FIXME? is this the correct semantics for
                zero-arguments applications? *)
@@ -152,11 +210,11 @@ module Term = struct
           Tident (Qident id)
       | Tt.Tapp (ls, term_list) when Tt.ls_equal ls Tt.fs_apply ->
           begin match term_list with
-          | [fs; arg] -> Tapply (term fs, term arg)
+          | [fs; arg] -> Tapply (term info fs, term info arg)
           | _ -> assert false end
       | Tt.Tapp ({ls_name}, term_list) ->
           let id_loc = location ls_name.I.id_loc in
-          let term_list = List.map term term_list in
+          let term_list = List.map (term info) term_list in
           let id_str = match query_syntax ls_name.id_str with
             | None   -> ls_name.id_str
             | Some s -> s in
@@ -178,27 +236,31 @@ let td_vis_from_manifest = function
 (** Convert a GOSPEL type definition into a Why3's Ptree [type_def]. If the
     GOSPEL type manifest is [None], then the type is defined via its
     specification fields. Otherwise, it is an alias type. *)
-let td_def td_spec td_manifest =
+let td_def info td_spec td_manifest =
   let field_of_lsymbol (ls, mut) =
     let id  = Term.ident_of_lsymbol ls in
-    let pty = Term.ty Term.(Opt.get ls.Tt.ls_value) in
+    let pty = Term.ty info Term.(Opt.get ls.Tt.ls_value) in
     mk_field id.id_loc id pty ~mut ~ghost:true in
   let td_def_of_ty_fields ty_fields =
     TDrecord (List.map field_of_lsymbol ty_fields) in
   match td_manifest with
   | None -> td_def_of_ty_fields td_spec.T.ty_fields
-  | Some ty -> TDalias (Term.ty ty)
+  | Some ty -> TDalias (Term.ty info ty)
 
-let type_decl (T.{td_ts = {ts_ident}; td_spec; td_manifest} as td) = T.{
+let type_decl info (T.{td_ts = {ts_ident}; td_spec; td_manifest} as td) = {
   td_loc    = location td.td_loc;
   td_ident  = mk_id ts_ident.id_str ~id_loc:(location td.td_loc);
   td_params = List.map td_params td.td_params;
   td_vis    = td_vis_from_manifest td_manifest;
   td_mut    = td_spec.ty_ephemeral;
-  td_inv    = List.map Term.term td_spec.ty_invariants;
+  td_inv    = List.map (Term.term info) td_spec.ty_invariants;
   td_wit    = [];
-  td_def    = td_def td_spec td_manifest
+  td_def    = td_def info td_spec td_manifest
 }
+
+let type_decl info (T.{td_ts} as td) =
+  Hts.add info.info_ts td_ts info.info_path;
+  type_decl info td
 
 let mk_expr expr_desc expr_loc =
   { expr_desc; expr_loc }
@@ -214,7 +276,7 @@ let loc_of_lb_arg   lb = loc_of_vs (T.vs_of_lb_arg lb)
 (** Given the result type [sp_ret] of a function and a GOSPEL postcondition
     [post] (represented as a [term]), convert it into a Why3's Ptree
     postcondition of the form [Loc.position * (pattern * term)]. *)
-let sp_post sp_ret post =
+let sp_post info sp_ret post =
   let mk_post post =
     let pvar_of_lb_arg_list lb_arg_list =
       let mk_pvar lb = (* create a [Pvar] pattern out of a [Tt.lb_arg] *)
@@ -223,7 +285,7 @@ let sp_post sp_ret post =
     let pat = match pvar_of_lb_arg_list sp_ret with
       | [p] -> p
       | pl  -> Term.mk_pattern (Ptuple pl) dummy_loc in
-    dummy_loc, [pat, Term.term post] in
+    dummy_loc, [pat, Term.term info post] in
   List.map mk_post post
 
 open Term
@@ -231,18 +293,18 @@ open Term
 (** Convert a GOSPEL exception postcondition of the form
     [(pattern * post) list Mxs.t] into a Why3's Ptree [xpost]
     of the form [Loc.position * (qualid * (pattern * term) option) list]. *)
-let sp_xpost xpost =
+let sp_xpost info xpost =
   let mk_xpost_list xs pat_post_list acc =
     let id_loc = location xs.Ty.xs_ident.I.id_loc in
     let mk_xpost (pat, post) =
       let q = Qident (mk_id xs.Ty.xs_ident.I.id_str ~id_loc) in
-      let post = term post in
+      let post = term info post in
       q, Some (Term.pattern pat, post) in
     (id_loc, List.map mk_xpost pat_post_list) :: acc in
   Ty.Mxs.fold mk_xpost_list xpost []
 
-let sp_writes =
-  List.map term
+let sp_writes info =
+  List.map (term info)
 
 let rec term_or_of_term_list = function
   | []     -> assert false
@@ -258,13 +320,13 @@ let xpost_of_checks pre =
   let txs = mk_term (Tnot pre) id_loc in
   id_loc, [qid, Some (pat, txs)]
 
-let spec_with_checks val_spec pre checks =
+let spec_with_checks info val_spec pre checks =
   let xpost_checks = xpost_of_checks (term_or_of_term_list checks) in {
-  sp_pre     = List.map term pre;
-  sp_post    = sp_post val_spec.T.sp_ret val_spec.sp_post;
-  sp_xpost   = xpost_checks :: sp_xpost val_spec.sp_xpost;
+  sp_pre     = List.map (term info) pre;
+  sp_post    = sp_post info val_spec.T.sp_ret val_spec.sp_post;
+  sp_xpost   = xpost_checks :: sp_xpost info val_spec.sp_xpost;
   sp_reads   = [];
-  sp_writes  = sp_writes val_spec.sp_wr;
+  sp_writes  = sp_writes info val_spec.sp_wr;
   sp_alias   = [];
   sp_variant = [];
   sp_checkrw = false;
@@ -272,12 +334,12 @@ let spec_with_checks val_spec pre checks =
   sp_partial = false;
 }
 
-let spec val_spec = {
-  sp_pre     = List.map (fun (t, _) -> term t) val_spec.T.sp_pre;
-  sp_post    = sp_post val_spec.sp_ret val_spec.sp_post;
-  sp_xpost   = sp_xpost val_spec.sp_xpost;
+let spec info val_spec = {
+  sp_pre     = List.map (fun (t, _) -> term info t) val_spec.T.sp_pre;
+  sp_post    = sp_post info val_spec.sp_ret val_spec.sp_post;
+  sp_xpost   = sp_xpost info val_spec.sp_xpost;
   sp_reads   = [];
-  sp_writes  = sp_writes val_spec.sp_wr;
+  sp_writes  = sp_writes info val_spec.sp_wr;
   sp_alias   = [];
   sp_variant = [];
   sp_checkrw = false;
@@ -326,7 +388,7 @@ let rec core_type Ot.{ ptyp_desc; ptyp_loc } =
   | _ -> assert false (* TODO *)
 
 (** Convert GOSPEL [val] declarations into Why3's Ptree [val] declarations. *)
-let val_decl vd g =
+let val_decl info vd g =
   let rec flat_ptyp_arrow ct = match ct.Ot.ptyp_desc with
     | Ot.Ptyp_var _ | Ptyp_tuple _ | Ptyp_constr _ -> [ct]
     | Ot.Ptyp_arrow (_, t1, t2) ->
@@ -351,7 +413,7 @@ let val_decl vd g =
     | T.Lghost vs ->
         let id_loc = location vs.Tt.vs_name.I.id_loc in
         let id = Some (mk_id vs.Tt.vs_name.I.id_str ~id_loc) in
-        let pty = Term.ty vs.vs_ty in
+        let pty = Term.ty info vs.vs_ty in
         id_loc, id, true, pty in
   let rec mk_param lb_args core_tys = match lb_args, core_tys with
     | [], [] -> []
@@ -375,10 +437,11 @@ let val_decl vd g =
     | None   -> [mk_val (mk_id vd_str) params ret pat mask empty_spec]
     | Some s -> (* creative indentation *)
     begin match split_on_checks s.sp_pre with
-    | _, []     -> [mk_val (mk_id vd_str) params ret pat mask (spec s)]
+    | _, []     -> [mk_val (mk_id vd_str) params ret pat mask (spec info s)]
     | pre, checks -> let id_unsafe = mk_id ("unsafe_" ^ vd_str) in
-        let spec_checks = spec_with_checks s pre (List.map term checks) in
-        [mk_val id_unsafe params ret pat mask (spec s);
+        let checks_term = List.map (term info) checks in
+        let spec_checks = spec_with_checks info s pre checks_term in
+        [mk_val id_unsafe params ret pat mask (spec info s);
          mk_val (mk_id vd_str) params ret pat mask spec_checks] end in
   let params, ret, pat, mask =
     let core_tys = flat_ptyp_arrow vd.T.vd_type in
@@ -411,30 +474,30 @@ let val_decl vd g =
 
 (** Convert GOSPEL logical declaration (function or predicate) into
      Why3's Ptree logical declaration. *)
-let function_ (T.{fun_ls = Tt.{ls_name; ls_value}} as f) =
+let function_ info (T.{fun_ls = Tt.{ls_name; ls_value}} as f) =
   let loc = location f.T.fun_loc in
   let id_loc = location ls_name.I.id_loc in
   let id = mk_id ls_name.I.id_str ~id_loc in
-  let params = List.map param_of_vsymbol f.fun_params in
-  let pty = Opt.map ty ls_value in
-  let term = Opt.map term f.T.fun_def in
+  let params = List.map (param_of_vsymbol info) f.fun_params in
+  let pty = Opt.map (ty info) ls_value in
+  let term = Opt.map (term info) f.T.fun_def in
   Dlogic [mk_logic_decl loc id params pty term]
 
 (** Convert GOSPEL axioms into Why3's Ptree axioms. *)
-let axiom T.{ax_name; ax_term} =
+let axiom info T.{ax_name; ax_term} =
   let id_loc = location ax_name.I.id_loc in
   let id = mk_id ax_name.I.id_str ~id_loc in
-  let term = term ax_term in
+  let term = (term info) ax_term in
   Dprop (Decl.Paxiom, id, term)
 
 (** Convert GOSPEL exceptions into Why3's Ptree exceptions. *)
-let exn T.{exn_constructor = {ext_ident; ext_xs}; exn_loc} =
+let exn info T.{exn_constructor = {ext_ident; ext_xs}; exn_loc} =
   let id = mk_id ext_ident.id_str ~id_loc:(location ext_ident.id_loc) in
   match ext_xs.Ty.xs_type with
   | Exn_tuple [{ty_node = Ty.Tyapp (ts, tyl)}] when Ty.is_ts_tuple ts ->
-      Dexn (id, PTtuple (List.map ty tyl), Ity.MaskVisible)
+      Dexn (id, PTtuple (List.map (ty info) tyl), Ity.MaskVisible)
   | Exn_tuple tyl ->
-      Dexn (id, PTtuple (List.map ty tyl), Ity.MaskVisible)
+      Dexn (id, PTtuple (List.map (ty info) tyl), Ity.MaskVisible)
   | Exn_record _ -> let loc = location exn_loc in
       Loc.errorm ~loc "Exceptions with record arguments is not supported."
 
@@ -446,54 +509,60 @@ let signature =
   let mod_type_table: (string, gdecl list) Hashtbl.t = Hashtbl.create 16 in
 
   (* Convert a GOSPEL module declaration into a Why3 scope. *)
-  let rec module_declaration T.{md_name; md_type; md_loc} =
+  let rec module_declaration info T.{md_name; md_type; md_loc} =
     let loc = location md_loc in
     let id = mk_id md_name.I.id_str ~id_loc:(location md_name.I.id_loc) in
-    Gmodule (loc, id, module_type md_type)
+    let info = { info with info_path = md_name.I.id_str :: info.info_path } in
+    Gmodule (loc, id, module_type info md_type)
 
-  and module_type mt = match mt.T.mt_desc with
+  and module_type info mt = match mt.T.mt_desc with
     | T.Mod_ident s -> begin match s with
         | [s] -> (* retrieve the list of declarations corresponding
                     to module type [s] *)
             Hashtbl.find mod_type_table s (* TODO: catch Not_found *)
         | _ -> assert false end
     | T.Mod_signature s ->
-        List.flatten (signature s)
+        List.flatten (signature info s)
     | T.Mod_functor (arg_name, arg, body) ->
         let id_loc = location arg_name.I.id_loc in
-        let id = mk_id arg_name.I.id_str ~id_loc in
-        let body = module_type body in
-        Gmodule (id_loc, id, module_type (Opt.get arg)) :: body
+        let id_str = arg_name.I.id_str in
+        let id = mk_id id_str ~id_loc in
+        let info_arg = { info with info_path = id_str :: info.info_path } in
+        let mod_arg = module_type info_arg (Opt.get arg) in
+        let body = module_type info body in
+        Gmodule (id_loc, id, mod_arg) :: body
     | T.Mod_with _ (* of module_type * with_constraint list *) ->
-        assert false
+        assert false (* TODO *)
     | T.Mod_typeof _ (* of Oparsetree.module_expr *) ->
-        assert false
+        assert false (* TODO *)
     | T.Mod_extension _ (* of Oparsetree.extension *) ->
-        assert false
+        assert false (* TODO *)
     | T.Mod_alias _ (* of string list *) ->
-        assert false
+        assert false (* TODO *)
 
-  and module_type_declaration mtd = let decls = match mtd.T.mtd_type with
+  and module_type_declaration info mtd = let decls = match mtd.T.mtd_type with
       | None -> []
-      | Some mt -> module_type mt in
+      | Some mt -> let mtd_name = mtd.T.mtd_name.id_str in
+          let info = { info with info_path = mtd_name :: info.info_path } in
+          module_type info mt in
     Hashtbl.add mod_type_table mtd.mtd_name.I.id_str decls
 
-  and signature_item i = match i.T.sig_desc with
+  and signature_item info i = match i.T.sig_desc with
     | T.Sig_val (vd, g) ->
-        List.map (fun d -> Gdecl d) (val_decl vd g)
+        List.map (fun d -> Gdecl d) (val_decl info vd g)
     | T.Sig_type (_rec_flag, tdl, _gh) ->
-        [Gdecl (Dtype (List.map type_decl tdl))]
+        [Gdecl (Dtype (List.map (type_decl info) tdl))]
     | T.Sig_typext _ (*  of Oparsetree.type_extension *) ->
         assert false (*TODO*)
     | T.Sig_module md ->
-        [module_declaration md]
+        [module_declaration info md]
     | T.Sig_recmodule _ (* of module_declaration list *) ->
         assert false (*TODO*)
     | T.Sig_modtype mtd ->
-        module_type_declaration mtd;
+        module_type_declaration info mtd;
         []
     | T.Sig_exception exn_cstr ->
-        [Gdecl (exn exn_cstr)]
+        [Gdecl (exn info exn_cstr)]
     | T.Sig_open (_, false) ->
         []
     | T.Sig_open ({opn_id = ["Gospelstdlib"]; opn_loc}, true) ->
@@ -516,9 +585,9 @@ let signature =
     | T.Sig_use _ (* of string *) ->
         assert false (*TODO*)
     | T.Sig_function f ->
-        [Gdecl (function_ f)]
+        [Gdecl (function_ info f)]
     | T.Sig_axiom ax ->
-        [Gdecl (axiom ax)] (*TODO*)
+        [Gdecl (axiom info ax)] (*TODO*)
 
-  and signature s = List.map signature_item s in
+  and signature info s = List.map (signature_item info) s in
   signature

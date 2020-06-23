@@ -125,7 +125,7 @@ let read_channel env path file c =
   let f = read_file file nm c in
   let f = List.map (include_extra_vals extra_vals) f in
   let f = type_check file nm f in
-  let sigs = signature f.fl_sigs in
+  let sigs = signature Info.empty_info f.fl_sigs in
   open_file env path;
   let id = mk_id "Sig" in
   open_module id;
