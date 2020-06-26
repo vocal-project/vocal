@@ -17,15 +17,15 @@ struct
     | E
     | T of X.t * tree list
   
-  type heap = tree
+  type t = tree
   
-  let empty (_: unit) : heap = E
+  let empty (_: unit) : t = E
   
-  let is_empty (t: heap) : bool = match t with
-                                  | E -> true
-                                  | T (_, _) -> false
+  let is_empty (t: t) : bool = match t with
+                               | E -> true
+                               | T (_, _) -> false
   
-  let find_min (t: heap) : X.t =
+  let find_min (t: t) : X.t =
     match t with
     | E -> assert false (* absurd *)
     | T (x, _) -> x
@@ -39,9 +39,9 @@ struct
       l2)) ->
       if X.compare x1 x2 <= 0  then T (x1, h2 :: l1) else T (x2, h1 :: l2)
   
-  let merge (t1: heap) (t2: heap) : heap = merge_heap t1 t2
+  let merge (t1: t) (t2: t) : t = merge_heap t1 t2
   
-  let insert (x: X.t) (t: heap) : heap = let h_x = T (x, [] ) in merge h_x t
+  let insert (x: X.t) (t: t) : t = let h_x = T (x, [] ) in merge h_x t
   
   let rec merge_pairs_heap (l: tree list) : tree =
     match l with
@@ -49,7 +49,7 @@ struct
     | h :: ([]) -> h
     | h1 :: (h2 :: r) -> merge_heap (merge_heap h1 h2) (merge_pairs_heap r)
   
-  let delete_min (t: heap) : heap =
+  let delete_min (t: t) : t =
     match t with
     | E -> assert false (* absurd *)
     | T (_, l) -> merge_pairs_heap l
