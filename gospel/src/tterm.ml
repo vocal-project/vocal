@@ -139,7 +139,7 @@ type term = {
 
 and term_node =
   | Tvar   of vsymbol
-  | Tconst of Oasttypes.constant
+  | Tconst of Parsetree.constant
   | Tapp   of lsymbol * term list
   | Tif    of term * term * term
   | Tlet   of vsymbol * term * term
@@ -317,7 +317,7 @@ let f_iff      = f_binop Tiff
 
 (** Pretty printing *)
 
-open Opprintast
+let pp = Format.fprintf
 
 let print_vs fmt {vs_name; vs_ty} =
   pp fmt "@[%a:%a@]" Ident.pp vs_name print_ty vs_ty
@@ -327,7 +327,7 @@ let print_ls_decl fmt {ls_name;ls_args;ls_value} =
   let print_unnamed_arg fmt ty = pp fmt "(_:%a)" print_ty ty in
   pp fmt "%s %a %a%s%a"
     (if is_func then "function" else "predicate")
-    Ident.pp ls_name
+    print_ident ls_name
     (Format.pp_print_list print_unnamed_arg) ls_args
     (if is_func then " : " else "")
     (pp_print_option print_ty) ls_value
@@ -350,12 +350,13 @@ let rec print_pat_node pri fmt p = match p.p_node with
         (print_pat_node 0) p (print_pat_node 0) q
   | Papp (cs, pl) when is_fs_tuple cs ->
       pp fmt (protect_on (pri > 0) "%a")
-        (list ~sep:", " (print_pat_node 1)) pl
+        (Format.pp_print_list ~pp_sep:(fmt_of_string ", ") (print_pat_node 1))
+        pl
   | Papp (cs, []) ->
       print_ls_nm fmt cs
   | Papp (cs, pl) ->
       pp fmt (protect_on (pri > 1) "%a@ %a")
-        print_ls_nm cs (list ~sep:" " (print_pat_node 2)) pl
+        print_ls_nm cs (Format.pp_print_list (print_pat_node 2)) pl
 
 let print_pattern = print_pat_node 0
 
@@ -373,13 +374,14 @@ let print_quantifier fmt = function
   | Texists -> pp fmt "exists"
   | Tlambda -> pp fmt "fun"
 
-(* TODO use pretty printer from why3 *)
 let rec print_term fmt {t_node; t_ty; t_attrs; _ } =
   let print_ty fmt ty = match ty with
       None -> pp fmt ":prop"
     | Some ty -> pp fmt ":%a" print_ty ty in
   let print_t_node fmt t_node = match t_node with
-    | Tconst c -> pp fmt "%a%a" constant c print_ty t_ty
+    | Tconst _c ->
+       (* FIXME We should have our own constant type *)
+       assert false
     | Ttrue -> pp fmt "true%a" print_ty t_ty
     | Tfalse -> pp fmt "false%a" print_ty t_ty
     | Tvar vs ->
@@ -398,7 +400,7 @@ let rec print_term fmt {t_node; t_ty; t_attrs; _ } =
          print_ty t_ty
     | Tapp (ls,tl) ->
        pp fmt "(%a %a)%a"
-         Ident.pp ls.ls_name
+         print_ident ls.ls_name
          (Format.pp_print_list print_term) tl
          print_ty t_ty
     | Tnot t -> pp fmt "not %a" print_term t
@@ -414,7 +416,7 @@ let rec print_term fmt {t_node; t_ty; t_attrs; _ } =
     | Tquant (q,vsl,trl,t) ->
        pp fmt "%a %a %a. %a"
          print_quantifier q
-         (list ~sep:" " print_vs) vsl
+         (Format.pp_print_list print_vs) vsl
          (fun _ _ -> ()) trl
          print_term t
     | Tcase (t, ptl) ->
@@ -422,7 +424,10 @@ let rec print_term fmt {t_node; t_ty; t_attrs; _ } =
          pp fmt "| @[%a@] -> @[%a@]" print_pattern p print_term t in
        pp fmt "match %a with@\n%a@\nend:%a"
          print_term t
-         (list ~sep:"@\n" print_branch) ptl
+         (Format.pp_print_list
+            ~pp_sep:(fun fmt () -> Format.fprintf fmt "@\n")
+            print_branch)
+         ptl
          print_ty t_ty
     | Told t ->
        pp fmt "old (%a)" print_term t
@@ -447,6 +452,6 @@ let () =
       | FunctionSymbolExpected ls ->
          Some (errorf "Not a function symbol: %a" print_ls_nm ls)
       | FreeVariables svs ->
-         Some (errorf "Unbound variables: %a" (list ~sep:"," print_vs)
+         Some (errorf "Unbound variables: %a" (Format.pp_print_list ~pp_sep:(fmt_of_string ",") print_vs)
                  (Svs.elements svs) )
       | _ -> None)

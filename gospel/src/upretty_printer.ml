@@ -8,11 +8,10 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
+open Identifier
 open Parsetree
 open Uast
 open Pprintast
-
-module Preid = Identifier.Preid
 
 let pp = Format.fprintf
 
@@ -167,7 +166,7 @@ let s_type_declaration_rec_flag f (rf,l) =
   | [x] -> type_decl "type" rf f x
   | x :: xs -> pp f "@[<v>%a@,%a@]"
                  (type_decl "type" rf) x
-                 (list ~sep:"@," (type_decl "and" Oasttypes.Recursive)) xs
+                 (list ~sep:"@," (type_decl "and" Asttypes.Recursive)) xs
 
 let function_ f x =
   let keyword = match x.fun_type with
@@ -203,7 +202,7 @@ let rec s_signature_item f x=
   let print_open f od =
       pp f "@[<hov2>open%s@ %a@]%a"
         (override od.popen_override)
-        longident_loc od.popen_lid
+        longident_loc od.popen_expr
         (item_attributes reset_ctxt) od.popen_attributes in
   match x.sdesc with
   | Sig_type (rf, l) ->
@@ -212,7 +211,7 @@ let rec s_signature_item f x=
   | Sig_typext te ->
       type_extension reset_ctxt f te
   | Sig_exception ed ->
-      exception_declaration reset_ctxt f ed
+     exception_declaration reset_ctxt f ed
   | Sig_class l ->
       let class_description kwd f ({pci_params=ls;pci_name={txt;_};_} as x) =
         pp f "@[<2>%s %a%a%s@;:@;%a@]%a" kwd

@@ -95,9 +95,38 @@ let is_mixfix = is_somefix "mixfix"
 
 (* hard-coded ids *)
 
-let eq    = Ident.create (infix "=")
-let neq   = Ident.create (infix "<>")
-let none  = Ident.create ("None")
-let some  = Ident.create ("Some")
-let nil   = Ident.create ("[]")
-let cons  = Ident.create (infix "::")
+let eq    = fresh_id (infix "=")
+let neq   = fresh_id (infix "<>")
+let none  = fresh_id ("None")
+let some  = fresh_id ("Some")
+let nil   = fresh_id ("[]")
+let cons  = fresh_id (infix "::")
+
+(* pretty-printer *)
+
+let pp = Format.fprintf
+
+let print_attr fmt a = pp fmt "[@%s]" a
+let print_attrs = Format.(pp_print_list ~pp_sep:pp_print_space) print_attr
+
+let print_pid fmt pid = pp fmt "%s@ %a" pid.pid_str
+                            print_attrs pid.pid_ats
+let print_ident =
+  let current = Hashtbl.create 0 in
+  let output  = Hashtbl.create 0 in
+  let current s =
+    let x = match Hashtbl.find_opt current s with
+      | Some x -> x + 1
+      | None -> 0
+    in
+    Hashtbl.replace current s x; x
+  in
+  let str_of_id id =
+    try Hashtbl.find output id.id_tag with
+    | Not_found ->
+       let x = current id.id_str in
+       let str = if x = 0 then id.id_str else
+                   id.id_str ^ "#" ^ string_of_int x in
+       Hashtbl.replace output id.id_tag str; str in
+  fun fmt id -> pp fmt "%s%a" (str_of_id id)
+                  print_attrs (Sattr.elements id.id_ats)

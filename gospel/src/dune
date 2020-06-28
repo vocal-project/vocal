@@ -1,8 +1,8 @@
 (ocamllex
- (modules olexer ulexer))
+ (modules ulexer))
 
 (menhir
- (modules oparser uparser)
+ (modules uparser)
  (flags
   ("--unused-token" "GREATERRBRACKET" "--unused-token" "COMMENT"
     "--unused-token" "DOCSTRING" "--unused-token" "EOL")))
@@ -11,9 +11,8 @@
  (name gospel)
  (public_name gospel)
  (flags :standard -w -9 -linkall)
- (modules_without_implementation oasttypes oparsetree uast)
- ;(libraries ocaml-compiler-libs.common)
- )
+ (modules_without_implementation uast)
+ (libraries compiler-libs.common))
 
 (rule
  (targets gospelstdlib.ml)

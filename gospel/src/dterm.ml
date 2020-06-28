@@ -112,8 +112,8 @@ and dterm_node =
    * | Trecord of (Preid.t * term) list
    * | Tupdate of term * (Preid.t * term) list
    *)
-  | DTattr  of dterm * string list
-  | DTvar   of Preid.t
+  | DTattr  of dterm * Sattr.t
+  | DTvar   of preid
   | DTconst of Parsetree.constant
   | DTapp   of lsymbol * dterm list
   | DTif    of dterm * dterm * dterm
@@ -423,8 +423,7 @@ let term env dt =
 
 (* Pretty printing *)
 
-open Opprintast
-
+let pp = Format.fprintf
 (* TODO not sure if we need this. Maybe we just need this for pretty
    print dterm. The flatten part is already done in ty_of_dty. *)
 let rec flatten = function
@@ -439,21 +438,26 @@ let rec print_dty fmt dty = match flatten dty with
   | Tapp (ts,dtyl) -> match dtyl with
      | [] -> print_ts_name fmt ts
      | dtyl when is_ts_arrow ts ->
-        pp fmt "(%a)" (list ~sep:" -> " print_dty) dtyl
+        pp fmt "(%a)"
+          (Format.pp_print_list ~pp_sep:(fmt_of_string " -> ") print_dty)
+          dtyl
      | [dty] ->
         pp fmt "%a %a" print_dty dty print_ts_name ts
      | dtyl ->
-        pp fmt "(%a) %a" (list ~sep:"," print_dty) dtyl print_ts_name ts
+        pp fmt "(%a) %a"
+          (Format.pp_print_list ~pp_sep:(fmt_of_string ",") print_dty) dtyl
+          print_ts_name ts
 
 let rec print_dpattern fmt {dp_node;dp_dty} = match dp_node with
   | DPwild -> pp fmt "_"
   | DPvar pid -> pp fmt "%a:%a" Preid.pp pid print_dty dp_dty
   | DPapp (ls,dpl) when is_fs_tuple ls ->
-     pp fmt "(%a)" (list ~sep:"," print_dpattern) dpl
+     pp fmt "(%a)"
+       (Format.pp_print_list ~pp_sep:(fmt_of_string ",") print_dpattern) dpl
 
   | DPapp (ls,dpl) ->
      pp fmt "%a %a" print_ls_nm ls
-       (list ~sep:" " print_dpattern) dpl
+       (Format.pp_print_list print_dpattern) dpl
   | DPor (dp1,dp2) ->
      pp fmt "(%a | %a):%a" print_dpattern dp1 print_dty dp_dty
        print_dpattern dp2
@@ -469,12 +473,14 @@ let rec print_dterm fmt {dt_node; dt_dty; _} =
       None -> ()
     | Some dty -> pp fmt ":%a" print_dty dty in
   match dt_node with
-  | DTconst c -> pp fmt "%a%a" constant c print_dty dt_dty
+  | DTconst _c ->
+     (* FIXME Don't use cosntant type *)
+     assert false
   | DTtrue -> pp fmt "true%a" print_dty dt_dty
   | DTfalse -> pp fmt "false%a" print_dty dt_dty
   | DTvar v -> pp fmt "%a%a" Preid.pp v print_dty dt_dty
   | DTapp (ls,dtl) -> pp fmt "(%a %a)%a"
-                        Ident.pp ls.ls_name
+                        print_ident ls.ls_name
                         (Format.pp_print_list print_dterm) dtl
                         print_dty dt_dty
   | DTnot t -> pp fmt "not %a" print_dterm t
@@ -489,7 +495,7 @@ let rec print_dterm fmt {dt_node; dt_dty; _} =
        pp fmt "%a%a" Preid.pp pid print_dty (Some dty) in
      pp fmt "%a %a %a. %a"
        print_quantifier q
-       (list ~sep:" " print_quant_v) vl
+       (Format.pp_print_list print_quant_v) vl
        (fun _ _ -> ()) trl
        print_dterm dt
   | DTcase (dt, dptl) ->
@@ -497,7 +503,10 @@ let rec print_dterm fmt {dt_node; dt_dty; _} =
        pp fmt "| %a -> %a" print_dpattern dp print_dterm dt in
      pp fmt "match %a with@\n%a@\nend:%a"
        print_dterm dt
-       (list ~sep:"@\n" print_branch) dptl
+       (Format.pp_print_list
+          ~pp_sep:(fun fmt () -> Format.fprintf fmt "@\n")
+          print_branch)
+       dptl
        print_dty dt_dty
   | _ -> assert false
 

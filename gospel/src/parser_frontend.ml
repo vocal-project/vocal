@@ -8,7 +8,7 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-open Oparser
+open Parser
 open Uattr2spec
 
 exception Ocaml_syntax_error of Location.t
@@ -36,8 +36,8 @@ let with_loadpath load_path file =
   else raise Not_found
 
 let parse_ocaml_lb lb =
-  try interface Olexer.token lb with
-    Error -> begin
+  try interface Lexer.token lb with
+    _ -> begin
       let spos,fpos = lb.lex_start_p, lb.lex_curr_p in
       let loc = Location.{loc_start=spos; loc_end=fpos;loc_ghost=false}  in
       raise (Ocaml_syntax_error loc) end
@@ -54,11 +54,14 @@ let parse_ocaml file =
 
 let default_open =
   let open Uast in
-  let open Oparsetree in
+  let open Parsetree in
   let od nm =
     let id = Location.{txt = Longident.Lident nm; loc = none} in
-    let od = {popen_lid = id; popen_override = Fresh;
-              popen_loc = Location.none; popen_attributes = []} in
+    let od : open_description = {
+      popen_expr = id;
+      popen_override = Fresh;
+      popen_loc = Location.none;
+      popen_attributes = [] } in
     Sig_ghost_open od in
   {sdesc = od gospelstdlib; sloc = Location.none}
 

@@ -246,7 +246,9 @@ let xs_subst_ty old_ts new_ts new_ty xs =
 
 (** Pretty printers *)
 
-open Opprintast
+open Utils
+
+let pp = Format.fprintf
 
 let print_tv fmt tv =
   pp fmt (if tv.tv_name.id_str = "_" then "%a" else "'%a")
@@ -258,7 +260,8 @@ let print_ts_name fmt ts =
 
 let rec print_ty fmt {ty_node} = print_ty_node fmt ty_node
 
-and print_arrow_ty fmt = list ~sep:" -> " print_ty fmt
+and print_arrow_ty fmt =
+  Format.pp_print_list ~pp_sep:(fmt_of_string " -> ") print_ty fmt
 
 and print_ty_node fmt = function
   | Tyvar v -> pp fmt "%a" print_tv v
@@ -266,23 +269,26 @@ and print_ty_node fmt = function
   | Tyapp (ts,tys) when is_ts_arrow ts ->
      print_arrow_ty fmt tys
   | Tyapp (ts,tyl) when is_ts_tuple ts ->
-     pp fmt "%a" (list ~sep:" * " print_ty) tyl
+     Format.pp_print_list ~pp_sep:(fmt_of_string " * ") print_ty fmt tyl
   | Tyapp (ts,[ty]) ->
      pp fmt "%a %a" print_ty ty print_ts_name ts
   | Tyapp (ts,tyl) ->
-     pp fmt "(%a) %a" (list ~sep:"," print_ty) tyl print_ts_name ts
+     pp fmt "(%a) %a"
+       (Format.pp_print_list ~pp_sep:(fmt_of_string ", ") print_ty) tyl
+       print_ts_name ts
 
 let print_ts fmt ts =
   pp fmt "@[(%a) %a%a@]"
     (Format.pp_print_list ~pp_sep:(fmt_of_string ",") print_tv) ts.ts_args
-    Ident.pp (ts_ident ts)
+    print_ident (ts_ident ts)
     (fun fmt alias -> match alias with None -> ()
      | Some ty -> pp fmt " [=%a]" print_ty ty) ts.ts_alias
 
 let print_exn_type f = function
-  | Exn_tuple tyl -> list ~sep:" * " print_ty f tyl
+  | Exn_tuple tyl ->
+     Format.pp_print_list ~pp_sep:(fmt_of_string " * ") print_ty f tyl
   | Exn_record args ->
-      let print_arg f (id,ty) = pp f "%a:{%a}" Ident.pp id print_ty ty in
+     let print_arg f (id,ty) = pp f "%a:{%a}" print_ident id print_ty ty in
      list_with_first_last ~sep:";" print_arg f args
 
 let print_xs f x =

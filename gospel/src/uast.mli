@@ -8,10 +8,9 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
+open Identifier
 open Asttypes
 open Parsetree
-
-module Preid = Identifier.Preid
 
 (* Types *)
 
