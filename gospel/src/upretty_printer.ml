@@ -8,9 +8,30 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-open Oparsetree
+open Parsetree
 open Uast
-open Opprintast
+open Pprintast
+
+let pp = Format.fprintf
+
+let list : 'a . ?sep:space_formatter -> ?first:space_formatter ->
+  ?last:space_formatter -> (Format.formatter -> 'a -> unit) ->
+  Format.formatter -> 'a list -> unit
+  = fun ?sep ?first ?last fu f xs ->
+    let first = match first with Some x -> x |None -> ("": _ format6)
+    and last = match last with Some x -> x |None -> ("": _ format6)
+    and sep = match sep with Some x -> x |None -> ("@ ": _ format6) in
+    let aux f = function
+      | [] -> ()
+      | [x] -> fu f x
+      | xs ->
+          let rec loop  f = function
+            | [x] -> fu f x
+            | x::xs ->  fu f x; pp f sep; loop f xs;
+            | _ -> assert false in begin
+            pp f first; loop f xs; pp f last;
+          end in
+    aux f xs
 
 let const_hole s fmt _ = pp fmt "%s" s
 
@@ -144,7 +165,7 @@ let s_type_declaration_rec_flag f (rf,l) =
   | [x] -> type_decl "type" rf f x
   | x :: xs -> pp f "@[<v>%a@,%a@]"
                  (type_decl "type" rf) x
-                 (list ~sep:"@," (type_decl "and" Oasttypes.Recursive)) xs
+                 (list ~sep:"@," (type_decl "and" Asttypes.Recursive)) xs
 
 let function_ f x =
   let keyword = match x.fun_type with
@@ -180,7 +201,7 @@ let rec s_signature_item f x=
   let print_open f od =
       pp f "@[<hov2>open%s@ %a@]%a"
         (override od.popen_override)
-        longident_loc od.popen_lid
+        longident_loc od.popen_expr
         (item_attributes reset_ctxt) od.popen_attributes in
   match x.sdesc with
   | Sig_type (rf, l) ->
@@ -189,7 +210,7 @@ let rec s_signature_item f x=
   | Sig_typext te ->
       type_extension reset_ctxt f te
   | Sig_exception ed ->
-      exception_declaration reset_ctxt f ed
+     exception_declaration reset_ctxt f ed
   | Sig_class l ->
       let class_description kwd f ({pci_params=ls;pci_name={txt;_};_} as x) =
         pp f "@[<2>%s %a%a%s@;:@;%a@]%a" kwd

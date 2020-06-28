@@ -28,6 +28,8 @@ val split_at_i : int -> 'a list -> 'a list * 'a list
 (** [split_at_i i l] is the partition [(l1, l2)] such that [l1] contains the
     first i elements. The order of the elements is not changed. *)
 
+val fmt_of_string : string -> Format.formatter -> unit -> unit
+
 val pp_print_option :
   ?none:(Format.formatter -> unit -> unit) ->
   (Format.formatter -> 'a -> unit) ->
@@ -38,9 +40,9 @@ val pp_print_option :
     is [Some v] and [none] if it is [None]. [none] prints nothing by default. *)
 
 val list_with_first_last :
-  ?sep:Opprintast.space_formatter ->
-  ?first:Opprintast.space_formatter ->
-  ?last:Opprintast.space_formatter ->
+  ?sep:Pprintast.space_formatter ->
+  ?first:Pprintast.space_formatter ->
+  ?last:Pprintast.space_formatter ->
   (Format.formatter -> 'a -> unit) ->
   Format.formatter ->
   'a list ->
