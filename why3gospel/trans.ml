@@ -42,53 +42,6 @@ let mk_qualid_path path id_loc ident = match path with
 let mk_field ~mut:f_mutable ~ghost:f_ghost f_loc f_ident f_pty  =
   { f_loc; f_ident; f_pty; f_mutable; f_ghost }
 
-module TS = struct
-  include Gospel.Ttypes.Ts
-  let hash = (Hashtbl.hash : Gospel.Ttypes.tysymbol -> int)
-end
-
-module XS = struct
-  include Gospel.Ttypes.Xs
-  let hash = (Hashtbl.hash : Gospel.Ttypes.xsymbol -> int)
-end
-
-module Hls = Hashtbl.Make(Gospel.Tterm.LS)
-module Hts = Hashtbl.Make(TS)
-module Hxs = Hashtbl.Make(XS)
-
-module Info = struct
-  type path = string list
-
-  let reduce_path info_path curr_path =
-    let rec loop info_path curr_path = match info_path, curr_path with
-      | p, [] -> p
-      | ip :: rip, cp :: rcp -> assert (ip = cp); loop rip rcp
-      | _ -> assert false (* I think this covers all the possible cases *) in
-    loop info_path curr_path
-
-  type info = {
-    info_ls   : path Hls.t;
-    info_ts   : path Hts.t;
-    info_xs   : path Hxs.t;
-    info_path : path;
-  }
-
-  let empty_info = {
-    info_ls   = Hls.create 16;
-    info_ts   = Hts.create 16;
-    info_xs   = Hxs.create 16;
-    info_path = [];
-  }
-
-  let find_ls info ls = Hls.find info.info_ls ls
-  let find_ts info ts = Hts.find info.info_ts ts
-  let find_xs info xs = Hxs.find info.info_xs xs
-
-  let add_ls  info ls = Hls.add info.info_ls ls info.info_path
-  let add_ts  info ts = Hts.add info.info_ts ts info.info_path
-  let add_xs  info xs = Hxs.add info.info_xs xs info.info_path
-end
-
 open Info
 
 module Term = struct
@@ -521,7 +474,7 @@ let signature =
   let rec module_declaration info T.{md_name; md_type; md_loc} =
     let loc = location md_loc in
     let id = mk_id md_name.I.id_str ~id_loc:(location md_name.I.id_loc) in
-    let info = { info with info_path = md_name.I.id_str :: info.info_path } in
+    let info = update_path info md_name.I.id_str in
     Gmodule (loc, id, module_type info md_type)
 
   and module_type info mt = match mt.T.mt_desc with
@@ -536,7 +489,7 @@ let signature =
         let id_loc = location arg_name.I.id_loc in
         let id_str = arg_name.I.id_str in
         let id = mk_id id_str ~id_loc in
-        let info_arg = { info with info_path = id_str :: info.info_path } in
+        let info_arg = update_path info id_str in
         (* we treat the functor argument before the body in order to correctly
            update the info table *)
         let mod_arg = module_type info_arg (Opt.get arg) in
@@ -554,7 +507,7 @@ let signature =
   and module_type_declaration info mtd = let decls = match mtd.T.mtd_type with
       | None -> []
       | Some mt -> let mtd_name = mtd.T.mtd_name.id_str in
-          let info = { info with info_path = mtd_name :: info.info_path } in
+          let info = update_path info mtd_name in
           module_type info mt in
     Hashtbl.add mod_type_table mtd.mtd_name.I.id_str decls
 
