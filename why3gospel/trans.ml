@@ -266,7 +266,7 @@ let type_decl info (T.{td_ts = {ts_ident}; td_spec; td_manifest} as td) = {
 }
 
 let type_decl info (T.{td_ts} as td) =
-  Hts.add info.info_ts td_ts info.info_path;
+  add_ts info td_ts;
   type_decl info td
 
 let mk_expr expr_desc expr_loc =
@@ -499,6 +499,7 @@ let axiom info T.{ax_name; ax_term} =
 
 (** Convert GOSPEL exceptions into Why3's Ptree exceptions. *)
 let exn info T.{exn_constructor = {ext_ident; ext_xs}; exn_loc} =
+  add_xs info ext_xs;
   let id = mk_id ext_ident.id_str ~id_loc:(location ext_ident.id_loc) in
   match ext_xs.Ty.xs_type with
   | Exn_tuple [{ty_node = Ty.Tyapp (ts, tyl)}] when Ty.is_ts_tuple ts ->
