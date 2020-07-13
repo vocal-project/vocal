@@ -83,6 +83,10 @@ module Info = struct
   let find_ls info ls = Hls.find info.info_ls ls
   let find_ts info ts = Hts.find info.info_ts ts
   let find_xs info xs = Hxs.find info.info_xs xs
+
+  let add_ls  info ls = Hls.add info.info_ls ls info.info_path
+  let add_ts  info ts = Hts.add info.info_ts ts info.info_path
+  let add_xs  info xs = Hxs.add info.info_xs xs info.info_path
 end
 
 open Info
