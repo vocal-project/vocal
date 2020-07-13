@@ -62,8 +62,7 @@ module Info = struct
   let reduce_path info_path curr_path =
     let rec loop info_path curr_path = match info_path, curr_path with
       | p, [] -> p
-      | ip :: rip, cp :: rcp -> assert (ip = cp);
-          loop rip rcp
+      | ip :: rip, cp :: rcp -> assert (ip = cp); loop rip rcp
       | _ -> assert false (* I think this covers all the possible cases *) in
     loop info_path curr_path
 
@@ -80,6 +79,10 @@ module Info = struct
     info_xs   = Hxs.create 16;
     info_path = [];
   }
+
+  let find_ls info ls = Hls.find info.info_ls ls
+  let find_ts info ts = Hts.find info.info_ts ts
+  let find_xs info xs = Hxs.find info.info_xs xs
 end
 
 open Info
@@ -141,7 +144,7 @@ module Term = struct
     | Ty.Tyapp ({ts_ident} as tys, tyl) ->
         let ty_arg = List.map (ty info) tyl in
         let id_loc = location ts_ident.id_loc in
-        try let info_path = Hts.find info.info_ts tys in
+        try let info_path = find_ts info tys in
           let curr_path = info.info_path in
           let path = reduce_path (List.rev info_path) (List.rev curr_path) in
           let id = mk_id ~id_loc ts_ident.id_str in
