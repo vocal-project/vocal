@@ -482,6 +482,7 @@ let val_decl info vd g =
 (** Convert GOSPEL logical declaration (function or predicate) into
      Why3's Ptree logical declaration. *)
 let function_ info (T.{fun_ls = Tt.{ls_name; ls_value}} as f) =
+  add_ls info f.fun_ls;
   let loc = location f.T.fun_loc in
   let id_loc = location ls_name.I.id_loc in
   let id = mk_id ls_name.I.id_str ~id_loc in
