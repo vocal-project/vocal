@@ -8,7 +8,6 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-open Identifier
 open Parsetree
 open Uast
 open Pprintast

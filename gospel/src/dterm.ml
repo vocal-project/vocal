@@ -112,9 +112,9 @@ and dterm_node =
    * | Trecord of (Preid.t * term) list
    * | Tupdate of term * (Preid.t * term) list
    *)
-  | DTattr  of dterm * Sattr.t
-  | DTvar   of preid
   | DTconst of Parsetree.constant
+  | DTattr  of dterm * string list
+  | DTvar   of Preid.t
   | DTapp   of lsymbol * dterm list
   | DTif    of dterm * dterm * dterm
   | DTlet   of Preid.t * dterm * dterm
@@ -480,7 +480,7 @@ let rec print_dterm fmt {dt_node; dt_dty; _} =
   | DTfalse -> pp fmt "false%a" print_dty dt_dty
   | DTvar v -> pp fmt "%a%a" Preid.pp v print_dty dt_dty
   | DTapp (ls,dtl) -> pp fmt "(%a %a)%a"
-                        print_ident ls.ls_name
+                        Ident.pp ls.ls_name
                         (Format.pp_print_list print_dterm) dtl
                         print_dty dt_dty
   | DTnot t -> pp fmt "not %a" print_dterm t

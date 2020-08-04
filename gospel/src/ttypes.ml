@@ -8,6 +8,8 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
+open Utils
+
 module Ident = Identifier.Ident
 
 (** type variables *)

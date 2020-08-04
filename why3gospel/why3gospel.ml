@@ -37,7 +37,7 @@ let use_array loc =
 
 let read_file file nm c =
   let lb = Lexing.from_channel c in
-  Gospel.Location.init lb file;
+  Location.init lb file;
   Gospel.Parser_frontend.(parse_gospel (parse_ocaml_lb lb) nm)
 
 let type_check name nm sigs =
@@ -50,9 +50,9 @@ module Ut = Gospel.Uast
 
 (* extract additional uses and vals from file.mli.why3, if any *)
 let extract_use sig_item = match sig_item.Ut.sdesc with
-  | Sig_ghost_open {popen_lid = {txt = Lident s}} when s = "Gospelstdlib" ->
+  | Sig_ghost_open {popen_expr = {txt = Lident s}} when s = "Gospelstdlib" ->
       None
-  | Sig_ghost_open {popen_lid = {txt = Lident s}} ->
+  | Sig_ghost_open {popen_expr = {txt = Lident s}} ->
       Some s
   | _ -> None
 

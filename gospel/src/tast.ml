@@ -81,12 +81,12 @@ let mk_val_spec args ret pre post wr cs dv equiv =
   val_spec args ret pre post wr cs dv equiv
 
 type val_description = {
-    vd_name  : ident;
-    vd_type  : Parsetree.core_type;
-    vd_prim  : string list; (* primitive declaration *)
-    vd_attrs : Parsetree.attributes;
-    vd_spec  : val_spec option;
-    vd_loc   : Location.t;
+  vd_name  : Ident.t;
+  vd_type  : Parsetree.core_type;
+  vd_prim  : string list; (* primitive declaration *)
+  vd_attrs : Parsetree.attributes;
+  vd_spec  : val_spec option;
+  vd_loc   : Location.t;
 }
 
 let val_description id cty prim attrs spec loc = {
@@ -273,7 +273,7 @@ let mk_function ?result ls r params def spec loc =
 
 type extension_constructor =
     {
-     ext_ident     : ident;
+     ext_ident     : Ident.t;
      ext_xs        : xsymbol;
      ext_kind      : Parsetree.extension_constructor_kind;
      ext_loc       : Location.t;

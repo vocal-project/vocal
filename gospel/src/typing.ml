@@ -702,7 +702,7 @@ let process_axiom loc kid crcm ns a =
 
 let process_exception_sig loc ns te =
   let ec = te.Parsetree.ptyexn_constructor in
-  let id = id_add_loc ec.pext_name.loc (fresh_id ec.pext_name.txt) in
+  let id = Ident.set_loc (Ident.create ec.pext_name.txt) ec.pext_name.loc in
   let xs = match ec.pext_kind with
     | Pext_rebind lid ->
        find_xs ~loc:lid.loc ns (Longident.flatten lid.txt)
@@ -712,7 +712,7 @@ let process_exception_sig loc ns te =
             Exn_tuple (List.map (ty_of_core ns) ctyl)
          | Pcstr_record ldl ->
             let get Parsetree.{pld_name;pld_type; _} =
-              fresh_id ~loc:pld_name.loc pld_name.txt,
+              Ident.create ~loc:pld_name.loc pld_name.txt,
               ty_of_core ns pld_type in
             Exn_record (List.map get ldl) in
        xsymbol id args

@@ -9,7 +9,7 @@
 (**************************************************************************)
 
 module T = Gospel.Tast
-module Ot = Gospel.Oparsetree
+module Ot = Parsetree
 open Driver
 open Why3
 open Ptree
@@ -18,7 +18,7 @@ type gdecl =
   | Gdecl of decl
   | Gmodule of Loc.position * ident * gdecl list
 
-let location { Gospel.Location.loc_start = b; Gospel.Location.loc_end = e } =
+let location { Location.loc_start = b; Location.loc_end = e } =
   Loc.extract (b, e)
 
 let dummy_loc = Loc.dummy_position
@@ -339,9 +339,9 @@ let rec core_type Ot.{ ptyp_desc; ptyp_loc } =
         | None   -> id_str
         | Some s -> s in
       let rec longident id_loc = function
-        | Gospel.Longident.Lident s ->
+        | Longident.Lident s ->
             Qident (mk_id (mk_str s) ~id_loc)
-        | Gospel.Longident.Ldot (t, s) ->
+        | Longident.Ldot (t, s) ->
             Qdot (longident id_loc t, mk_id (mk_str s) ~id_loc)
         | _ -> assert false (* TODO? *) in
       PTtyapp (longident (location loc) txt, List.map core_type ctl)
