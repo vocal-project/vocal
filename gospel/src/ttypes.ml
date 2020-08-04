@@ -8,7 +8,7 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-open Utils
+module Ident = Identifier.Ident
 
 module Ident = Identifier.Ident
 
@@ -273,17 +273,17 @@ and print_ty_node fmt = function
      pp fmt "(%a) %a" (list ~sep:"," print_ty) tyl print_ts_name ts
 
 let print_ts fmt ts =
-  pp fmt "@[%a %a%a@]"
-    (list ~sep:"," ~first:"(" ~last:")" print_tv) ts.ts_args
-    Ident.pp(ts_ident ts)
+  pp fmt "@[(%a) %a%a@]"
+    (Format.pp_print_list ~pp_sep:(fmt_of_string ",") print_tv) ts.ts_args
+    Ident.pp (ts_ident ts)
     (fun fmt alias -> match alias with None -> ()
      | Some ty -> pp fmt " [=%a]" print_ty ty) ts.ts_alias
 
 let print_exn_type f = function
   | Exn_tuple tyl -> list ~sep:" * " print_ty f tyl
   | Exn_record args ->
-     let print_arg f (id,ty) = pp f "%a:%a" Ident.pp id print_ty ty in
-     list_with_first_last ~sep:";" ~first:"{" ~last:"}" print_arg f args
+      let print_arg f (id,ty) = pp f "%a:{%a}" Ident.pp id print_ty ty in
+     list_with_first_last ~sep:";" print_arg f args
 
 let print_xs f x =
   pp f "%a" Ident.pp x.xs_ident

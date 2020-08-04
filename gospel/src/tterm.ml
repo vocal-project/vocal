@@ -328,7 +328,7 @@ let print_ls_decl fmt {ls_name;ls_args;ls_value} =
   pp fmt "%s %a %a%s%a"
     (if is_func then "function" else "predicate")
     Ident.pp ls_name
-    (list ~sep:" " print_unnamed_arg) ls_args
+    (Format.pp_print_list print_unnamed_arg) ls_args
     (if is_func then " : " else "")
     (pp_print_option print_ty) ls_value
 
@@ -387,7 +387,7 @@ let rec print_term fmt {t_node; t_ty; t_attrs; _ } =
        assert (vs.vs_ty = Option.get t_ty ) (* TODO remove this *)
     | Tapp (ls,[x1;x2]) when Identifier.is_infix ls.ls_name.id_str ->
        let op_nm =
-         match String.split_on_char ' ' ls.ls_name.id_str with 
+         match String.split_on_char ' ' ls.ls_name.id_str with
            | [x] | [_; x] -> x
            | _ -> assert false
        in
@@ -399,7 +399,7 @@ let rec print_term fmt {t_node; t_ty; t_attrs; _ } =
     | Tapp (ls,tl) ->
        pp fmt "(%a %a)%a"
          Ident.pp ls.ls_name
-         (list ~first:" " ~sep:" " print_term) tl
+         (Format.pp_print_list print_term) tl
          print_ty t_ty
     | Tnot t -> pp fmt "not %a" print_term t
     | Tif (t1,t2,t3) ->

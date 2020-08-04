@@ -12,6 +12,8 @@ let pp_attr ppf attr = Format.fprintf ppf "[@%s]" attr
 
 let pp_attrs = Format.pp_print_list pp_attr
 
+(** Pre identifiers - not unique - used by parsetree and untyped AST *)
+
 module Preid = struct
   type t = {
     pid_str: string;
@@ -28,6 +30,8 @@ module Preid = struct
   let add_attr t attr = { t with pid_attrs = attr :: t.pid_attrs }
 end
 
+(** Identifiers *)
+
 module Ident = struct
   type t = {
     id_str: string;
@@ -42,7 +46,7 @@ module Ident = struct
     let current s =
       let x =
         Hashtbl.find_opt current s
-        |> Utils.Option.fold ~none:0 ~some:succ
+        |> Option.fold ~none:0 ~some:succ
       in
       Hashtbl.replace current s x; x
     in
@@ -75,6 +79,8 @@ module Ident = struct
   let add_attr t attr = { t with id_attrs = attr :: t.id_attrs }
 end
 
+(* utils *)
+
 let prefix s = "prefix " ^ s
 let infix  s = "infix "  ^ s
 let mixfix s = "mixfix " ^ s
@@ -86,6 +92,8 @@ let is_somefix f s =
 let is_prefix = is_somefix "prefix"
 let is_infix  = is_somefix "infix"
 let is_mixfix = is_somefix "mixfix"
+
+(* hard-coded ids *)
 
 let eq    = Ident.create (infix "=")
 let neq   = Ident.create (infix "<>")

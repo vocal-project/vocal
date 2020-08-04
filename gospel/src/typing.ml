@@ -701,7 +701,7 @@ let process_axiom loc kid crcm ns a =
   mk_sig_item (Sig_axiom ax) loc
 
 let process_exception_sig loc ns te =
-  let ec = te.Oparsetree.ptyexn_constructor in
+  let ec = te.Parsetree.ptyexn_constructor in
   let id = Ident.set_loc (Ident.create ec.pext_name.txt) ec.pext_name.loc in
   let xs = match ec.pext_kind with
     | Pext_rebind lid ->
@@ -711,7 +711,7 @@ let process_exception_sig loc ns te =
          | Pcstr_tuple ctyl ->
             Exn_tuple (List.map (ty_of_core ns) ctyl)
          | Pcstr_record ldl ->
-            let get Oparsetree.{pld_name;pld_type; _} =
+            let get Parsetree.{pld_name;pld_type; _} =
               Ident.create ~loc:pld_name.loc pld_name.txt,
               ty_of_core ns pld_type in
             Exn_record (List.map get ldl) in

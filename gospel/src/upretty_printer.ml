@@ -8,9 +8,32 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-open Oparsetree
+open Parsetree
 open Uast
-open Opprintast
+open Pprintast
+
+module Preid = Identifier.Preid
+
+let pp = Format.fprintf
+
+let list : 'a . ?sep:space_formatter -> ?first:space_formatter ->
+  ?last:space_formatter -> (Format.formatter -> 'a -> unit) ->
+  Format.formatter -> 'a list -> unit
+  = fun ?sep ?first ?last fu f xs ->
+    let first = match first with Some x -> x |None -> ("": _ format6)
+    and last = match last with Some x -> x |None -> ("": _ format6)
+    and sep = match sep with Some x -> x |None -> ("@ ": _ format6) in
+    let aux f = function
+      | [] -> ()
+      | [x] -> fu f x
+      | xs ->
+          let rec loop  f = function
+            | [x] -> fu f x
+            | x::xs ->  fu f x; pp f sep; loop f xs;
+            | _ -> assert false in begin
+            pp f first; loop f xs; pp f last;
+          end in
+    aux f xs
 
 let const_hole s fmt _ = pp fmt "%s" s
 

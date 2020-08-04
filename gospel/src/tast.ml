@@ -82,7 +82,7 @@ let mk_val_spec args ret pre post wr cs dv equiv =
 
 type val_description = {
     vd_name  : Ident.t;
-    vd_type  : Oparsetree.core_type;
+    vd_type  : Parsetree.core_type;
     vd_prim  : string list; (* primitive declaration *)
     vd_attrs : Oparsetree.attributes;
     vd_spec  : val_spec option;
@@ -271,14 +271,13 @@ let mk_function ?result ls r params def spec loc =
 
   function_ ls r params def spec loc
 
-type extension_constructor =
-    {
-     ext_ident     : Ident.t;
-     ext_xs        : xsymbol;
-     ext_kind      : Oparsetree.extension_constructor_kind;
-     ext_loc       : Location.t;
-     ext_attributes: Oparsetree.attributes; (* C of ... [@id1] [@id2] *)
-   }
+type extension_constructor = {
+  ext_ident     : Ident.t;
+  ext_xs        : xsymbol;
+  ext_kind      : Parsetree.extension_constructor_kind;
+  ext_loc       : Location.t;
+  ext_attributes: Parsetree.attributes; (* C of ... [@id1] [@id2] *)
+}
 
 let extension_constructor id xs kd loc attrs =
   {ext_ident = id; ext_xs = xs; ext_kind = kd;

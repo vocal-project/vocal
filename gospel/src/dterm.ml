@@ -114,7 +114,7 @@ and dterm_node =
    *)
   | DTattr  of dterm * string list
   | DTvar   of Preid.t
-  | DTconst of Oasttypes.constant
+  | DTconst of Parsetree.constant
   | DTapp   of lsymbol * dterm list
   | DTif    of dterm * dterm * dterm
   | DTlet   of Preid.t * dterm * dterm
@@ -475,7 +475,7 @@ let rec print_dterm fmt {dt_node; dt_dty; _} =
   | DTvar v -> pp fmt "%a%a" Preid.pp v print_dty dt_dty
   | DTapp (ls,dtl) -> pp fmt "(%a %a)%a"
                         Ident.pp ls.ls_name
-                        (list ~sep:" " print_dterm) dtl
+                        (Format.pp_print_list print_dterm) dtl
                         print_dty dt_dty
   | DTnot t -> pp fmt "not %a" print_dterm t
   | DTif (t1,t2,t3) -> pp fmt "if %a then %a else %a" print_dterm t1
