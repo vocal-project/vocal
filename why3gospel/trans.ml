@@ -47,7 +47,7 @@ open Info
 module Term = struct
   module Tt = Gospel.Tterm
   module Ty = Gospel.Ttypes
-  module I  = Gospel.Identifier
+  module I  = Gospel.Identifier.Ident
 
   let mk_term term_desc term_loc =
     { term_desc; term_loc }
