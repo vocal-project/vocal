@@ -495,8 +495,8 @@ let signature =
         let mod_arg = module_type info_arg (Opt.get arg) in
         let body = module_type info body in
         Gmodule (id_loc, id, mod_arg) :: body
-    | T.Mod_with _ (* of module_type * with_constraint list *) ->
-        assert false (* TODO *)
+    | T.Mod_with (md_type, _) ->
+        module_type info md_type
     | T.Mod_typeof _ (* of Oparsetree.module_expr *) ->
         assert false (* TODO *)
     | T.Mod_extension _ (* of Oparsetree.extension *) ->
