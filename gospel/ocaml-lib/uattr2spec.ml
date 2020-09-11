@@ -443,7 +443,7 @@ let rec s_expression expr =
         let s_vb_list, _ = s_value_binding vb_list in
         Sexp_let (rec_flag, s_vb_list, s_expression expr)
     | Pexp_function case_list ->
-        Sexp_function case_list
+        Sexp_function (List.map case case_list)
     | Pexp_fun (arg, expr_arg, pat, expr_body) ->
         let spec, _ = split_attr expr.pexp_attributes in
         let spec = List.map attr2spec spec in
