@@ -566,6 +566,9 @@ and structure_item str_item =
       [mk_s_structure_item (Str_attribute attr) ~loc]
   | Pstr_module mod_binding ->
       [mk_s_structure_item (Str_module (s_module_binding mod_binding)) ~loc]
+  | Pstr_modtype mod_type_decl ->
+      let s_mod_type, _ = module_type_declaration mod_type_decl in
+      [mk_s_structure_item (Str_modtype s_mod_type) ~loc]
   | Pstr_exception ty_exn ->
       [mk_s_structure_item (Str_exception ty_exn) ~loc]
   | _ -> assert false (* TODO *)
