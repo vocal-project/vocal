@@ -583,8 +583,7 @@ and s_value_binding vb_list =
     let vb = mk_svb v.pvb_pat expr v.pvb_attributes None v.pvb_loc in
     match spec with
     | [] -> vb, spec
-    | Sval (x, _) :: xs ->
-        { vb with spvb_vspec = Some x}, xs
+    | Sval (x, _) :: xs -> { vb with spvb_vspec = Some x}, xs
     | xs -> vb, xs in
   let vspec_fspec = List.map val_spec vb_list in
   let mk_vb_fspec (vb_acc, fs_acc) (vb, fs) = vb :: vb_acc, fs :: fs_acc in
