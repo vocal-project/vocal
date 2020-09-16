@@ -312,7 +312,7 @@ and s_expression_desc =
         (* let P1 = E1 and ... and Pn = EN in E       (flag = Nonrecursive)
            let rec P1 = E1 and ... and Pn = EN in E   (flag = Recursive)
          *)
-  | Sexp_function of case list
+  | Sexp_function of s_case list
         (* function P1 -> E1 | ... | Pn -> En *)
   | Sexp_fun of
       arg_label * s_expression option * Oparsetree.pattern * s_expression *
