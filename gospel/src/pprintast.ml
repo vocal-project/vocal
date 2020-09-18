@@ -1309,14 +1309,14 @@ and structure_item ctxt f x =
             begin match mt with
               | Unit -> pp f "()"
               | Named ({txt = None}, mt) ->
-                  Misc.may (pp f "(_:%a)" (module_type ctxt)) mt
+                  pp f "(_:%a)" (module_type ctxt) mt
               | Named ({txt = Some s}, mt) ->
-                  Misc.may (pp f "(%s:%a)" s (module_type ctxt)) mt end;
+                  pp f "(%s:%a)" s (module_type ctxt) mt end;
             module_helper me'
         | me -> me
       in
       pp f "@[<hov2>module %s%a@]%a"
-        x.pmb_name.txt
+        (match x.pmb_name.txt with None -> "_" | Some s -> s)
         (fun f me ->
            let me = module_helper me in
            match me with
@@ -1395,7 +1395,8 @@ and structure_item ctxt f x =
   | Pstr_recmodule decls -> (* 3.07 *)
       let aux f = function
         | ({pmb_expr={pmod_desc=Pmod_constraint (expr, typ)}} as pmb) ->
-            pp f "@[<hov2>@ and@ %s:%a@ =@ %a@]%a" pmb.pmb_name.txt
+            pp f "@[<hov2>@ and@ %s:%a@ =@ %a@]%a"
+              (match pmb.pmb_name.txt with None -> "_" | Some s -> s)
               (module_type ctxt) typ
               (module_expr ctxt) expr
               (item_attributes ctxt) pmb.pmb_attributes
@@ -1404,7 +1405,7 @@ and structure_item ctxt f x =
       begin match decls with
       | ({pmb_expr={pmod_desc=Pmod_constraint (expr, typ)}} as pmb) :: l2 ->
           pp f "@[<hv>@[<hov2>module@ rec@ %s:%a@ =@ %a@]%a@ %a@]"
-            pmb.pmb_name.txt
+            (match pmb.pmb_name.txt with None -> "_" | Some s -> s)
             (module_type ctxt) typ
             (module_expr ctxt) expr
             (item_attributes ctxt) pmb.pmb_attributes

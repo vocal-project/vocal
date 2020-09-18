@@ -29,7 +29,7 @@ let get_attr_content attr = match attr.attr_payload with
     [ {
         pstr_desc =
           Pstr_eval
-            ({pexp_desc = Pexp_constant (Pconst_string (spec, _)); _ }, _);
+            ({pexp_desc = Pexp_constant (Pconst_string (spec, _, _)); _ }, _);
         pstr_loc
     } ] -> spec, pstr_loc
  | _ -> assert false
@@ -346,7 +346,7 @@ let rec signature_ sigs acc prev_floats = match sigs with
        | Psig_extension (e,a) ->
           let attrs,specs = get_spec_attrs a in
           {sdesc=Sig_extension (e,attrs);sloc} :: specs
-       | _ -> assert false (* TODO (@pascutto) *) 
+       | _ -> assert false (* TODO (@pascutto) *)
      in
      let all_specs = acc @ prev_specs @ current_specs in
      signature_ xs all_specs []
@@ -356,13 +356,19 @@ and signature sigs = signature_ sigs [] []
 and module_type_desc m =
   match m with
   | Pmty_ident id ->
-     Mod_ident id
+      Mod_ident id
   | Pmty_signature s ->
-     Mod_signature (signature s)
-  | Pmty_functor (l,m1,m2) ->
-     Mod_functor (l, Option.map module_type m1, module_type m2)
+      Mod_signature (signature s)
+  | Pmty_functor (Unit,m2) ->
+      Mod_functor ({txt = "_"; loc = Location.none}, None, module_type m2)
+  | Pmty_functor (Named (({txt = None} as l),m1) ,m2) ->
+      let mt2 = module_type m2 in
+      Mod_functor ({txt = "_"; loc = l.loc}, Some (module_type m1), mt2)
+  | Pmty_functor (Named (({txt = Some l} as s),m1) ,m2) ->
+      let mt2 = module_type m2 in
+      Mod_functor ({txt = l; loc = s.loc}, Some (module_type m1), mt2)
   | Pmty_with (m,c) ->
-     Mod_with (module_type m, List.map with_constraint c)
+      Mod_with (module_type m, List.map with_constraint c)
   | Pmty_typeof m ->
      unsupported_gospel.module_expr unsupported_gospel m; Mod_typeof m
   | Pmty_extension e -> Mod_extension e
@@ -375,7 +381,9 @@ and module_type m =
 
 and module_declaration m =
   let attrs, specs = get_spec_attrs m.pmd_attributes in
-  let m = { mdname = m.pmd_name; mdtype = module_type m.pmd_type;
+  let md_str = match m.pmd_name.txt with None -> "_" | Some s -> s in
+  let md_name = Location.{txt = md_str; loc = m.pmd_name.loc} in
+  let m = { mdname = md_name; mdtype = module_type m.pmd_type;
     mdattributes = attrs; mdloc = m.pmd_loc } in
   m, specs
 

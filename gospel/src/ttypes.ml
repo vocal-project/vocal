@@ -10,8 +10,6 @@
 
 module Ident = Identifier.Ident
 
-module Ident = Identifier.Ident
-
 (** type variables *)
 
 type tvsymbol = {
@@ -280,7 +278,7 @@ and print_ty_node fmt = function
 let print_ts fmt ts =
   pp fmt "@[(%a) %a%a@]"
     (Format.pp_print_list ~pp_sep:(fmt_of_string ",") print_tv) ts.ts_args
-    print_ident (ts_ident ts)
+    Ident.pp (ts_ident ts)
     (fun fmt alias -> match alias with None -> ()
      | Some ty -> pp fmt " [=%a]" print_ty ty) ts.ts_alias
 
@@ -288,7 +286,7 @@ let print_exn_type f = function
   | Exn_tuple tyl ->
      Format.pp_print_list ~pp_sep:(fmt_of_string " * ") print_ty f tyl
   | Exn_record args ->
-     let print_arg f (id,ty) = pp f "%a:{%a}" print_ident id print_ty ty in
+     let print_arg f (id,ty) = pp f "%a:{%a}" Ident.pp id print_ty ty in
      list_with_first_last ~sep:";" print_arg f args
 
 let print_xs f x =

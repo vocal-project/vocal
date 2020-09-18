@@ -327,7 +327,7 @@ let print_ls_decl fmt {ls_name;ls_args;ls_value} =
   let print_unnamed_arg fmt ty = pp fmt "(_:%a)" print_ty ty in
   pp fmt "%s %a %a%s%a"
     (if is_func then "function" else "predicate")
-    print_ident ls_name
+    Ident.pp ls_name
     (Format.pp_print_list print_unnamed_arg) ls_args
     (if is_func then " : " else "")
     (pp_print_option print_ty) ls_value
@@ -400,7 +400,7 @@ let rec print_term fmt {t_node; t_ty; t_attrs; _ } =
          print_ty t_ty
     | Tapp (ls,tl) ->
        pp fmt "(%a %a)%a"
-         print_ident ls.ls_name
+         Ident.pp ls.ls_name
          (Format.pp_print_list print_term) tl
          print_ty t_ty
     | Tnot t -> pp fmt "not %a" print_term t
