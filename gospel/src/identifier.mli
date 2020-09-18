@@ -18,25 +18,16 @@ module Preid : sig
   }
   (** The type for pre-identifiers. *)
 
-module Preid : sig
-  type t = private {
-    pid_str : string;
-    pid_attrs : string list;
-    pid_loc : Location.t;
-  }
-
   val pp : Format.formatter -> t -> unit
 
-  val create : ?attrs:string list -> ?loc:Location.t -> string -> t
-
   val add_attr : t -> string -> t
-end
 
   val create : ?attrs:string list -> ?loc:Location.t -> string -> t
   (** [create ~attrs ~loc id] is a new pre-identifier identified with [id] with
       attributes [attrs] and location [loc]. A unique tag is automatically
       affected to the new identifier Default attributes are empty, and default
       location is [Location.none]. *)
+end
 
 module Ident : sig
   type t = private {
@@ -57,14 +48,14 @@ module Ident : sig
   val add_attr : t -> string -> t
 end
 
-val neq : Ident.t
+(* val neq : Ident.t *)
 
 val eq : Ident.t
 val neq : Ident.t
 val none : Ident.t
-val some : Ident.t
-val nil : Ident.t
-val cons : Ident.t
+(* val some : Ident.t *)
+(* val nil : Ident.t *)
+(* val cons : Ident.t *)
 
 val some : Ident.t
 
