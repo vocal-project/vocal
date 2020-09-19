@@ -194,6 +194,9 @@ let val_description v =
      { vd with vspec = Some (get_val_spec x)}, xs
   | xs -> vd, xs
 
+let mk_svb spvb_pat spvb_expr spvb_attributes spvb_vspec spvb_loc =
+  { spvb_pat; spvb_expr; spvb_attributes; spvb_vspec; spvb_loc }
+
 (** It parses floating attributes for specification. If nested
    specification is found in type/val declarations they must be
    type/val specification.
@@ -393,3 +396,222 @@ and module_type_declaration m =
               mtdtype = Option.map module_type m.pmtd_type;
               mtdattributes = attrs; mtdloc = m.pmtd_loc} in
   mtd, specs
+
+let mk_s_structure_item ~loc sstr_desc =
+  { sstr_desc; sstr_loc = loc }
+
+let rec floating_specs_str = function
+  | [] -> []
+  | Stype _ :: _ -> assert false (* TODO *)
+  | Sval _ :: _ -> assert false (* TODO *)
+  | Sfunction (f, loc) :: xs ->
+      (* look forward for function specification *)
+      let (fun_specs, xs) = split_at_f is_func_spec xs in
+      let fun_specs = List.map get_func_spec fun_specs in
+      let fun_specs = List.fold_left Uast_utils.fspec_union
+          f.fun_spec fun_specs in
+      let f = {f with fun_spec = fun_specs } in
+      mk_s_structure_item (Str_function f) ~loc :: floating_specs_str xs
+  | Sfunc_spec (_, loc) :: _ ->
+      raise (Orphan_decl_spec loc)
+  | Saxiom (a, loc) :: xs ->
+      mk_s_structure_item (Str_axiom a) ~loc :: floating_specs_str xs
+  | Stype_ghost (rec_flag, type_decl, loc) :: xs ->
+      (* look forward for type specification *)
+      let tspecs,xs = split_at_f is_type_spec xs in
+      let extra_spec = List.map get_type_spec tspecs in
+      let td,fspec = type_declaration ~extra_spec type_decl in
+      (* if there is nested specification they must refer to the ghost type *)
+      if fspec != [] then
+        raise (Floating_not_allowed loc);
+      let sdesc = Str_ghost_type (rec_flag,td) in
+      mk_s_structure_item sdesc ~loc :: floating_specs_str xs
+  | Sval_ghost _ :: _ -> assert false (* TODO *)
+  | Sopen_ghost (open_desc, loc) :: xs ->
+      let fspec = floating_specs_str xs in
+      mk_s_structure_item (Str_ghost_open open_desc) ~loc :: fspec
+
+let mk_s_expression spexp_desc spexp_loc spexp_loc_stack spexp_attributes =
+  { spexp_desc; spexp_loc; spexp_loc_stack; spexp_attributes }
+
+let mk_s_module_expr spmod_desc spmod_loc spmod_attributes =
+  { spmod_desc; spmod_loc; spmod_attributes }
+
+let rec s_expression expr =
+  let loc = expr.pexp_loc in
+  let loc_stack = expr.pexp_loc_stack in
+  let attributes = expr.pexp_attributes in
+  let lbl_expr (lbl, expr) = lbl, s_expression expr in
+  let longid_expr (id,  expr) = id,  s_expression expr in
+  let case {pc_lhs; pc_guard; pc_rhs} =
+    let spc_lhs = pc_lhs in
+    let spc_guard = Option.map s_expression pc_guard in
+    let spc_rhs = s_expression pc_rhs in
+    { spc_lhs; spc_guard; spc_rhs } in
+  let spexp_desc = function
+    | Pexp_ident id ->
+        Sexp_ident id
+    | Pexp_constant c ->
+        Sexp_constant c
+    | Pexp_let (rec_flag, vb_list, expr) ->
+        (* we ignore any floating specification that might appear within a local
+           [let .. in] expression *)
+        let s_vb_list, _ = s_value_binding vb_list in
+        Sexp_let (rec_flag, s_vb_list, s_expression expr)
+    | Pexp_function case_list ->
+        Sexp_function (List.map case case_list)
+    | Pexp_fun (arg, expr_arg, pat, expr_body) ->
+        let spec, _ = split_attr expr.pexp_attributes in
+        let spec = List.map attr2spec spec in
+        let val_spec = match spec with
+          | Sfunc_spec (x, _) :: _ -> Some x | _ -> None in
+        let expr_arg = Option.map s_expression expr_arg in
+        let expr_body = s_expression expr_body in
+        Sexp_fun (arg, expr_arg, pat, expr_body, val_spec)
+    | Pexp_apply (expr, arg_list) ->
+        Sexp_apply (s_expression expr, List.map lbl_expr arg_list)
+    | Pexp_match (expr, case_list) ->
+        Sexp_match (s_expression expr, List.map case case_list)
+    | Pexp_try (expr, case_list) ->
+        Sexp_try (s_expression expr, List.map case case_list)
+    | Pexp_tuple expr_list ->
+        Sexp_tuple (List.map s_expression expr_list)
+    | Pexp_construct (id, expr) ->
+        Sexp_construct (id, Option.map s_expression expr)
+    | Pexp_variant (label, expr) ->
+        Sexp_variant (label, Option.map s_expression expr)
+    | Pexp_record (field_list, expression) ->
+        let field_list = List.map longid_expr field_list in
+        Sexp_record (field_list, Option.map s_expression expression)
+    | Pexp_field (expr, id) ->
+        Sexp_field (s_expression expr, id)
+    | Pexp_setfield (expr_rec, field, expr_assign) ->
+        Sexp_setfield (s_expression expr_rec, field, s_expression expr_assign)
+    | Pexp_array expr_list ->
+        Sexp_array (List.map s_expression expr_list)
+    | Pexp_ifthenelse (expr1, expr2, expr3) ->
+        let expr1 = s_expression expr1 and expr2 = s_expression expr2 in
+        Sexp_ifthenelse (expr1, expr2, Option.map s_expression expr3)
+    | Pexp_sequence (expr1, expr2) ->
+        Sexp_sequence (s_expression expr1, s_expression expr2)
+    | Pexp_while (expr1, expr2) ->
+        Sexp_while (s_expression expr1, s_expression expr2)
+    | Pexp_for (pat, expr1, expr2, direction_flag, expr3) ->
+        let expr1 = s_expression expr1 and expr2 = s_expression expr2 in
+        let expr3 = s_expression expr3 in
+        Sexp_for (pat, expr1, expr2, direction_flag, expr3)
+    | Pexp_constraint (expr, core_type) ->
+        Sexp_constraint (s_expression expr, core_type)
+    | Pexp_coerce (expr, core_ty_left, core_ty_right) ->
+        Sexp_coerce (s_expression expr, core_ty_left, core_ty_right)
+    | Pexp_send (expr, label) ->
+        Sexp_send (s_expression expr, label)
+    | Pexp_new id ->
+        Sexp_new id
+    | Pexp_setinstvar (label, expr) ->
+        Sexp_setinstvar (label, s_expression expr)
+    | Pexp_override label_expr_list ->
+        let lbl_expr (lbl, expr) = lbl, s_expression expr in
+        Sexp_override (List.map lbl_expr label_expr_list)
+    | Pexp_letmodule (id, mod_expr, expr) ->
+        Sexp_letmodule (id, mod_expr, s_expression expr)
+    | Pexp_letexception (construct, expr) ->
+        Sexp_letexception (construct, s_expression expr)
+    | Pexp_assert expr ->
+        Sexp_assert (s_expression expr)
+    | Pexp_lazy expr ->
+        Sexp_lazy (s_expression expr)
+    | Pexp_poly (expr, cty) ->
+        Sexp_poly (s_expression expr, cty)
+    | Pexp_object class_str ->
+        Sexp_object class_str
+    | Pexp_newtype (id, expr) ->
+        Sexp_newtype (id, s_expression expr)
+    | Pexp_pack mod_expr ->
+        Sexp_pack (s_module_expr mod_expr)
+    | Pexp_open (open_decl, expr) ->
+        Sexp_open (open_decl, s_expression expr)
+    | Pexp_letop letop ->
+        Sexp_letop letop
+    | Pexp_extension extension ->
+        Sexp_extension extension
+    | Pexp_unreachable ->
+        Sexp_unreachable in
+  mk_s_expression (spexp_desc expr.pexp_desc) loc loc_stack attributes
+
+and s_module_expr {pmod_desc; pmod_loc; pmod_attributes} =
+  let spmod_desc = match pmod_desc with
+    | Pmod_ident id ->
+        Smod_ident id
+    | Pmod_structure str ->
+        Smod_structure (structure str)
+    | Pmod_functor (func_param, mod_expr) ->
+        Smod_functor (s_functor_param func_param, s_module_expr mod_expr)
+    | Pmod_apply (mod_expr1, mod_expr2) ->
+        Smod_apply (s_module_expr mod_expr1, s_module_expr mod_expr2)
+    | Pmod_constraint (mod_expr, mod_type) ->
+        Smod_constraint (s_module_expr mod_expr, module_type mod_type)
+    | Pmod_unpack expr ->
+        Smod_unpack (s_expression expr)
+    | Pmod_extension extension ->
+        Smod_extension extension in
+  mk_s_module_expr spmod_desc pmod_loc pmod_attributes
+
+and s_functor_param = function
+  | Unit -> Sunit
+  | Named (id, mod_type) -> Snamed (id, module_type mod_type)
+
+and structure s =
+  let add_str_item acc str_item = structure_item str_item :: acc in
+  let structure = List.fold_left add_str_item [] s in
+  List.rev (List.flatten structure)
+
+and structure_item str_item =
+  let loc = str_item.pstr_loc in
+  match str_item.pstr_desc with
+  | Pstr_eval (e, attrs) ->
+      [mk_s_structure_item (Str_eval (s_expression e, attrs)) ~loc]
+  | Pstr_value (rec_flag, vb_list) ->
+      let vb_list, fspec = s_value_binding vb_list in
+      let fspec_list = floating_specs_str fspec in
+      let str_desc = mk_s_structure_item (Str_value (rec_flag, vb_list)) ~loc in
+      List.rev (str_desc :: fspec_list)
+  | Pstr_type (rec_flag, type_decl_list) ->
+      let td_list, fspec = type_declaration type_decl_list in
+      let fspec_list = floating_specs_str fspec in
+      let str_desc = mk_s_structure_item (Str_type (rec_flag, td_list)) ~loc in
+      List.rev (str_desc :: fspec_list)
+  | Pstr_attribute attr when is_spec attr ->
+      let spec = attr2spec attr in
+      floating_specs_str [spec]
+  | Pstr_attribute attr ->
+      [mk_s_structure_item (Str_attribute attr) ~loc]
+  | Pstr_module mod_binding ->
+      [mk_s_structure_item (Str_module (s_module_binding mod_binding)) ~loc]
+  | Pstr_modtype mod_type_decl ->
+      let s_mod_type, _ = module_type_declaration mod_type_decl in
+      [mk_s_structure_item (Str_modtype s_mod_type) ~loc]
+  | Pstr_exception ty_exn ->
+      [mk_s_structure_item (Str_exception ty_exn) ~loc]
+  | _ -> assert false (* TODO *)
+
+and s_value_binding vb_list =
+  (* [val_binding v] parses the attributes of a value binding. As for val
+     description, only the first attribute is considered as specification. *)
+  let val_spec v =
+    let spec, _ = split_attr v.pvb_attributes in
+    let spec = List.map attr2spec spec in
+    let expr = s_expression v.pvb_expr in
+    let vb = mk_svb v.pvb_pat expr v.pvb_attributes None v.pvb_loc in
+    match spec with
+    | [] -> vb, spec
+    | Sval (x, _) :: xs -> { vb with spvb_vspec = Some x}, xs
+    | xs -> vb, xs in
+  let vspec_fspec = List.map val_spec vb_list in
+  let mk_vb_fspec (vb_acc, fs_acc) (vb, fs) = vb :: vb_acc, fs :: fs_acc in
+  let vb_list, fspec = List.fold_left mk_vb_fspec ([], []) vspec_fspec in
+  List.rev vb_list, List.flatten fspec
+
+and s_module_binding {pmb_name; pmb_expr; pmb_attributes; pmb_loc} =
+  { spmb_expr       = s_module_expr pmb_expr; spmb_name = pmb_name;
+    spmb_attributes = pmb_attributes;         spmb_loc  = pmb_loc }

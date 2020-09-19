@@ -399,6 +399,78 @@ let sig_item sig_desc sig_loc = {sig_desc; sig_loc}
 
 let mk_sig_item desc loc = sig_item desc loc
 
+(** Structures *)
+
+type t_structure = t_structure_item list
+
+and t_structure_item =
+  {
+    tstr_desc: t_structure_item_desc;
+    tstr_loc: Location.t;
+  }
+
+and t_structure_item_desc =
+  | TStr_eval of Parsetree.expression * Parsetree.attributes
+        (* E *)
+  | TStr_value of rec_flag * t_value_binding list
+        (* let P1 = E1 and ... and Pn = EN       (flag = Nonrecursive)
+           let rec P1 = E1 and ... and Pn = EN   (flag = Recursive)
+         *)
+  | TStr_primitive of val_description
+        (*  val x: T
+            external x: T = "s1" ... "sn" *)
+  | TStr_type of rec_flag * type_declaration list
+        (* type t1 = ... and ... and tn = ... *)
+  | TStr_typext of Parsetree.type_extension
+        (* type t1 += ... *)
+  | TStr_exception of type_exception
+        (* exception C of T
+           exception C = M.X *)
+  | TStr_module of Parsetree.module_binding
+        (* module X = ME *)
+  | TStr_recmodule of Parsetree.module_binding list
+        (* module rec X1 = ME1 and ... and Xn = MEn *)
+  | TStr_modtype of module_type_declaration
+        (* module type S = MT *)
+  | TStr_open of open_description
+        (* open X *)
+  | TStr_class of Parsetree.class_declaration list
+        (* class c1 = ... and ... and cn = ... *)
+  | TStr_class_type of Parsetree.class_type_declaration list
+        (* class type ct1 = ... and ... and ctn = ... *)
+  | TStr_include of Parsetree.include_declaration
+        (* include ME *)
+  | TStr_attribute of Parsetree.attribute
+        (* [@@@id] *)
+  | TStr_extension of Parsetree.extension * Parsetree.attributes
+        (* [%%id] *)
+  (* Specific to specification *)
+  | TStr_function of function_
+  | TStr_axiom of axiom
+  | TStr_use of string
+  (* TODO: convert the following constructors to correspondent nodes in TAST *)
+  (* | Str_ghost_type of rec_flag * s_type_declaration list
+   * | Str_ghost_val  of s_val_description
+   * | Str_ghost_open of open_description *)
+
+and t_value_binding =
+  {
+    tpvb_pat: Parsetree.pattern; (* FIXME: change this pattern type *)
+    tpvb_expr: Uast.s_expression;
+    tpvb_attributes: Parsetree.attributes;
+    tpvb_vspec: val_spec option;
+    tpvb_loc: Location.t;
+  }
+
+let mk_val_binding tpvb_pat tpvb_expr tpvb_attributes tpvb_vspec tpvb_loc =
+  { tpvb_pat; tpvb_expr; tpvb_attributes; tpvb_vspec; tpvb_loc }
+
+let structure_item tstr_desc tstr_loc =
+  { tstr_desc; tstr_loc }
+
+let mk_str_item desc loc =
+  structure_item desc loc
+
 (** Pretty printing *)
 
 open Pprintast

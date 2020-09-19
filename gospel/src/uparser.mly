@@ -31,6 +31,7 @@
     sp_writes  = [];
     sp_consumes= [];
     sp_alias   = [];
+    sp_variant = [];
     sp_diverge = false;
     sp_equiv   = [];
   }
@@ -195,6 +196,8 @@ val_spec_body:
 | (* Empty spec *) { empty_vspec }
 | DIVERGES bd=val_spec_body
   { {bd with sp_diverge = true} }
+| VARIANT t = term bd=val_spec_body
+  { {bd with sp_variant = [t]} }
 | MODIFIES wr=separated_list(COMMA, term) bd=val_spec_body
   { { bd with sp_writes = wr @ bd.sp_writes } }
 | CONSUMES cs=separated_list(COMMA, term) bd=val_spec_body

@@ -339,6 +339,10 @@ let add_sig_contents muc sig_ =
      add_ns_top ~export:false (add_ns ~export:false muc nm ns) ns
   | _ -> muc (* TODO *)
 
+let add_str_contents muc str =
+  ignore (muc); ignore (str);
+  assert false (* TODO *)
+
 (** Module under construction with primitive types and functions *)
 
 let init_muc s = {

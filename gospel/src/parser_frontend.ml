@@ -42,6 +42,13 @@ let parse_ocaml_lb lb =
       let loc = Location.{loc_start=spos; loc_end=fpos;loc_ghost=false}  in
       raise (Ocaml_syntax_error loc) end
 
+let parse_ocaml_structure_lb lb =
+  try implementation Lexer.token lb with
+    Error -> begin
+      let spos,fpos = lb.lex_start_p, lb.lex_curr_p in
+      let loc = Location.{loc_start=spos; loc_end=fpos;loc_ghost=false}  in
+      raise (Ocaml_syntax_error loc) end
+
 let parse_ocaml file =
   let lb =
     if file = gospelstdlib_file then
@@ -51,6 +58,11 @@ let parse_ocaml file =
   in
   Location.init lb file;
   parse_ocaml_lb lb
+
+let parse_ocaml_structure file =
+  let lb = Lexing.from_channel (open_in file) in
+  Location.init lb file;
+  parse_ocaml_structure_lb lb
 
 let default_open =
   let open Uast in
@@ -70,6 +82,11 @@ let parse_gospel sign nm =
   if nm = gospelstdlib then signature sign else
     default_open :: signature sign
 
+let parse_structure_gospel str nm =
+  if nm = gospelstdlib then structure str else
+  (* TODO: default open of stdlib as a structure item *)
+  (* default_open_str :: *) structure str
+
 let path2module p =
   Filename.basename p |> Filename.chop_extension |> String.capitalize_ascii
 
@@ -77,3 +94,8 @@ let parse_ocaml_gospel path =
   let module_name = path2module path in
   let ocaml = parse_ocaml path in
   parse_gospel ocaml module_name
+
+let parse_ocaml_structure_gospel path =
+  let module_name = path2module path in
+  let ocaml = parse_ocaml_structure path in
+  parse_structure_gospel ocaml module_name
