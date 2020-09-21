@@ -1,0 +1,6 @@
+(ocamllex
+ (modules gospel_pps))
+
+(executable
+ (public_name gospel_pps)
+ (package gospel))
