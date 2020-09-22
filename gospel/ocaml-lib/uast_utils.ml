@@ -62,6 +62,13 @@ let rev_tspec ts =
     ty_invariant = List.rev ts.ty_invariant;
   }
 
+let empty_loop_spec =
+  { loop_invariant = []; loop_variant = [] }
+
+let loop_spec_union s1 s2 =
+  { loop_invariant = s1.loop_invariant @ s2.loop_invariant;
+    loop_variant   = s1.loop_variant   @ s2.loop_variant; }
+
 let pid_of_label = function
     | Lnone p | Lquestion p | Lnamed p | Lghost (p,_) -> p
 

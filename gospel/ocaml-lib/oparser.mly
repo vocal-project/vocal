@@ -1718,11 +1718,25 @@ expr:
       { Pexp_ifthenelse($3, $5, Some $7), $2 }
   | IF ext_attributes seq_expr THEN expr
       { Pexp_ifthenelse($3, $5, None), $2 }
-  | WHILE ext_attributes seq_expr DO seq_expr DONE
-      { Pexp_while($3, $5), $2 }
+  | WHILE ext_attributes seq_expr DO GOSPELSPEC* seq_expr DONE
+      { let desc, _ = $2 in
+        let mk_attr_gospel attr =
+          let s, loc = attr in
+          let loc = Location.{loc with loc_start={loc.loc_start
+                                  with pos_cnum=loc.loc_start.pos_cnum+3}} in
+          Attr.mk ~loc {txt=gospel;loc} (PGospel s) in
+        let attr_gospel = List.map mk_attr_gospel $5 in
+        Pexp_while($3, $6), (desc, attr_gospel) }
   | FOR ext_attributes pattern EQUAL seq_expr direction_flag seq_expr DO
-    seq_expr DONE
-      { Pexp_for($3, $5, $7, $6, $9), $2 }
+    g_spec = GOSPELSPEC* seq_expr DONE
+      { let desc, _ = $2 in
+        let mk_attr_gospel attr =
+          let s, loc = attr in
+          let loc = Location.{loc with loc_start={loc.loc_start
+                                  with pos_cnum=loc.loc_start.pos_cnum+3}} in
+          Attr.mk ~loc {txt=gospel;loc} (PGospel s) in
+        let attr_gospel = List.map mk_attr_gospel g_spec in
+        Pexp_for($3, $5, $7, $6, $10), (desc, attr_gospel) }
   | ASSERT ext_attributes simple_expr %prec below_HASH
       { Pexp_assert $3, $2 }
   | LAZY ext_attributes simple_expr %prec below_HASH

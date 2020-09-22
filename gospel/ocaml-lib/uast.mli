@@ -143,6 +143,11 @@ type fun_spec = {
   fun_coer    : bool;
 }
 
+type loop_spec = {
+  loop_invariant : invariant;
+  loop_variant   : term list;
+}
+
 (* type param  = Location.t * preid * pty *)
 type function_ = {
   fun_name    : preid;
@@ -368,11 +373,11 @@ and s_expression_desc =
         (* if E1 then E2 else E3 *)
   | Sexp_sequence of s_expression * s_expression
         (* E1; E2 *)
-  | Sexp_while of s_expression * s_expression
+  | Sexp_while of s_expression * s_expression * loop_spec
         (* while E1 do E2 done *)
   | Sexp_for of
       Oparsetree.pattern * s_expression * s_expression * direction_flag *
-      s_expression
+      s_expression * loop_spec (* TODO: we do not need the variant *)
         (* for i = E1 to E2 do E3 done      (flag = Upto)
            for i = E1 downto E2 do E3 done  (flag = Downto)
          *)

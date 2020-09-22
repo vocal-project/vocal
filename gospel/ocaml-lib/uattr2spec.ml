@@ -69,7 +69,7 @@ let () =
    parser. Raises Syntax_error if syntax errors are found, and
    Ghost_decl if a signature starts with VAL or TYPE: in this case,
    the OCaml parser should be used to parse the signature. *)
-let parse_gospel attr =
+let prepare_lb attr =
   let spec,loc = get_attr_content attr in
   let lb = Lexing.from_string spec in
   let open Location in
@@ -77,11 +77,22 @@ let parse_gospel attr =
   init lb loc.loc_start.pos_fname;
   lb.lex_curr_p  <- loc.loc_start;
   lb.lex_abs_pos <- loc.loc_start.pos_cnum;
+  lb
+
+let parse_gospel attr =
+  let lb = prepare_lb attr in
   try Uparser.spec_init Ulexer.token lb with
     Uparser.Error -> begin
       let loc_start,loc_end = lb.lex_start_p, lb.lex_curr_p in
       let loc = Location.{loc_start; loc_end; loc_ghost=false}  in
       raise (Syntax_error loc) end
+
+let parse_loop_spec attr =
+  let lb = prepare_lb attr in
+  try Uparser.loop_spec Ulexer.token lb with Uparser.Error -> begin
+    let loc_start,loc_end = lb.lex_start_p, lb.lex_curr_p in
+    let loc = Location.{loc_start; loc_end; loc_ghost=false}  in
+    raise (Syntax_error loc) end
 
 (** Calls the OCaml interface parser on the content of the
    attribute. It fails if the OCaml parser parses something that is
@@ -445,7 +456,7 @@ let rec s_expression expr =
     | Pexp_function case_list ->
         Sexp_function (List.map case case_list)
     | Pexp_fun (arg, expr_arg, pat, expr_body) ->
-        let spec, _ = split_attr expr.pexp_attributes in
+        let spec, _ = split_attr attributes in
         let spec = List.map attr2spec spec in
         let val_spec = match spec with
           | Sfunc_spec (x, _) :: _ -> Some x | _ -> None in
@@ -479,11 +490,20 @@ let rec s_expression expr =
     | Pexp_sequence (expr1, expr2) ->
         Sexp_sequence (s_expression expr1, s_expression expr2)
     | Pexp_while (expr1, expr2) ->
-        Sexp_while (s_expression expr1, s_expression expr2)
+        let spec = List.map parse_loop_spec attributes in
+        let mk_spec acc s = Uast_utils.loop_spec_union acc s in
+        let empty_spec = Uast_utils.empty_loop_spec in
+        let while_spec = List.fold_left mk_spec empty_spec spec in
+        Sexp_while (s_expression expr1, s_expression expr2, while_spec)
     | Pexp_for (pat, expr1, expr2, direction_flag, expr3) ->
         let expr1 = s_expression expr1 and expr2 = s_expression expr2 in
         let expr3 = s_expression expr3 in
-        Sexp_for (pat, expr1, expr2, direction_flag, expr3)
+        (* TODO: avoid all of this code duplication *)
+        let spec = List.map parse_loop_spec attributes in
+        let mk_spec acc s = Uast_utils.loop_spec_union acc s in
+        let empty_spec = Uast_utils.empty_loop_spec in
+        let loop_spec = List.fold_left mk_spec empty_spec spec in
+        Sexp_for (pat, expr1, expr2, direction_flag, expr3, loop_spec)
     | Pexp_constraint (expr, core_type) ->
         Sexp_constraint (s_expression expr, core_type)
     | Pexp_coerce (expr, core_ty_left, core_ty_right) ->

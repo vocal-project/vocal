@@ -138,6 +138,7 @@
 %left BAR
 
 %start <Uast.spec> spec_init
+%start <Uast.loop_spec> loop_spec
 
 %%
 
@@ -276,6 +277,17 @@ val_spec_body:
     { { bd with sp_equiv = e :: bd.sp_equiv} }
 ;
 
+loop_spec: _loop_spec EOF
+  { let inv, var = $1 in
+    { loop_invariant = inv; loop_variant = var } }
+
+_loop_spec:
+| (* epsilon *)
+    { [], [] }
+| INVARIANT t = term _loop_spec
+    { let inv, var = $3 in t :: inv, var }
+| VARIANT   t = term _loop_spec
+    { let inv, var = $3 in inv, t :: var }
 
 fun_arg:
 | LEFTPAR RIGHTPAR
