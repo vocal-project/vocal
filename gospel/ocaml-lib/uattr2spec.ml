@@ -426,6 +426,10 @@ let rec floating_specs_str = function
       let fspec = floating_specs_str xs in
       mk_s_structure_item (Str_ghost_open open_desc) ~loc :: fspec
 
+let get_spec_attrs_str attrs =
+  let specs,attrs = split_attr attrs in
+  attrs, floating_specs_str (List.map attr2spec specs)
+
 let mk_s_expression spexp_desc spexp_loc spexp_loc_stack spexp_attributes =
   { spexp_desc; spexp_loc; spexp_loc_stack; spexp_attributes }
 
@@ -590,7 +594,10 @@ and structure_item str_item =
       let s_mod_type, _ = module_type_declaration mod_type_decl in
       [mk_s_structure_item (Str_modtype s_mod_type) ~loc]
   | Pstr_exception ty_exn ->
-      [mk_s_structure_item (Str_exception ty_exn) ~loc]
+      let attrs, specs = get_spec_attrs_str ty_exn.ptyexn_attributes in
+      let ty_exn = { ty_exn with ptyexn_attributes = attrs } in
+      let str_desc = mk_s_structure_item (Str_exception ty_exn) ~loc in
+      List.rev (str_desc :: specs)
   | _ -> assert false (* TODO *)
 
 and s_value_binding vb_list =
