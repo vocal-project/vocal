@@ -421,12 +421,15 @@ let function_ (T.{fun_ls = Tt.{ls_name; ls_value}} as f) =
   let term = Opt.map term f.T.fun_def in
   Dlogic [mk_logic_decl loc id params pty term]
 
+let prop_kind = function T.Plemma -> Decl.Plemma | T.Paxiom -> Decl.Paxiom
+
 (** Convert GOSPEL axioms into Why3's Ptree axioms. *)
-let axiom T.{ax_name; ax_term} =
-  let id_loc = location ax_name.I.id_loc in
-  let id = mk_id ax_name.I.id_str ~id_loc in
-  let term = term ax_term in
-  Dprop (Decl.Paxiom, id, term)
+let prop T.{prop_name; prop_term; prop_kind = p_kind; _} =
+  let id_loc = location prop_name.I.id_loc in
+  let id = mk_id prop_name.I.id_str ~id_loc in
+  let term = term prop_term in
+  let kind = prop_kind p_kind in
+  Dprop (kind, id, term)
 
 (** Convert GOSPEL exceptions into Why3's Ptree exceptions. *)
 let exn T.{exn_constructor = {ext_ident; ext_xs}; exn_loc} =
@@ -518,8 +521,8 @@ let signature =
         assert false (*TODO*)
     | T.Sig_function f ->
         [Gdecl (function_ f)]
-    | T.Sig_axiom ax ->
-        [Gdecl (axiom ax)] (*TODO*)
+    | T.Sig_prop ax ->
+        [Gdecl (prop ax)] (*TODO*)
 
   and signature s = List.map signature_item s in
   signature

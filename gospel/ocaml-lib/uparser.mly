@@ -90,7 +90,7 @@
 
 (* keywords *)
 
-%token AXIOM (* CONSTANT *)
+%token AXIOM LEMMA (* CONSTANT *)
 %token EPHEMERAL ELSE EXISTS FALSE FORALL FUNCTION FUN
 %token REC
 %token INVARIANT
@@ -147,16 +147,19 @@ spec_init:
 | val_spec EOF       { Sval ($1, mk_loc $startpos $endpos) }
 | func EOF           { Sfunction ($1, mk_loc $startpos $endpos)}
 (* | func_spec EOF      { Sfunc_spec (rev_fspec $1, mk_loc $startpos $endpos)} *)
-| axiom EOF          { Saxiom ($1, mk_loc $startpos $endpos)}
+| prop EOF          { Sprop ($1, mk_loc $startpos $endpos)}
 | VAL                { raise Ghost_decl }
 | TYPE               { raise Ghost_decl }
 | OPEN               { raise Ghost_decl }
 ;
 
-axiom:
+prop:
 | AXIOM id=lident COLON t=term
-  { {ax_name = id; ax_term = t;
-     ax_loc = mk_loc $startpos $endpos} }
+  { {prop_name = id; prop_term = t;
+     prop_loc = mk_loc $startpos $endpos; prop_kind = Paxiom} }
+| LEMMA id=lident COLON t=term
+  { {prop_name = id; prop_term = t;
+     prop_loc = mk_loc $startpos $endpos; prop_kind = Plemma} }
 ;
 
 func:

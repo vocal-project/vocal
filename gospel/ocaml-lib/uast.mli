@@ -159,10 +159,13 @@ type function_ = {
   fun_loc     : Location.t;
 }
 
-type axiom = {
-  ax_name : preid;
-  ax_term : term;
-  ax_loc  : Location.t
+type prop_kind = Plemma | Paxiom
+
+type prop = {
+  prop_name : preid;
+  prop_term : term;
+  prop_loc  : Location.t;
+  prop_kind : prop_kind;
 }
 
 type spec =
@@ -170,7 +173,7 @@ type spec =
   | Sval        of val_spec * Location.t
   | Sfunction   of function_ * Location.t
   | Sfunc_spec  of fun_spec * Location.t
-  | Saxiom      of axiom * Location.t
+  | Sprop       of prop * Location.t
   | Stype_ghost of rec_flag * type_declaration list * Location.t
   | Sval_ghost  of value_description * Location.t
   | Sopen_ghost of open_description  * Location.t
@@ -249,7 +252,7 @@ type s_signature_item_desc =
         (* [%%id] *)
   (* Specific to specification *)
   | Sig_function of function_
-  | Sig_axiom of axiom
+  | Sig_prop of prop
   | Sig_ghost_type  of rec_flag * s_type_declaration list
   | Sig_ghost_val   of s_val_description
   | Sig_ghost_open  of open_description
@@ -500,7 +503,7 @@ and s_structure_item_desc =
         (* [%%id] *)
   (* Specific to specification *)
   | Str_function of function_
-  | Str_axiom of axiom
+  | Str_prop of prop
   | Str_ghost_type of rec_flag * s_type_declaration list
   | Str_ghost_val  of s_val_description
   | Str_ghost_open of open_description

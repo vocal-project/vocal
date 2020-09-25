@@ -220,8 +220,8 @@ let rec floating_specs = function
                      f.fun_spec fun_specs in
      let f = {f with fun_spec = fun_specs } in
      {sdesc=Sig_function f;sloc} :: floating_specs xs
-  | Saxiom (a,sloc) :: xs ->
-     {sdesc=Sig_axiom a;sloc} :: floating_specs xs
+  | Sprop (p,sloc) :: xs ->
+     {sdesc=Sig_prop p;sloc} :: floating_specs xs
   | Stype_ghost (r,td,sloc) :: xs ->
      (* Look forward and get floating type specification *)
      let tspecs,xs = split_at_f is_type_spec xs in
@@ -409,8 +409,8 @@ let rec floating_specs_str = function
       mk_s_structure_item (Str_function f) ~loc :: floating_specs_str xs
   | Sfunc_spec (_, loc) :: _ ->
       raise (Orphan_decl_spec loc)
-  | Saxiom (a, loc) :: xs ->
-      mk_s_structure_item (Str_axiom a) ~loc :: floating_specs_str xs
+  | Sprop (prop, loc) :: xs ->
+      mk_s_structure_item (Str_prop prop) ~loc :: floating_specs_str xs
   | Stype_ghost (rec_flag, type_decl, loc) :: xs ->
       (* look forward for type specification *)
       let tspecs,xs = split_at_f is_type_spec xs in

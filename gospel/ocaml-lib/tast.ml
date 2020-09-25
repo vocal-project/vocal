@@ -180,18 +180,22 @@ let type_declaration td_ts td_params td_cstrs td_kind td_private
   {td_ts; td_params; td_cstrs; td_kind; td_private;
    td_manifest; td_attrs; td_spec; td_loc}
 
-type axiom = {
-    ax_name : ident;
-    ax_term : term;
-    ax_loc  : Location.t;
+type prop_kind = Plemma | Paxiom
+
+type prop = {
+    prop_name : ident;
+    prop_term : term;
+    prop_loc  : Location.t;
+    prop_kind : prop_kind;
 }
 
-let axiom id t l =
-  {ax_name = id; ax_term = t; ax_loc = l}
+let prop id t l k =
+  let k = match k with Uast.Plemma -> Plemma | _ -> Paxiom in
+  {prop_name = id; prop_term = t; prop_loc = l; prop_kind = k}
 
-let mk_axiom id t l =
+let mk_prop id t l k =
   t_ty_check t None;
-  axiom id t l
+  prop id t l k
 
 type fun_spec = {
   fun_req     : term list;
@@ -357,7 +361,7 @@ and signature_item_desc =
   (* Specific to specification *)
   | Sig_use of string
   | Sig_function of function_
-  | Sig_axiom of axiom
+  | Sig_prop of prop
 
 and module_declaration = {
     md_name  : ident;
@@ -447,7 +451,7 @@ and t_structure_item_desc =
         (* [%%id] *)
   (* Specific to specification *)
   | TStr_function of function_
-  | TStr_axiom of axiom
+  | TStr_axiom of prop
   | TStr_use of string
   (* TODO: convert the following constructors to correspondent nodes in TAST *)
   (* | Str_ghost_type of rec_flag * s_type_declaration list
@@ -742,8 +746,10 @@ let rec print_signature_item f x =
       item_extension reset_ctxt f e;
       item_attributes reset_ctxt f a
   | Sig_function x -> print_function f x
-  | Sig_axiom x -> pp f "(*@@ axiom %a: %a *)"
-                     print_ident x.ax_name print_term x.ax_term
+  | Sig_prop x ->
+      pp f "(*@@ %s %a: %a *)"
+        (if x.prop_kind = Plemma then "lemma" else "axiom")
+        print_ident x.prop_name print_term x.prop_term
   | Sig_use s -> pp f "(*@@ use %s *)" s
   | _ -> assert false
 

@@ -43,6 +43,7 @@
       [
         "as", AS;
         "axiom", AXIOM;
+        "lemma", LEMMA;
         "coercion", COERCION;
         "else", ELSE;
         "exists", EXISTS;

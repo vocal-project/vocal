@@ -173,9 +173,10 @@ let function_ f x =
   in
   spec func f x
 
-let axiom f x =
-  let axiom f x = pp f "@[axiom ...@]" in
-  spec axiom f x
+let prop f x =
+  let prop f x =
+    pp f "@[%s ...@]" (if x.prop_kind = Plemma then "lemma" else "axiom") in
+  spec prop f x
 
 let rec s_signature_item f x=
   let s_val_description f vd =
@@ -261,7 +262,7 @@ let rec s_signature_item f x=
       item_extension reset_ctxt f e;
       item_attributes reset_ctxt f a
   | Sig_function x -> function_ f x
-  | Sig_axiom x -> axiom f x
+  | Sig_prop x -> prop f x
   | Sig_ghost_type  (rf,l) ->
      pp f "@[%a@]"
        (spec s_type_declaration_rec_flag) (rf,l)

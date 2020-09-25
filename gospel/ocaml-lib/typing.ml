@@ -699,11 +699,11 @@ let process_function kid crcm ns f =
   let f = mk_function ?result ls f.fun_rec params def spec f.fun_loc in
   mk_sig_item (Sig_function f) f.fun_loc
 
-let process_axiom loc kid crcm ns a =
-  let id = id_register a.Uast.ax_name in
-  let t  = fmla kid crcm ns Mstr.empty a.Uast.ax_term in
-  let ax = mk_axiom id t a.ax_loc in
-  mk_sig_item (Sig_axiom ax) loc
+let process_prop loc kid crcm ns a =
+  let id = id_register a.Uast.prop_name in
+  let t  = fmla kid crcm ns Mstr.empty a.Uast.prop_term in
+  let prop = mk_prop id t a.prop_loc a.prop_kind in
+  mk_sig_item (Sig_prop prop) loc
 
 let process_exception_sig loc ns te =
   let ec = te.Oparsetree.ptyexn_constructor in
@@ -914,7 +914,7 @@ and process_sig_item penv muc {sdesc;sloc} =
     | Uast.Sig_attribute a     -> muc, mk_sig_item (Sig_attribute a) sloc
     | Uast.Sig_extension (e,a) -> muc, mk_sig_item (Sig_extension (e,a)) sloc
     | Uast.Sig_function f      -> muc, process_function kid crcm ns f
-    | Uast.Sig_axiom a         -> muc, process_axiom sloc kid crcm ns a
+    | Uast.Sig_prop prop       -> muc, process_prop sloc kid crcm ns prop
     | Uast.Sig_ghost_type (r,tdl) ->
        muc, process_sig_type ~loc:sloc ~ghost:true kid crcm ns r tdl
     | Uast.Sig_ghost_val vd    ->
@@ -981,7 +981,7 @@ let rec process_str_item penv muc {sstr_desc; sstr_loc} =
         (* [%%id] *)
   (* Specific to specification *)
     | Str_function _ -> assert false (* TODO *)
-    | Str_axiom _ -> assert false (* TODO *)
+    | Str_prop _ -> assert false (* TODO *)
     | Str_ghost_type _ -> assert false (* TODO *)
     | Str_ghost_val _ -> assert false (* TODO *)
     | Str_ghost_open _ -> assert false (* TODO *) in
