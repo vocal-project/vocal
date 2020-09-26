@@ -348,7 +348,7 @@ and signature_item_desc =
         (* exception C of T *)
   | Sig_open of open_description * ghost
         (* open X *)
-  | Sig_include of Oparsetree.include_description
+  | Sig_include of Uast.s_include_description
         (* include MT *)
   | Sig_class of Oparsetree.class_description list
         (* class c1 : ... and ... and cn : ... *)
@@ -711,9 +711,10 @@ let rec print_signature_item f x =
         (list ~sep:"." Format.pp_print_string) od.opn_id
         (item_attributes reset_ctxt) od.opn_attrs
   | Sig_include incl ->
-      pp f "@[<hov2>include@ %a@]%a"
-        (module_type reset_ctxt) incl.pincl_mod
-        (item_attributes reset_ctxt) incl.pincl_attributes
+      assert false (* TODO *)
+      (* pp f "@[<hov2>include@ %a@]%a"
+       *   (module_type reset_ctxt) incl.pincl_mod
+       *   (item_attributes reset_ctxt) incl.pincl_attributes *)
   | Sig_modtype {mtd_name=s; mtd_type=md; mtd_attrs=attrs} ->
       pp f "@[<hov2>module@ type@ %a%a@]%a"
         print_ident s

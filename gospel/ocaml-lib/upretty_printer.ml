@@ -223,13 +223,13 @@ let rec s_signature_item f x=
   | Sig_module pmd ->
       pp f "@[<hov>module@ %s@ :@ %a@]%a"
         pmd.mdname.txt
-        s_module_type pmd.mdtype
+        s_module_type1 pmd.mdtype
         (item_attributes reset_ctxt) pmd.mdattributes
   | Sig_open od -> print_open f od
   | Sig_include incl ->
       pp f "@[<hov2>include@ %a@]%a"
-        (module_type reset_ctxt) incl.pincl_mod
-        (item_attributes reset_ctxt) incl.pincl_attributes
+        (s_module_type reset_ctxt) incl.spincl_mod
+        (item_attributes reset_ctxt) incl.spincl_attributes
   | Sig_modtype {mtdname=s; mtdtype=md; mtdattributes=attrs} ->
       pp f "@[<hov2>module@ type@ %s%a@]%a"
         s.txt
@@ -237,7 +237,7 @@ let rec s_signature_item f x=
            | None -> ()
            | Some mt ->
                Format.pp_print_space f () ;
-               pp f "@ =@ %a" s_module_type mt
+               pp f "@ =@ %a" s_module_type1 mt
         ) md
         (item_attributes reset_ctxt) attrs
   | Sig_class_type (l) -> class_type_declaration_list reset_ctxt f l
@@ -272,44 +272,45 @@ let rec s_signature_item f x=
 and s_signature f x = list ~sep:"@\n@\n" s_signature_item f x
 
 and s_module_type f x =
-  if x.mattributes <> [] then begin
-    pp f "((%a)%a)" s_module_type {x with mattributes=[]}
-      (attributes reset_ctxt) x.mattributes
-  end else
-    match x.mdesc with
-    | Mod_functor (_, None, mt2) ->
-        pp f "@[<hov2>functor () ->@ %a@]" s_module_type mt2
-    | Mod_functor (s, Some mt1, mt2) ->
-        if s.txt = "_" then
-          pp f "@[<hov2>%a@ ->@ %a@]"
-            s_module_type1 mt1 s_module_type mt2
-        else
-          pp f "@[<hov2>functor@ (%s@ :@ %a)@ ->@ %a@]" s.txt
-            s_module_type mt1 s_module_type mt2
-    | Mod_with (mt, []) -> s_module_type f mt
-    | Mod_with (mt, l) ->
-        let with_constraint f = function
-          | Wtype (li, ({tparams= ls ;_} as td)) ->
-              let ls = List.map fst ls in
-              pp f "type@ %a %a =@ %a"
-                (list core_type ~sep:"," ~first:"(" ~last:")")
-                ls longident_loc li s_type_declaration td
-          | Wmodule (li, li2) ->
-              pp f "module %a =@ %a" longident_loc li longident_loc li2;
-          | Wtypesubst (li, ({tparams=ls;_} as td)) ->
-              let ls = List.map fst ls in
-              pp f "type@ %a %a :=@ %a"
-                (list core_type ~sep:"," ~first:"(" ~last:")")
-                ls longident_loc li
-                s_type_declaration td
-          | Wmodsubst (li, li2) ->
-             pp f "module %a :=@ %a" longident_loc li longident_loc li2 in
-        pp f "@[<hov2>%a@ with@ %a@]"
-          s_module_type1 mt (list with_constraint ~sep:"@ and@ ") l
-    | _ -> s_module_type1 f x
+  assert false (* TODO *)
+  (* if x.mattributes <> [] then begin
+   *   pp f "((%a)%a)" module_type {x with mattributes=[]}
+   *     (attributes reset_ctxt) x.mattributes
+   * end else
+   *   match x.mdesc with
+   *   | Mod_functor (_, None, mt2) ->
+   *       pp f "@[<hov2>functor () ->@ %a@]" s_module_type mt2
+   *   | Mod_functor (s, Some mt1, mt2) ->
+   *       if s.txt = "_" then
+   *         pp f "@[<hov2>%a@ ->@ %a@]"
+   *           s_module_type1 mt1 s_module_type mt2
+   *       else
+   *         pp f "@[<hov2>functor@ (%s@ :@ %a)@ ->@ %a@]" s.txt
+   *           s_module_type mt1 s_module_type mt2
+   *   | Mod_with (mt, []) -> s_module_type f mt
+   *   | Mod_with (mt, l) ->
+   *       let with_constraint f = function
+   *         | Wtype (li, ({tparams= ls ;_} as td)) ->
+   *             let ls = List.map fst ls in
+   *             pp f "type@ %a %a =@ %a"
+   *               (list core_type ~sep:"," ~first:"(" ~last:")")
+   *               ls longident_loc li s_type_declaration td
+   *         | Wmodule (li, li2) ->
+   *             pp f "module %a =@ %a" longident_loc li longident_loc li2;
+   *         | Wtypesubst (li, ({tparams=ls;_} as td)) ->
+   *             let ls = List.map fst ls in
+   *             pp f "type@ %a %a :=@ %a"
+   *               (list core_type ~sep:"," ~first:"(" ~last:")")
+   *               ls longident_loc li
+   *               s_type_declaration td
+   *         | Wmodsubst (li, li2) ->
+   *            pp f "module %a :=@ %a" longident_loc li longident_loc li2 in
+   *       pp f "@[<hov2>%a@ with@ %a@]"
+   *         s_module_type1 mt (list with_constraint ~sep:"@ and@ ") l
+   *   | _ -> s_module_type1 f x *)
 
 and s_module_type1 f x =
-  if x.mattributes <> [] then s_module_type f x
+  if x.mattributes <> [] then (* s_module_type f x *) assert false (* TODO *)
   else match x.mdesc with
     | Mod_ident li ->
         pp f "%a" longident_loc li;
@@ -319,9 +320,37 @@ and s_module_type1 f x =
         pp f "@[<hv0>@[<hv2>sig@ %a@]@ end@]" (* "@[<hov>sig@ %a@ end@]" *)
           (list s_signature_item) s (* FIXME wrong indentation*)
     | Mod_typeof me ->
-        pp f "@[<hov2>module@ type@ of@ %a@]" (module_expr reset_ctxt) me
+        pp f "@[<hov2>module@ type@ of@ %a@]" (s_module_expr reset_ctxt) me
     | Mod_extension e -> extension reset_ctxt f e
-    | _ -> paren true s_module_type f x
+    | _ -> assert false (* TODO *)(* paren true s_module_type f x *)
+
+and s_module_expr ctxt f x =
+  assert false (* TODO *)
+  (* if x.spmod_attributes <> [] then
+   *   pp f "((%a)%a)" (module_expr ctxt) {x with pmod_attributes=[]}
+   *     (attributes ctxt) x.spmod_attributes
+   * else match x.spmod_desc with
+   *   | Smod_structure (_s) ->
+   *       (\* pp f "@[<hv2>struct@;@[<0>%a@]@;<1 -2>end@]"
+   *        *   (list (structure_item) ~sep:"@\n") s; *\)
+   *       assert false (\* TODO *\)
+   *   | Smod_constraint (me, mt) ->
+   *       pp f "@[<hov2>(%a@ :@ %a)@]"
+   *         (module_expr ctxt) me
+   *         (module_type ctxt) mt
+   *   | Smod_ident (li) ->
+   *       pp f "%a" longident_loc li;
+   *   | Smod_functor (_, None, me) ->
+   *       pp f "functor ()@;->@;%a" (module_expr ctxt) me
+   *   | Smod_functor (s, Some mt, me) ->
+   *       pp f "functor@ (%s@ :@ %a)@;->@;%a"
+   *         s.txt (module_type ctxt) mt (module_expr ctxt) me
+   *   | Smod_apply (me1, me2) ->
+   *       pp f "(%a)(%a)" (module_expr ctxt) me1 (module_expr ctxt) me2
+   *       (\* Cf: #7200 *\)
+   *   | Smod_unpack e ->
+   *       pp f "(val@ %a)" (expression ctxt) e
+   *   | Smod_extension e -> extension ctxt f e *)
 
 let s_expression _e = assert false (* TODO *)
 

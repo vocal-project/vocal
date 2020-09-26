@@ -329,10 +329,13 @@ let rec signature_ sigs acc prev_floats = match sigs with
           uns_gospel.open_description uns_gospel o;
           {sdesc=Sig_open o;sloc} :: specs
        | Psig_include i ->
-          let attrs,specs = get_spec_attrs i.pincl_attributes in
-          let i = {i with pincl_attributes = attrs} in
-          uns_gospel.include_description uns_gospel i;
-          [{sdesc=Sig_include i;sloc}]
+           let attrs,specs = get_spec_attrs i.pincl_attributes in
+           let i = {i with pincl_attributes = attrs} in
+           uns_gospel.include_description uns_gospel i;
+           let i = {spincl_attributes = attrs;
+                    spincl_loc = i.pincl_loc;
+                    spincl_mod = module_type i.pincl_mod; } in
+           [{sdesc=Sig_include i;sloc}]
        | Psig_class c ->
           let c,specs =
             List.fold_right (fun cd (cl,specl) ->
@@ -370,7 +373,8 @@ and module_type_desc m =
   | Pmty_with (m,c) ->
      Mod_with (module_type m, List.map with_constraint c)
   | Pmty_typeof m ->
-     uns_gospel.module_expr uns_gospel m; Mod_typeof m
+      uns_gospel.module_expr uns_gospel m;
+      let m = s_module_expr m in Mod_typeof m
   | Pmty_extension e -> Mod_extension e
   | Pmty_alias a -> Mod_alias a
 
@@ -392,10 +396,10 @@ and module_type_declaration m =
               mtdattributes = attrs; mtdloc = m.pmtd_loc} in
   mtd, specs
 
-let mk_s_structure_item ~loc sstr_desc =
+and mk_s_structure_item ~loc sstr_desc =
   { sstr_desc; sstr_loc = loc }
 
-let rec floating_specs_str = function
+and floating_specs_str = function
   | [] -> []
   | Stype _ :: _ -> assert false (* TODO *)
   | Sval _ :: _ -> assert false (* TODO *)
@@ -426,17 +430,17 @@ let rec floating_specs_str = function
       let fspec = floating_specs_str xs in
       mk_s_structure_item (Str_ghost_open open_desc) ~loc :: fspec
 
-let get_spec_attrs_str attrs =
+and get_spec_attrs_str attrs =
   let specs,attrs = split_attr attrs in
   attrs, floating_specs_str (List.map attr2spec specs)
 
-let mk_s_expression spexp_desc spexp_loc spexp_loc_stack spexp_attributes =
+and mk_s_expression spexp_desc spexp_loc spexp_loc_stack spexp_attributes =
   { spexp_desc; spexp_loc; spexp_loc_stack; spexp_attributes }
 
-let mk_s_module_expr spmod_desc spmod_loc spmod_attributes =
+and mk_s_module_expr spmod_desc spmod_loc spmod_attributes =
   { spmod_desc; spmod_loc; spmod_attributes }
 
-let rec s_expression expr =
+and s_expression expr =
   let loc = expr.pexp_loc in
   let loc_stack = expr.pexp_loc_stack in
   let attributes = expr.pexp_attributes in

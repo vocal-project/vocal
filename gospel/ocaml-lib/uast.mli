@@ -240,7 +240,7 @@ type s_signature_item_desc =
         (* exception C of T *)
   | Sig_open of open_description
         (* open X *)
-  | Sig_include of include_description
+  | Sig_include of s_include_description
         (* include MT *)
   | Sig_class of class_description list
         (* class c1 : ... and ... and cn : ... *)
@@ -274,12 +274,19 @@ and s_module_type_desc =
         (* functor(X : MT1) -> MT2 *)
   | Mod_with of s_module_type * s_with_constraint list
         (* MT with ... *)
-  | Mod_typeof of module_expr
+  | Mod_typeof of s_module_expr
         (* module type of ME *)
   | Mod_extension of extension
         (* [%id] *)
   | Mod_alias of Longident.t loc
         (* (module M) *)
+
+and s_module_expr =
+  {
+    spmod_desc: s_module_expr_desc;
+    spmod_loc: Location.t;
+    spmod_attributes: attributes; (* ... [@id1] [@id2] *)
+  }
 
 and s_module_type =
   {
@@ -302,7 +309,20 @@ and s_module_type_declaration = {
   mtdloc        : Location.t;
 }
 
-type s_expression = {
+and 'a s_include_infos =
+  {
+    spincl_mod: 'a;
+    spincl_loc: Location.t;
+    spincl_attributes: attributes;
+  }
+
+and s_include_description = s_module_type s_include_infos
+(* include MT *)
+
+and s_include_declaration = s_module_expr s_include_infos
+(* include ME *)
+
+and s_expression = {
   spexp_desc: s_expression_desc;
   spexp_loc: Location.t;
   spexp_loc_stack: Location.t list;
@@ -435,12 +455,6 @@ and s_case = {   (* (P -> E) or (P when E0 -> E) *)
   spc_lhs: Oparsetree.pattern;
   spc_guard: s_expression option;
   spc_rhs: s_expression;
-}
-
-and s_module_expr = {
-  spmod_desc: s_module_expr_desc;
-  spmod_loc: Location.t;
-  spmod_attributes: attributes; (* ... [@id1] [@id2] *)
 }
 
 and s_module_expr_desc =
