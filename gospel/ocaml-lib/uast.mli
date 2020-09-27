@@ -214,7 +214,7 @@ type s_with_constraint =
   | Wmodule of Longident.t loc * Longident.t loc
         (* with module X.Y = Z *)
   | Wtypesubst of Longident.t loc * s_type_declaration
-        (* with type X.t := ..., same format as [Pwith_type] *)
+        (* with type X.t := ..., same format as [With_type] *)
   | Wmodsubst of Longident.t loc * Longident.t loc
         (* with module X.Y := Z *)
 
@@ -281,19 +281,17 @@ and s_module_type_desc =
   | Mod_alias of Longident.t loc
         (* (module M) *)
 
-and s_module_expr =
-  {
-    spmod_desc: s_module_expr_desc;
-    spmod_loc: Location.t;
-    spmod_attributes: attributes; (* ... [@id1] [@id2] *)
-  }
+and s_module_expr = {
+  spmod_desc: s_module_expr_desc;
+  spmod_loc: Location.t;
+  spmod_attributes: attributes; (* ... [@id1] [@id2] *)
+}
 
-and s_module_type =
-  {
-    mdesc       : s_module_type_desc;
-    mloc        : Location.t;
-    mattributes : attributes; (* ... [@id1] [@id2] *)
-  }
+and s_module_type = {
+  mdesc       : s_module_type_desc;
+  mloc        : Location.t;
+  mattributes : attributes; (* ... [@id1] [@id2] *)
+}
 
 and s_module_declaration = {
   mdname       : string loc;
