@@ -189,6 +189,8 @@ rule token = parse
       { BAR }
   | "="
       { EQUAL }
+  | ":="
+      { COLONEQUAL }
   | "<>"
       { LTGT }
   | "'" (lident as id)

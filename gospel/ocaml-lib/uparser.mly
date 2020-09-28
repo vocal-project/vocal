@@ -71,6 +71,20 @@
       ty_invariant = [];
     }
 
+  let empty_constr_spec = {
+      constr_type_sharing  = [];
+      constr_type_destruct = [];
+      constr_fun_sharing   = [];
+      constr_fun_destruct  = [];
+    }
+
+  let union_constr_spec s1 s2 = {
+      constr_type_sharing  = s1.constr_type_sharing  @ s2.constr_type_sharing;
+      constr_type_destruct = s1.constr_type_destruct @ s2.constr_type_destruct;
+      constr_fun_sharing   = s1.constr_fun_sharing   @ s2.constr_fun_sharing;
+      constr_fun_destruct  = s1.constr_fun_destruct  @ s2.constr_fun_destruct;
+    }
+
 %}
 
 (* Tokens *)
@@ -106,7 +120,7 @@
 (* symbols *)
 
 %token AND AMPAMP ARROW BAR BARBAR COLON COLONCOLON COMMA DOT DOTDOT
-%token EOF EQUAL
+%token EOF EQUAL COLONEQUAL
 %token MUTABLE MODEL
 %token LARROW LRARROW LEFTBRC LEFTBRCCOLON LEFTPAR LEFTBRCRIGHTBRC
 %token LEFTSQ LTGT OR QUESTION RIGHTBRC COLONRIGHTBRC RIGHTPAR RIGHTSQ SEMICOLON
@@ -143,14 +157,15 @@
 %%
 
 spec_init:
-| type_spec EOF      { Stype (rev_tspec $1, mk_loc $startpos $endpos) }
-| val_spec EOF       { Sval ($1, mk_loc $startpos $endpos) }
-| func EOF           { Sfunction ($1, mk_loc $startpos $endpos)}
+| type_spec EOF     { Stype (rev_tspec $1, mk_loc $startpos $endpos) }
+| val_spec EOF      { Sval ($1, mk_loc $startpos $endpos) }
+| func EOF          { Sfunction ($1, mk_loc $startpos $endpos)}
+| constrain EOF     { Sconstraint ($1, mk_loc $startpos $endpos) }
 (* | func_spec EOF      { Sfunc_spec (rev_fspec $1, mk_loc $startpos $endpos)} *)
 | prop EOF          { Sprop ($1, mk_loc $startpos $endpos)}
-| VAL                { raise Ghost_decl }
-| TYPE               { raise Ghost_decl }
-| OPEN               { raise Ghost_decl }
+| VAL               { raise Ghost_decl }
+| TYPE              { raise Ghost_decl }
+| OPEN              { raise Ghost_decl }
 ;
 
 prop:
@@ -340,6 +355,17 @@ param:
 cast:
 | COLON ty_arg  { $2 }
 ;
+
+constrain:
+| WITH single_constraint+
+    { let mk_constr acc c = union_constr_spec acc c in
+      List.fold_left mk_constr empty_constr_spec $2 }
+
+single_constraint:
+| FUNCTION idl = lident_rich EQUAL idr = lident_rich
+    { { empty_constr_spec with constr_fun_sharing = [(idl, idr)] } }
+| FUNCTION idl = lident_rich COLONEQUAL idr = lident_rich
+    { { empty_constr_spec with constr_fun_destruct = [(idl, idr)] } }
 
 term: t = mk_term(term_) { t }
 ;

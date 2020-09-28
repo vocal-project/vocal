@@ -148,6 +148,13 @@ type loop_spec = {
   loop_variant   : term list;
 }
 
+type constraint_spec = {
+  constr_type_sharing  : (preid * type_declaration) list;
+  constr_type_destruct : (preid * type_declaration) list;
+  constr_fun_sharing   : (preid * preid) list;
+  constr_fun_destruct  : (preid * preid) list;
+}
+
 (* type param  = Location.t * preid * pty *)
 type function_ = {
   fun_name    : preid;
@@ -177,6 +184,7 @@ type spec =
   | Stype_ghost of rec_flag * type_declaration list * Location.t
   | Sval_ghost  of value_description * Location.t
   | Sopen_ghost of open_description  * Location.t
+  | Sconstraint of constraint_spec * Location.t
 
 (* Modified OCaml constructs with specification attached *)
 
@@ -213,6 +221,8 @@ type s_with_constraint =
            the name of the type_declaration. *)
   | Wmodule of Longident.t loc * Longident.t loc
         (* with module X.Y = Z *)
+  | Wfunction of preid * preid
+        (* with function f = g *)
   | Wtypesubst of Longident.t loc * s_type_declaration
         (* with type X.t := ..., same format as [With_type] *)
   | Wmodsubst of Longident.t loc * Longident.t loc

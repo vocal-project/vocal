@@ -852,7 +852,8 @@ and process_modtype penv muc umty = match umty.mdesc with
        | Wmodule (_,_) ->
           not_supported ~loc:umty.mloc "with module clause not supported"
        | Wmodsubst (_,_) ->
-          not_supported ~loc:umty.mloc "with module clause not supported"
+           not_supported ~loc:umty.mloc "with module clause not supported"
+       | _ -> assert false (* TODO *)
      in
      let muc,cl = List.fold_left process_constraint (muc,[]) cl in
      let tmty = {mt_desc = Mod_with (tmty2,List.rev cl); mt_loc = umty.mloc;

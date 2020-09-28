@@ -20,9 +20,10 @@ let has_prefix ~prefix:p s =
   String.length s >= l && String.sub s 0 l = p
 
 let is_spec attr = has_prefix ~prefix:gospel attr.attr_name.txt
-let is_type_spec = function | Stype _ -> true | _ -> false
-let is_val_spec  = function | Sval _  -> true | _ -> false
-let is_func_spec = function | Sfunc_spec _ -> true | _ -> false
+let is_type_spec   = function Stype _ -> true | _ -> false
+let is_val_spec    = function Sval _  -> true | _ -> false
+let is_func_spec   = function Sfunc_spec _ -> true | _ -> false
+let is_constr_spec = function Sconstraint _ -> true | _ -> false
 
 let get_attr_content attr = match attr.attr_payload with
   | PGospel s -> s, attr.attr_loc | _ -> assert false
@@ -35,6 +36,9 @@ let get_val_spec = function
 
 let get_func_spec = function
   | Sfunc_spec (s,_) -> s | _ -> assert false
+
+let get_constraint_spec = function
+  | Sconstraint (s, _) -> s | _ -> assert false
 
 let split_attr attrs = List.partition is_spec attrs
 
@@ -54,6 +58,7 @@ let uns_gospel = unsupported_gospel
 exception Syntax_error of Location.t
 exception Floating_not_allowed of Location.t
 exception Orphan_decl_spec of Location.t
+exception Orphan_constr_spec of Location.t
 
 let () =
   Location.register_error_of_exn (function
@@ -62,6 +67,8 @@ let () =
       | Floating_not_allowed loc ->
          Some (Location.errorf ~loc "floating specification not allowed")
       | Orphan_decl_spec loc ->
+         Some (Location.errorf ~loc "orphan specification")
+      | Orphan_constr_spec loc ->
          Some (Location.errorf ~loc "orphan specification")
       | _ -> None )
 
@@ -251,6 +258,7 @@ let rec floating_specs = function
   | Stype (_,loc) :: _ -> raise (Orphan_decl_spec loc)
   | Sval (_,loc)  :: _ -> raise (Orphan_decl_spec loc)
   | Sfunc_spec (_,loc) :: _ -> raise (Orphan_decl_spec loc)
+  | Sconstraint (_, loc) :: _ -> raise (Orphan_constr_spec loc)
 
 (** Raises warning if specifications are found in inner attributes and
    simply creates a s_with_constraint. *)
@@ -268,7 +276,6 @@ let with_constraint c =
   | Pwith_module (l1,l2) -> Wmodule (l1,l2)
   | Pwith_typesubst (l,t) -> Wtypesubst (l,no_spec_type_decl t)
   | Pwith_modsubst (l1,l2) -> Wmodsubst (l1,l2)
-
 
 let get_spec_attrs attrs =
   let specs,attrs = split_attr attrs in
@@ -329,13 +336,9 @@ let rec signature_ sigs acc prev_floats = match sigs with
           uns_gospel.open_description uns_gospel o;
           {sdesc=Sig_open o;sloc} :: specs
        | Psig_include i ->
-           let attrs,specs = get_spec_attrs i.pincl_attributes in
-           let i = {i with pincl_attributes = attrs} in
-           uns_gospel.include_description uns_gospel i;
-           let i = {spincl_attributes = attrs;
-                    spincl_loc = i.pincl_loc;
-                    spincl_mod = module_type i.pincl_mod; } in
-           [{sdesc=Sig_include i;sloc}]
+           let inc_desc, specs = include_description i in
+           (* uns_gospel.include_description uns_gospel i; *)
+           {sdesc = Sig_include inc_desc;sloc} :: specs
        | Psig_class c ->
           let c,specs =
             List.fold_right (fun cd (cl,specl) ->
@@ -426,9 +429,31 @@ and floating_specs_str = function
       let sdesc = Str_ghost_type (rec_flag,td) in
       mk_s_structure_item sdesc ~loc :: floating_specs_str xs
   | Sval_ghost _ :: _ -> assert false (* TODO *)
+  | Sconstraint _ :: _ -> assert false (* TODO *)
   | Sopen_ghost (open_desc, loc) :: xs ->
       let fspec = floating_specs_str xs in
       mk_s_structure_item (Str_ghost_open open_desc) ~loc :: fspec
+
+and include_description {pincl_attributes; pincl_mod; pincl_loc} =
+  let mk_fun_constraint (idl, idr) = Wfunction (idl, idr) in
+  let constr_of_spec {constr_fun_sharing; _} =
+    List.map mk_fun_constraint constr_fun_sharing in
+  let spec, attrs = split_attr pincl_attributes in
+  let spec = List.map attr2spec spec in
+  let mod_ty = module_type pincl_mod in
+  let mk_incl spincl_mod spincl_loc spincl_attributes =
+    { spincl_mod; spincl_loc; spincl_attributes } in
+  match spec with
+  | [] -> mk_incl mod_ty pincl_loc attrs, []
+  | x::xs when is_constr_spec x ->
+      let constrs = constr_of_spec (get_constraint_spec x) in
+      let spincl_mod = match mod_ty.mdesc with
+      | Mod_with (md, constr_list) ->
+          { mod_ty with mdesc = Mod_with (md, constr_list @ constrs) }
+      | _ ->
+          { mod_ty with mdesc = Mod_with (mod_ty, constrs) } in
+      mk_incl spincl_mod pincl_loc attrs, floating_specs xs
+  | xs -> mk_incl mod_ty pincl_loc attrs, floating_specs xs
 
 and get_spec_attrs_str attrs =
   let specs,attrs = split_attr attrs in
