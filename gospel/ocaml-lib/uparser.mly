@@ -113,7 +113,7 @@
 %token OLD NOT RAISES (* READS *)
 %token THEN TRUE TYPE OPEN VAL MODIFIES EQUIVALENT CHECKS DIVERGES
 
-%token AS
+%token AS ANDW
 %token LET MATCH PREDICATE
 %token WITH
 
@@ -357,7 +357,7 @@ cast:
 ;
 
 constrain:
-| WITH single_constraint+
+| WITH and_list(single_constraint)
     { let mk_constr acc c = union_constr_spec acc c in
       List.fold_left mk_constr empty_constr_spec $2 }
 
@@ -762,6 +762,10 @@ semicolon_list1(X):
 
 star_list2(X):
 | X STAR separated_nonempty_list(STAR, X) { $1 :: $3 }
+;
+
+and_list(X):
+| separated_nonempty_list (ANDW, X) { $1 }
 ;
 
 located(X): X { $1, $startpos, $endpos }

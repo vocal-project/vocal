@@ -435,9 +435,14 @@ and floating_specs_str = function
       mk_s_structure_item (Str_ghost_open open_desc) ~loc :: fspec
 
 and include_description {pincl_attributes; pincl_mod; pincl_loc} =
-  let mk_fun_constraint (idl, idr) = Wfunction (idl, idr) in
-  let constr_of_spec {constr_fun_sharing; _} =
-    List.map mk_fun_constraint constr_fun_sharing in
+  let mk_c_fun (idl, idr) = Wfunction (idl, idr) in
+  let mk_c_fun_subst (idl, idr) = Wfunctionsubst (idl, idr) in
+  let constr_of_spec c =
+    let c_fun_shar = c.constr_fun_sharing in
+    let c_fun_dest = c.constr_fun_destruct in
+    let fun_shar_list = List.map mk_c_fun c_fun_shar in
+    let fun_dest_list = List.map mk_c_fun_subst c_fun_dest in
+    List.fold_left (fun acc a -> a :: acc) fun_shar_list fun_dest_list in
   let spec, attrs = split_attr pincl_attributes in
   let spec = List.map attr2spec spec in
   let mod_ty = module_type pincl_mod in

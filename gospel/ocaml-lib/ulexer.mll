@@ -54,6 +54,7 @@
         "in", IN;
         "invariant", INVARIANT;
         "let", LET;
+        "and", ANDW;
         "match", MATCH;
         "not", NOT;
         "open", OPEN;

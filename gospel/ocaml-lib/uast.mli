@@ -227,6 +227,8 @@ type s_with_constraint =
         (* with type X.t := ..., same format as [With_type] *)
   | Wmodsubst of Longident.t loc * Longident.t loc
         (* with module X.Y := Z *)
+  | Wfunctionsubst of preid * preid
+        (* with function f := g *)
 
 type s_signature_item_desc =
   | Sig_val of s_val_description
