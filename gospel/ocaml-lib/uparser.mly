@@ -76,6 +76,8 @@
       constr_type_destruct = [];
       constr_fun_sharing   = [];
       constr_fun_destruct  = [];
+      constr_goal          = [];
+      constr_axiom         = [];
     }
 
   let union_constr_spec s1 s2 = {
@@ -83,6 +85,8 @@
       constr_type_destruct = s1.constr_type_destruct @ s2.constr_type_destruct;
       constr_fun_sharing   = s1.constr_fun_sharing   @ s2.constr_fun_sharing;
       constr_fun_destruct  = s1.constr_fun_destruct  @ s2.constr_fun_destruct;
+      constr_goal          = s1.constr_goal          @ s2.constr_goal;
+      constr_axiom         = s1.constr_axiom         @ s2.constr_axiom;
     }
 
 %}
@@ -104,7 +108,7 @@
 
 (* keywords *)
 
-%token AXIOM LEMMA (* CONSTANT *)
+%token AXIOM LEMMA GOAL (* CONSTANT *)
 %token EPHEMERAL ELSE EXISTS FALSE FORALL FUNCTION FUN
 %token REC
 %token INVARIANT
@@ -366,6 +370,10 @@ single_constraint:
     { { empty_constr_spec with constr_fun_sharing = [(idl, idr)] } }
 | FUNCTION idl = lident_rich COLONEQUAL idr = lident_rich
     { { empty_constr_spec with constr_fun_destruct = [(idl, idr)] } }
+| GOAL q = qualid
+    { { empty_constr_spec with constr_goal = [q] } }
+| AXIOM q = qualid
+    { { empty_constr_spec with constr_axiom = [q] } }
 
 term: t = mk_term(term_) { t }
 ;

@@ -153,6 +153,8 @@ type constraint_spec = {
   constr_type_destruct : (preid * type_declaration) list;
   constr_fun_sharing   : (preid * preid) list;
   constr_fun_destruct  : (preid * preid) list;
+  constr_goal          : qualid list;
+  constr_axiom         : qualid list;
 }
 
 (* type param  = Location.t * preid * pty *)
@@ -229,6 +231,10 @@ type s_with_constraint =
         (* with module X.Y := Z *)
   | Wfunctionsubst of preid * preid
         (* with function f := g *)
+  | Wgoal of qualid
+        (* with goal f *)
+  | Waxiom of qualid
+        (* with axiom f *)
 
 type s_signature_item_desc =
   | Sig_val of s_val_description

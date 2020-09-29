@@ -437,12 +437,21 @@ and floating_specs_str = function
 and include_description {pincl_attributes; pincl_mod; pincl_loc} =
   let mk_c_fun (idl, idr) = Wfunction (idl, idr) in
   let mk_c_fun_subst (idl, idr) = Wfunctionsubst (idl, idr) in
-  let constr_of_spec c =
+  let mk_goal_subst q = Wgoal q in
+  let mk_axiom_subst q = Waxiom q in
+  let constr_of_spec c = (* FIXME: this part of the code is so ugly... *)
     let c_fun_shar = c.constr_fun_sharing in
     let c_fun_dest = c.constr_fun_destruct in
+    let c_goal = c.constr_goal in
+    let c_axiom = c.constr_axiom in
     let fun_shar_list = List.map mk_c_fun c_fun_shar in
     let fun_dest_list = List.map mk_c_fun_subst c_fun_dest in
-    List.fold_left (fun acc a -> a :: acc) fun_shar_list fun_dest_list in
+    let goal_list = List.map mk_goal_subst c_goal in
+    let axiom_list = List.map mk_axiom_subst c_axiom in
+    let (++) acc a = a :: acc in
+    let fun_constr_list = List.fold_left (++) fun_shar_list fun_dest_list in
+    let goal_constr_list = List.fold_left (++) fun_constr_list goal_list in
+    List.fold_left (++) goal_constr_list axiom_list in
   let spec, attrs = split_attr pincl_attributes in
   let spec = List.map attr2spec spec in
   let mod_ty = module_type pincl_mod in

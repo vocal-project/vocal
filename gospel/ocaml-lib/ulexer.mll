@@ -44,6 +44,7 @@
         "as", AS;
         "axiom", AXIOM;
         "lemma", LEMMA;
+        "goal", GOAL;
         "coercion", COERCION;
         "else", ELSE;
         "exists", EXISTS;
