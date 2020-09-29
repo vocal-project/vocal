@@ -52,8 +52,8 @@
 
 type int
 
-(*@ function integer_of_int (x: int) : integer *)
-(*@ coercion *)
+(*@ function integer_of_int (x: int) : integer
+    coercion *)
 
 (*@ function abs (x:integer) : integer = if x >= 0 then x else -x *)
 
@@ -122,7 +122,7 @@ module Seq : sig
 
   (* TODO : DO WE WANT SOMETHING LIKE THIS ? *)
   (*@ function create (n: integer) (f: integer -> 'a) : 'a seq *)
-  (*@ requires 0 <= n
+  (* @ requires 0 <= n
       ensures  length result = n
       ensures  forall i. 0 <= i < n -> result[i] = f i *)
 
@@ -191,8 +191,8 @@ end
 
      Type 'a list, [] and (::) constructors are built-in *)
 
-(*@ function seq_of_list (l: 'a list): 'a seq *)
-(*@ coercion *)
+(*@ function seq_of_list (l: 'a list): 'a seq
+    coercion *)
 
 (** Arrays *)
 
@@ -202,8 +202,8 @@ type 'a array
 (*@ model array_length: integer *)
 (*@ invariant array_length = length contents *)
 
-(*@ function elts (a: 'a array): 'a seq = a.contents *)
-(*@ coercion *)
+(*@ function elts (a: 'a array): 'a seq = a.contents
+    coercion *)
 
 module Array : sig
 
@@ -355,6 +355,6 @@ module Peano : sig
   type t
   (*@ model v: integer *)
 
-  (*@ function int_of_peano (t: t) : integer = t.v *)
-  (*@ coercion *)
+  (*@ function int_of_peano (t: t) : integer = t.v
+      coercion *)
 end
