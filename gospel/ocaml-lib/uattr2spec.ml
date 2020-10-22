@@ -641,7 +641,18 @@ and structure_item str_item =
       let ty_exn = { ty_exn with ptyexn_attributes = attrs } in
       let str_desc = mk_s_structure_item (Str_exception ty_exn) ~loc in
       List.rev (str_desc :: specs)
-  | _ -> assert false (* TODO *)
+  | Pstr_primitive _ -> assert false (* TODO *)
+  | Pstr_typext _ -> assert false (* TODO *)
+  | Pstr_recmodule _ -> assert false (* TODO *)
+  | Pstr_open popen ->
+      let attrs, specs = get_spec_attrs_str popen.popen_attributes in
+      let popen = { popen with popen_attributes = attrs } in
+      let str_desc = mk_s_structure_item (Str_open popen) ~loc in
+      List.rev (str_desc :: specs)
+  | Pstr_class _ -> assert false (* TODO *)
+  | Pstr_class_type _ -> assert false (* TODO *)
+  | Pstr_include _ -> assert false (* TODO *)
+  | Pstr_extension _ -> assert false (* TODO *)
 
 and s_value_binding vb_list =
   (* [val_binding v] parses the attributes of a value binding. As for val

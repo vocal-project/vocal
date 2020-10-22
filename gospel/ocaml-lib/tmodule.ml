@@ -362,9 +362,9 @@ let init_muc s = {
     muc_crcm    = Coercion.empty}
 
 let wrap_up_muc muc =
-  match muc.muc_export, muc.muc_sigs, muc.muc_strs with
-  | [e], [s], [st] ->
-     { fl_nm = muc.muc_nm; fl_sigs = List.rev s; fl_strs = st; fl_export = e }
+  match muc.muc_export, muc.muc_sigs with
+  | [e], [s] ->
+     { fl_nm = muc.muc_nm; fl_sigs = List.rev s; fl_strs = []; fl_export = e }
   | _ -> assert false
 
 (** Pretty printing *)

@@ -16,6 +16,7 @@ open Ident
 open Wstdlib
 open Ptree
 open Why3gospel_trans
+open Filename
 
 let debug = ref true
 
@@ -133,7 +134,7 @@ let read_channel env path file c =
   let f = type_check file nm f in
   let sigs = Why3gospel_trans.signature f.fl_sigs in
   open_file env path;
-  let id = mk_id "Sig" in
+  let id = mk_id (String.capitalize_ascii (chop_extension (basename file))) in
   open_module id;
   use_array id.id_loc;
   List.iter extra_use extra_uses;

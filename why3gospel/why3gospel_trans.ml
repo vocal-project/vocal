@@ -120,6 +120,9 @@ module Term = struct
   let rec term t =
     let id_loc = map_opt_default location dummy_loc t.Tt.t_loc in
     let mk_term term_desc = mk_term term_desc id_loc in
+    let mk_cast term_desc = match t.t_ty with
+      | None -> term_desc
+      | Some t_ty -> Tcast (mk_term term_desc, ty t_ty) in
     let t_node = function
       | Tt.Ttrue    -> Ttrue
       | Tt.Tfalse   -> Tfalse
@@ -163,7 +166,7 @@ module Term = struct
             | Some s -> s in
           let id = mk_id id_str ~id_loc in
           Tidapp (Qident id, term_list) in
-    mk_term (t_node t.Tt.t_node)
+    mk_term (mk_cast (t_node t.Tt.t_node))
 
 end
 
