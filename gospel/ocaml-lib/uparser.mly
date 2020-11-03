@@ -366,9 +366,9 @@ constrain:
       List.fold_left mk_constr empty_constr_spec $2 }
 
 single_constraint:
-| FUNCTION idl = lident_rich EQUAL idr = lident_rich
+| FUNCTION idl = qualid EQUAL idr = qualid
     { { empty_constr_spec with constr_fun_sharing = [(idl, idr)] } }
-| FUNCTION idl = lident_rich COLONEQUAL idr = lident_rich
+| FUNCTION idl = qualid COLONEQUAL idr = qualid
     { { empty_constr_spec with constr_fun_destruct = [(idl, idr)] } }
 | GOAL q = qualid
     { { empty_constr_spec with constr_goal = [q] } }

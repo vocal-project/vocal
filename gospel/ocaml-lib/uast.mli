@@ -149,10 +149,10 @@ type loop_spec = {
 }
 
 type constraint_spec = {
-  constr_type_sharing  : (preid * type_declaration) list;
-  constr_type_destruct : (preid * type_declaration) list;
-  constr_fun_sharing   : (preid * preid) list;
-  constr_fun_destruct  : (preid * preid) list;
+  constr_type_sharing  : (qualid * type_declaration) list;
+  constr_type_destruct : (qualid * type_declaration) list;
+  constr_fun_sharing   : (qualid * qualid) list;
+  constr_fun_destruct  : (qualid * qualid) list;
   constr_goal          : qualid list;
   constr_axiom         : qualid list;
 }
@@ -223,13 +223,13 @@ type s_with_constraint =
            the name of the type_declaration. *)
   | Wmodule of Longident.t loc * Longident.t loc
         (* with module X.Y = Z *)
-  | Wfunction of preid * preid
+  | Wfunction of qualid * qualid
         (* with function f = g *)
   | Wtypesubst of Longident.t loc * s_type_declaration
         (* with type X.t := ..., same format as [With_type] *)
   | Wmodsubst of Longident.t loc * Longident.t loc
         (* with module X.Y := Z *)
-  | Wfunctionsubst of preid * preid
+  | Wfunctionsubst of qualid * qualid
         (* with function f := g *)
   | Wgoal of qualid
         (* with goal f *)
