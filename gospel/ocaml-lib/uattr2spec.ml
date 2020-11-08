@@ -365,26 +365,25 @@ let rec signature_ sigs acc prev_floats = match sigs with
 
 and signature sigs = signature_ sigs [] []
 
-and module_type_desc m =
-  match m with
-  | Pmty_ident id ->
-     Mod_ident id
-  | Pmty_signature s ->
-     Mod_signature (signature s)
-  | Pmty_functor (l,m1,m2) ->
-     Mod_functor (l,Utils.opmap module_type m1, module_type m2)
-  | Pmty_with (m,c) ->
-     Mod_with (module_type m, List.map with_constraint c)
-  | Pmty_typeof m ->
-      uns_gospel.module_expr uns_gospel m;
-      let m = s_module_expr m in Mod_typeof m
-  | Pmty_extension e -> Mod_extension e
-  | Pmty_alias a -> Mod_alias a
-
 and module_type m =
-  uns_gospel.attributes uns_gospel m.pmty_attributes;
+  let attrs, specs = get_spec_attrs m.pmty_attributes in
+  (* uns_gospel.attributes uns_gospel m.pmty_attributes; *)
+  let rec module_type_desc = function
+    | Pmty_ident id ->
+        Mod_ident id
+    | Pmty_signature s ->
+        Mod_signature (signature s)
+    | Pmty_functor (l,m1,m2) ->
+        Mod_functor (l,Utils.opmap module_type m1, module_type m2)
+    | Pmty_with (m,c) ->
+        Mod_with (module_type m, List.map with_constraint c)
+    | Pmty_typeof m ->
+        uns_gospel.module_expr uns_gospel m;
+        let m = s_module_expr m in Mod_typeof m
+    | Pmty_extension e -> Mod_extension e
+    | Pmty_alias a -> Mod_alias a in
   { mdesc = module_type_desc m.pmty_desc;
-    mloc = m.pmty_loc; mattributes = m.pmty_attributes}
+    mloc = m.pmty_loc; mattributes = attrs}
 
 and module_declaration m =
   let attrs, specs = get_spec_attrs m.pmd_attributes in
