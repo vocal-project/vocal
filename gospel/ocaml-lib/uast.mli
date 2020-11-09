@@ -148,14 +148,13 @@ type loop_spec = {
   loop_variant   : term list;
 }
 
-type constraint_spec = {
-  constr_type_sharing  : (qualid * type_declaration) list;
-  constr_type_destruct : (qualid * type_declaration) list;
-  constr_fun_sharing   : (qualid * qualid) list;
-  constr_fun_destruct  : (qualid * qualid) list;
-  constr_goal          : qualid list;
-  constr_axiom         : qualid list;
-}
+type constraint_spec =
+  | CFunctionShare  of qualid * qualid
+  | CFunctionDestr  of qualid * qualid
+  | CPredicateShare of qualid * qualid
+  | CPredicateDestr of qualid * qualid
+  | CGoal           of qualid
+  | CAxiom          of qualid
 
 (* type param  = Location.t * preid * pty *)
 type function_ = {
@@ -186,7 +185,7 @@ type spec =
   | Stype_ghost of rec_flag * type_declaration list * Location.t
   | Sval_ghost  of value_description * Location.t
   | Sopen_ghost of open_description  * Location.t
-  | Sconstraint of constraint_spec * Location.t
+  | Sconstraint of constraint_spec list * Location.t
 
 (* Modified OCaml constructs with specification attached *)
 
@@ -225,12 +224,16 @@ type s_with_constraint =
         (* with module X.Y = Z *)
   | Wfunction of qualid * qualid
         (* with function f = g *)
+  | Wpredicate of qualid * qualid
+        (* with predicate f = g *)
   | Wtypesubst of Longident.t loc * s_type_declaration
         (* with type X.t := ..., same format as [With_type] *)
   | Wmodsubst of Longident.t loc * Longident.t loc
         (* with module X.Y := Z *)
   | Wfunctionsubst of qualid * qualid
         (* with function f := g *)
+  | Wpredicatesubst of qualid * qualid
+        (* with predicate f := g *)
   | Wgoal of qualid
         (* with goal f *)
   | Waxiom of qualid

@@ -281,6 +281,14 @@ let get_spec_attrs attrs =
   let specs,attrs = split_attr attrs in
   attrs, floating_specs (List.map attr2spec specs)
 
+let constr_of_spec = function
+  | CFunctionShare (idl, idr) -> Wfunction (idl, idr)
+  | CFunctionDestr (idl, idr) -> Wfunctionsubst (idl, idr)
+  | CPredicateShare (idl, idr) -> Wpredicate (idl, idr)
+  | CPredicateDestr (idl, idr) -> Wpredicatesubst (idl, idr)
+  | CGoal q -> Wgoal q
+  | CAxiom q -> Waxiom q
+
 (** Translats OCaml signatures with specification attached to
    attributes into our intermediate representation. Beaware,
    prev_floats must be reverted before used *)
@@ -366,9 +374,9 @@ let rec signature_ sigs acc prev_floats = match sigs with
 and signature sigs = signature_ sigs [] []
 
 and module_type m =
-  let attrs, specs = get_spec_attrs m.pmty_attributes in
-  (* uns_gospel.attributes uns_gospel m.pmty_attributes; *)
-  let rec module_type_desc = function
+  let specs, attrs = split_attr m.pmty_attributes in
+  let spec = List.map attr2spec specs in
+  let module_type_desc = function
     | Pmty_ident id ->
         Mod_ident id
     | Pmty_signature s ->
@@ -376,7 +384,10 @@ and module_type m =
     | Pmty_functor (l,m1,m2) ->
         Mod_functor (l,Utils.opmap module_type m1, module_type m2)
     | Pmty_with (m,c) ->
-        Mod_with (module_type m, List.map with_constraint c)
+        let constr_spec = List.map get_constraint_spec spec in
+        (* FIXME: keep the approach of using only the first element of spec *)
+        let constr_spec = List.map constr_of_spec (List.flatten constr_spec) in
+        Mod_with (module_type m, List.map with_constraint c @ constr_spec)
     | Pmty_typeof m ->
         uns_gospel.module_expr uns_gospel m;
         let m = s_module_expr m in Mod_typeof m
@@ -434,23 +445,6 @@ and floating_specs_str = function
       mk_s_structure_item (Str_ghost_open open_desc) ~loc :: fspec
 
 and include_description {pincl_attributes; pincl_mod; pincl_loc} =
-  let mk_c_fun (idl, idr) = Wfunction (idl, idr) in
-  let mk_c_fun_subst (idl, idr) = Wfunctionsubst (idl, idr) in
-  let mk_goal_subst q = Wgoal q in
-  let mk_axiom_subst q = Waxiom q in
-  let constr_of_spec c = (* FIXME: this part of the code is so ugly... *)
-    let c_fun_shar = c.constr_fun_sharing in
-    let c_fun_dest = c.constr_fun_destruct in
-    let c_goal = c.constr_goal in
-    let c_axiom = c.constr_axiom in
-    let fun_shar_list = List.map mk_c_fun c_fun_shar in
-    let fun_dest_list = List.map mk_c_fun_subst c_fun_dest in
-    let goal_list = List.map mk_goal_subst c_goal in
-    let axiom_list = List.map mk_axiom_subst c_axiom in
-    let (++) acc a = a :: acc in
-    let fun_constr_list = List.fold_left (++) fun_shar_list fun_dest_list in
-    let goal_constr_list = List.fold_left (++) fun_constr_list goal_list in
-    List.fold_left (++) goal_constr_list axiom_list in
   let spec, attrs = split_attr pincl_attributes in
   let spec = List.map attr2spec spec in
   let mod_ty = module_type pincl_mod in
@@ -459,7 +453,7 @@ and include_description {pincl_attributes; pincl_mod; pincl_loc} =
   match spec with
   | [] -> mk_incl mod_ty pincl_loc attrs, []
   | x::xs when is_constr_spec x ->
-      let constrs = constr_of_spec (get_constraint_spec x) in
+      let constrs = List.map constr_of_spec (get_constraint_spec x) in
       let spincl_mod = match mod_ty.mdesc with
       | Mod_with (md, constr_list) ->
           { mod_ty with mdesc = Mod_with (md, constr_list @ constrs) }
