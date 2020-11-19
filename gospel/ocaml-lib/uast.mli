@@ -19,10 +19,10 @@ type qualid =
   | Qdot   of qualid * preid
 
 type pty =
-  | PTtyvar  of preid
-  | PTtyapp  of qualid * pty list
-  | PTtuple  of pty list
-  | PTarrow  of labelled_arg * pty * pty
+  | PTtyvar of preid
+  | PTtyapp of qualid * pty list
+  | PTtuple of pty list
+  | PTarrow of labelled_arg * pty * pty
 
 and labelled_arg =
   | Lnone     of preid
