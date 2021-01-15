@@ -263,8 +263,8 @@ val_spec_body:
   { empty_vspec }
 | bd=val_spec_body DIVERGES
   { {bd with sp_diverge = true} }
-| bd=val_spec_body v=variant (* TODO: we only support a single variant *)
-  { {bd with sp_diverge = false; sp_variant = [v]} }
+| bd=val_spec_body VARIANT v=separated_list(COMMA, term)
+  { {bd with sp_diverge = false; sp_variant = v} }
 | bd=val_spec_body MODIFIES wr=separated_list(COMMA, term)
     { { bd with sp_writes = wr @ bd.sp_writes } }
 | bd=val_spec_body CONSUMES cs=separated_list(COMMA, term)
