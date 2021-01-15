@@ -291,8 +291,8 @@ _loop_spec:
     { [], [] }
 | INVARIANT t = term _loop_spec
     { let inv, var = $3 in t :: inv, var }
-| VARIANT   t = term _loop_spec
-    { let inv, var = $3 in inv, t :: var }
+| VARIANT   t = comma_list1(term) _loop_spec
+    { let inv, var = $3 in inv, t @ var }
 
 fun_arg:
 | LEFTPAR RIGHTPAR
