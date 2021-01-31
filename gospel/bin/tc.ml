@@ -65,7 +65,7 @@ let run_file config file =
       pp fmt "@[@\n*******************************@]@.";
       pp fmt "@[********** Parsed file ********@]@.";
       pp fmt "@[*******************************@]@.";
-      pp fmt "@[%a@]@." Opprintast.signature ocaml );
+      pp fmt "@[%a@]@." Pprintast.signature ocaml );
     if config.parse_ocaml_only then raise Exit;
 
     let module_nm = path2module file in

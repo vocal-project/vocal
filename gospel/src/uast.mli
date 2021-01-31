@@ -8,8 +8,8 @@
 (*  (as described in file LICENSE enclosed).                              *)
 (**************************************************************************)
 
-open Oasttypes
-open Oparsetree
+open Asttypes
+open Parsetree
 
 module Preid = Identifier.Preid
 

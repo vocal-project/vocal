@@ -48,16 +48,18 @@ module Option = struct
   let fold ~none ~some = function Some v -> some v | None -> none
 end
 
+let fmt_of_string s = fun fmt () -> Format.pp_print_string fmt s
+
 let pp_print_option ?(none = fun _ () -> ()) pp_v ppf = function
   | None -> none ppf ()
   | Some v -> pp_v ppf v
 
-let list_with_first_last : 'a . ?sep:Opprintast.space_formatter ->
-  ?first:Opprintast.space_formatter -> ?last:Opprintast.space_formatter ->
-  (Format.formatter -> 'a -> unit) ->
-  Format.formatter -> 'a list -> unit
-  = let open Opprintast in
-    fun ?sep ?first ?last fu f xs ->
+let list_with_first_last : 'a . ?sep:Pprintast.space_formatter ->
+                           ?first:Pprintast.space_formatter -> ?last:Pprintast.space_formatter ->
+                           (Format.formatter -> 'a -> unit) ->
+                           Format.formatter -> 'a list -> unit
+  = fun ?sep ?first ?last fu f xs ->
+    let pp = Format.fprintf in
     let first = match first with Some x -> x |None -> ("": _ format6)
     and last = match last with Some x -> x |None -> ("": _ format6)
     and sep = match sep with Some x -> x |None -> ("@ ": _ format6) in
@@ -65,12 +67,12 @@ let list_with_first_last : 'a . ?sep:Opprintast.space_formatter ->
       | [] -> ()
       | [x] -> pp f first; fu f x; pp f last
       | xs ->
-          let rec loop  f = function
-            | [x] -> fu f x
-            | x::xs ->  fu f x; pp f sep; loop f xs;
-            | _ -> assert false in begin
-            pp f first; loop f xs; pp f last;
-          end in
+         let rec loop  f = function
+           | [x] -> fu f x
+           | x::xs ->  fu f x; pp f sep; loop f xs;
+           | _ -> assert false in begin
+             pp f first; loop f xs; pp f last;
+           end in
     aux f xs
 
 module Sstr = Set.Make(String)
@@ -98,10 +100,10 @@ let not_supported ?loc s =
 let () =
   let open Location in
   register_error_of_exn (function
-      | Located (loc,exn) ->
+      | Located (_loc, exn) ->
          begin match error_of_exn exn with
          | None | Some `Already_displayed -> None
-         | Some `Ok e -> Some {e with loc = loc}
+         | Some `Ok e -> Some e
          end
       | TypeCheckingError s ->
          Some (errorf "Type checking error: %s" s)

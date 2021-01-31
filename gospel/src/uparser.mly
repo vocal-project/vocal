@@ -416,8 +416,8 @@ quant:
 ;
 
 numeral:
-| INTEGER { Oasttypes.Pconst_integer ($1,None) }
-| FLOAT   { Oasttypes.Pconst_float ($1, None) }
+| INTEGER { Parsetree.Pconst_integer ($1, None) }
+| FLOAT   { Parsetree.Pconst_float ($1, None) }
 ;
 
 binder_var:
