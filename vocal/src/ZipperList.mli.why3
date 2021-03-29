@@ -1,3 +1,0 @@
-(*@ open Peano *)
-
-val length : 'a t -> Peano.t
